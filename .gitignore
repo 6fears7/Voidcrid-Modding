@@ -65,14 +65,10 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Packed Addressables
-[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Temporary auto-generated Android Assets
 [Aa]ssets/[Ss]treamingAssets/aa.meta
 [Aa]ssets/[Ss]treamingAssets/aa/*
 
-#RoR2 Packages Folder
-Packages/Risk of Rain 2
-#ThunderKit root folder & Logs
-ThunderKit/
-Assets/ThunderKitSettings/Logs/
+
