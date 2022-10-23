@@ -14,9 +14,9 @@ namespace CustomSkillsTutorial.Voidcrid
 	private string muzzle = "MouthMuzzle";
 	private float baseDuration = 1f;
 
-private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Titan/LaserGolemGold.prefab").WaitForCompletion();
-	private GameObject muzzleflashEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabGravityBumpMuzzleflash.prefab").WaitForCompletion();
-
+private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamCorrupt.prefab").WaitForCompletion();
+	private GameObject muzzleflashEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamMuzzleflash.prefab").WaitForCompletion();
+   
 	private float maxDistance = 100f;
 	private float minDistance = 1f;
 
@@ -24,10 +24,17 @@ private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2
 
 	private float bulletRadius = 3f;
 
-	private GameObject hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabGravityBumpExplosionGround.prefab").WaitForCompletion();
+	private GameObject hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Commando/OmniExplosionVFXFMJ.prefab").WaitForCompletion();
 	
 	private float spreadBloomValue = 0.3f;
 	private float minimumDuration;
+
+	private float procCoefficientPerSecond = 0.5f;
+	private float forcePerSecond = 2f;
+
+	private float damageCoefficientPerSecond = 0.5f;
+
+	private float maxSpread = 2f;
 
 	private GameObject blinkVfxInstance;
 	
@@ -38,13 +45,16 @@ private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2
 		base.OnEnter();
 
 		minimumDuration = baseDuration / attackSpeedStat;
-		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", minimumDuration);
-
 
 		if (NetworkServer.active)
 		{
 			base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
+			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
 		}
+
+		PlayCrossfade("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", baseDuration, 0.05f);
+		PlayCrossfade("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", baseDuration, 0.05f);
+
 		blinkVfxInstance = Object.Instantiate(beamVfxPrefab);
 		blinkVfxInstance.transform.SetParent(base.characterBody.aimOriginTransform, worldPositionStays: false);
 
@@ -53,21 +63,21 @@ private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2
 	public override void FixedUpdate()
 	{
 		base.FixedUpdate();
+
 		FireBullet();
 		
 		base.characterBody.SetAimTimer(3f);
 		if ((bool)blinkVfxInstance)
 		{
 	
-			Vector3 point = GetAimRay().GetPoint(maxDistance);
+			Vector3 point = GetAimRay().GetPoint(maxDistance + attackSpeedStat);
 			if (Util.CharacterRaycast(base.gameObject, GetAimRay(), out var hitInfo, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.UseGlobal))
 			{
 				point = hitInfo.point;
 			}
 			blinkVfxInstance.transform.forward = point - blinkVfxInstance.transform.position;
 		}
-		//just added boolean
-		if (((base.fixedAge >= minimumDuration && !IsKeyDownAuthority()) || base.characterBody.isSprinting) && base.isAuthority)
+		if (((base.fixedAge >= minimumDuration && !IsKeyDownAuthority())) && base.isAuthority)
 		{
 			outer.SetNextStateToMain();
 		}
@@ -82,12 +92,14 @@ private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2
 		if (NetworkServer.active)
 		{
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+			base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
 		}
 		base.OnExit();
 	}
 
 	private void FireBullet()
 	{
+
 		Ray aimRay = GetAimRay();
 		AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
 		if ((bool)muzzleflashEffectPrefab)
@@ -104,15 +116,15 @@ private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2
 			bulletAttack.muzzleName = muzzle;
 			bulletAttack.maxDistance = Mathf.Lerp(minDistance, maxDistance, Random.value);
 			bulletAttack.minSpread = 0f;
-			// bulletAttack.maxSpread = maxSpread;
+			bulletAttack.maxSpread = maxSpread;
 			bulletAttack.radius = bulletRadius;
 			bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
 			bulletAttack.smartCollision = false;
 			bulletAttack.stopperMask = default(LayerMask);
 			bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
-			// bulletAttack.damage = damageCoefficientPerSecond * damageStat;
-			// bulletAttack.procCoefficient = procCoefficientPerSecond;
-			// bulletAttack.force = forcePerSecond;
+			bulletAttack.damage = damageCoefficientPerSecond * damageStat;
+			bulletAttack.procCoefficient = procCoefficientPerSecond;
+			bulletAttack.force = forcePerSecond;
 			bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);
 			bulletAttack.hitEffectPrefab = hitEffectPrefab;
 			bulletAttack.Fire();

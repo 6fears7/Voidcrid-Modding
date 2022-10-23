@@ -24,17 +24,22 @@ namespace CustomSkillsTutorial
             //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
             //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
             GameObject crocoBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
+            GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
 
             //We use LanguageAPI to add strings to the game, in the form of tokens
-            LanguageAPI.Add("Flamethrower", "Flame of the Deep");
+            LanguageAPI.Add("Flamethrower", "Deep Flame");
             LanguageAPI.Add("Burn", $"Release a burst of flame, <style=cArtifact>burning</style> enemies. The flame's longevity <style=cIsDamage>increases</style> with your speed.");
-            LanguageAPI.Add("Leap", "Umbral Leap");
-            LanguageAPI.Add("VLeap", $"Spread the Void, <style=cArtifact>trapping and choking</style> enemies.");
+            LanguageAPI.Add("Beam", "Null Beam");
+            LanguageAPI.Add("VBeam", $"Draw from the <style=cArtifact>Void</style>, collapsing and <style=cArtifact> choking</style> enemies.");
+            LanguageAPI.Add("Escape", "Void Drift");
+            LanguageAPI.Add("VEscape", $"Disappear into the Void, <style=cArtifact>ensaring enemies</style>.");
 
             //Now we must create a SkillDef
             SkillDef mySkillDef = ScriptableObject.CreateInstance<SkillDef>();
-            SkillDef voidLeap = ScriptableObject.CreateInstance<SkillDef>();
-            //Check step 2 for the code of the CustomSkillsTutorial.MyEntityStates.SimpleBulletAttack class
+            SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
+            SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();        
+
+
             mySkillDef.activationState = new SerializableEntityStateType(typeof(CustomSkillsTutorial.Voidcrid.Voidcridbreath));
             mySkillDef.activationStateMachineName = "Weapon";
             mySkillDef.baseMaxStock = 1;
@@ -55,51 +60,81 @@ namespace CustomSkillsTutorial
             mySkillDef.skillName = "Firebreath";
             mySkillDef.skillNameToken = "Flamethrower";
 
-            voidLeap.activationState = new SerializableEntityStateType(typeof(CustomSkillsTutorial.Voidcrid.VoidcridLeap));
-            voidLeap.activationStateMachineName = "Weapon";
-            voidLeap.baseMaxStock = 1;
-            voidLeap.baseRechargeInterval = 2f;
-            voidLeap.beginSkillCooldownOnSkillEnd = true;
-            voidLeap.canceledFromSprinting = false;
-            voidLeap.cancelSprintingOnActivation = true;
-            voidLeap.fullRestockOnAssign = true;
-            voidLeap.interruptPriority = InterruptPriority.Any;
-            voidLeap.isCombatSkill = true;
-            voidLeap.mustKeyPress = false;
-            voidLeap.rechargeStock = 1;
-            voidLeap.requiredStock = 1;
-            voidLeap.stockToConsume = 1;
+            voidBeam.activationState = new SerializableEntityStateType(typeof(CustomSkillsTutorial.Voidcrid.NullBeam));
+            voidBeam.activationStateMachineName = "Weapon";
+            voidBeam.baseMaxStock = 1;
+            voidBeam.baseRechargeInterval = 10f;
+            voidBeam.beginSkillCooldownOnSkillEnd = true;
+            voidBeam.canceledFromSprinting = false;
+            voidBeam.cancelSprintingOnActivation = true;
+            voidBeam.fullRestockOnAssign = true;
+            voidBeam.interruptPriority = InterruptPriority.Any;
+            voidBeam.isCombatSkill = true;
+            voidBeam.mustKeyPress = false;
+            voidBeam.rechargeStock = 1;
+            voidBeam.requiredStock = 1;
+            voidBeam.stockToConsume = 1;
             //For the skill icon, you will have to load a Sprite from your own AssetBundle
-            voidLeap.icon = null;
-            voidLeap.skillDescriptionToken = "Leap";
-            voidLeap.skillName = "Umbral Leap";
-            voidLeap.skillNameToken = "VLeap";
+            voidBeam.icon = null;
+            voidBeam.skillDescriptionToken = "VBeam";
+            voidBeam.skillName = "Gravity Beam";
+            voidBeam.skillNameToken = "Beam";
 
-            //This adds our skilldef. If you don't do this, the skill will not work.
+
+            voidEscape.activationState = new SerializableEntityStateType(typeof(CustomSkillsTutorial.Voidcrid.VoidEscape));
+            voidEscape.activationStateMachineName = "Weapon";
+            voidEscape.baseMaxStock = 1;
+            voidEscape.baseRechargeInterval = 10f;
+            voidEscape.beginSkillCooldownOnSkillEnd = true;
+            voidEscape.canceledFromSprinting = false;
+            voidEscape.cancelSprintingOnActivation = true;
+            voidEscape.fullRestockOnAssign = true;
+            voidEscape.interruptPriority = InterruptPriority.Any;
+            voidEscape.isCombatSkill = true;
+            voidEscape.mustKeyPress = false;
+            voidEscape.rechargeStock = 1;
+            voidEscape.requiredStock = 1;
+            voidEscape.stockToConsume = 1;
+
+            voidEscape.icon = null;
+            voidEscape.skillDescriptionToken = "VEscape";
+            voidEscape.skillName = "Void Escape";
+            voidEscape.skillNameToken = "Escape";
+
             ContentAddition.AddSkillDef(mySkillDef);
-            ContentAddition.AddSkillDef(voidLeap);
+            ContentAddition.AddSkillDef(voidBeam);
+            ContentAddition.AddSkillDef(voidEscape);
+            
 
-            //Now we add our skill to one of the survivor's skill families
-            //You can change component.primary to component.secondary, component.utility and component.special
-            SkillLocator skillLocator = crocoBodyPrefab.GetComponent<SkillLocator>();
+            SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
             SkillFamily skillSecondary = skillLocator.secondary.skillFamily;
-            SkillFamily utilitySkill = skillLocator.utility.skillFamily;
-            //If this is an alternate skill, use this code.
-            //Here, we add our skill as a variant to the existing Skill Family.
+            SkillFamily specialSkill = skillLocator.special.skillFamily;
+            SkillFamily skillUtility = skillLocator.utility.skillFamily;
+    
+
             Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
             skillSecondary.variants[skillSecondary.variants.Length - 1] = new SkillFamily.Variant
+
+            {
+                skillDef = voidBeam,
+                // unlockableDef =,
+                viewableNode = new ViewablesCatalog.Node(voidBeam.skillNameToken, false, null)
+            };
+
+            Array.Resize(ref specialSkill.variants, specialSkill.variants.Length + 1);
+            specialSkill.variants[specialSkill.variants.Length - 1] = new SkillFamily.Variant
             {
                 skillDef = mySkillDef,
                 // unlockableDef =,
                 viewableNode = new ViewablesCatalog.Node(mySkillDef.skillNameToken, false, null)
             };
 
-            Array.Resize(ref utilitySkill.variants, utilitySkill.variants.Length + 1);
-            utilitySkill.variants[utilitySkill.variants.Length - 1] = new SkillFamily.Variant
+            Array.Resize(ref skillUtility.variants, skillUtility.variants.Length + 1);
+            skillUtility.variants[skillUtility.variants.Length - 1] = new SkillFamily.Variant
             {
-                skillDef = voidLeap,
+                skillDef = voidEscape,
                 // unlockableDef =,
-                viewableNode = new ViewablesCatalog.Node(voidLeap.skillNameToken, false, null)
+                viewableNode = new ViewablesCatalog.Node(voidEscape.skillNameToken, false, null)
             };
 
 
