@@ -3,6 +3,9 @@ using RoR2;
 using UnityEngine;
 using EntityStates.LemurianBruiserMonster;
 using R2API.Networking;
+using RoR2.Items;
+using UnityEngine.Networking;
+
 
 
 //Since we are using effects from Commando's Barrage skill, we will also be using the associated namespace
@@ -17,6 +20,13 @@ namespace Voidcrid
 
 	private new float baseFlamethrowerDuration = 2f;
 
+	[SerializeField]
+	private  new GameObject flamethrowerEffectPrefab = Flamebreath.flamethrowerEffectPrefab;
+	[SerializeField]
+	private new string startAttackSoundString = Flamebreath.startAttackSoundString;
+
+	[SerializeField]
+	private new string endAttackSoundString = Flamebreath.endAttackSoundString;
 
 
 	private new const float flamethrowerEffectBaseDistance = 20f;
@@ -24,8 +34,10 @@ namespace Voidcrid
       
         public override void OnEnter()
         {
-			
+
+		
             base.OnEnter();
+
 	stopwatch = 0f;
 	entryDuration = baseEntryDuration;
 	exitDuration = baseExitDuration;
@@ -46,11 +58,11 @@ namespace Voidcrid
 	PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", flamethrowerDuration);
 	Ray aimRay = GetAimRay();
 
-	if (Flamebreath.flamethrowerEffectPrefab)
+	if (flamethrowerEffectPrefab)
             {
-                EffectManager.SimpleMuzzleFlash(Flamebreath.flamethrowerEffectPrefab, base.gameObject, "MouthMuzzle", false);
+                EffectManager.SimpleMuzzleFlash(flamethrowerEffectPrefab, base.gameObject, "MouthMuzzle", false);
             }
-	if (base.isAuthority  && (bool)muzzleTransform )
+	if (NetworkServer.active  && (bool)muzzleTransform )
 	{
 		BulletAttack bulletAttack = new BulletAttack();
 		bulletAttack.owner = base.gameObject;
@@ -69,7 +81,7 @@ namespace Voidcrid
 		bulletAttack.stopperMask = LayerIndex.world.mask;
 		bulletAttack.procCoefficient = procCoefficientPerTick;
 		bulletAttack.maxDistance = maxDistance;
-		bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
+		bulletAttack.tracerEffectPrefab = flamethrowerEffectPrefab;
 		bulletAttack.smartCollision = true;
 		bulletAttack.damageType = (Util.CheckRoll(ignitePercentChance, base.characterBody.master) ? DamageType.IgniteOnHit : DamageType.Generic);
 		bulletAttack.Fire();
@@ -129,6 +141,10 @@ namespace Voidcrid
 	{
 		outer.SetNextStateToMain();
 	}
+	}
+		public override InterruptPriority GetMinimumInterruptPriority()
+	{
+		return InterruptPriority.PrioritySkill;
 	}
 	}
 }

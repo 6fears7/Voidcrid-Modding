@@ -1,8 +1,11 @@
 using EntityStates;
 using RoR2;
 using UnityEngine;
+using EntityStates.Mage.Weapon;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using EntityStates.VoidSurvivor.Weapon;
+using RoR2.Items;
 
 namespace Voidcrid {
 public class NullBeam : BaseSkillState
@@ -11,7 +14,7 @@ public class NullBeam : BaseSkillState
 
 	private float baseDuration = 1f;
 
-	// private GameObject beamVfxPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamCorrupt.prefab").WaitForCompletion();
+	// private GameObject flashEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabMuzzleflashEyeMissiles.prefab").WaitForCompletion();
 
 	private float maxDistance = 100f;
 
@@ -19,18 +22,17 @@ public class NullBeam : BaseSkillState
 
 	private float voidJailChance = 0.5f;
 
-	private string attackSound = Voidcridbreath.startAttackSoundString;
-
-	private string endAttackSoundString = Voidcridbreath.endAttackSoundString;
+	// private string attackSound;
+	// private string endAttackSoundString = Voidcridbreath.endAttackSoundString;
 
 	private float recoilAmplitude = 1f;
 
 	private float bulletRadius = 1f;
 
+
 	private GameObject hitEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorBeamImpactCorrupt.prefab").WaitForCompletion();
 
 	private GameObject tracerEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerCaptureTracer.prefab").WaitForCompletion();
-
 	private float spreadBloomValue = 0.3f;
 
 	private float maximumDuration = 4f;
@@ -38,6 +40,10 @@ public class NullBeam : BaseSkillState
 	private float procCoefficientPerSecond = 0.5f;
 
 	private float forcePerSecond = 2f;
+
+	public ItemIndex index;
+
+
 
 	private float minimumDuration;
 
@@ -49,15 +55,17 @@ public class NullBeam : BaseSkillState
 
 	public override void OnEnter()
 	{
+
+	
 		base.OnEnter();
 		minimumDuration = baseDuration / attackSpeedStat;
+		
 		if (NetworkServer.active)
 		{
-			base.characterBody.AddBuff(RoR2Content.Buffs.Slow80);
+			base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
 		}
-		PlayAnimation("Gesture, Mouth", "FireSpit");
-		Util.PlaySound(attackSound, base.gameObject);
+		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", maximumDuration);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
 		// blinkVfxInstance = Object.Instantiate(beamVfxPrefab);
 		// blinkVfxInstance.transform.SetParent(base.characterBody.aimOriginTransform, worldPositionStays: false);
 	}
@@ -90,14 +98,14 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 
 	public override void OnExit()
 	{
-		Util.PlaySound(endAttackSoundString, base.gameObject);
+		// Util.PlaySound(ChargeNovabomb. fire, base.gameObject);
 		// if ((bool)blinkVfxInstance)
 		// {
 		// 	VfxKillBehavior.KillVfxObject(blinkVfxInstance);
 		// }
 		if (NetworkServer.active)
 		{
-			base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow80);
+			base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
 		}
 		base.OnExit();
@@ -107,6 +115,7 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 	{
 		Ray aimRay = GetAimRay();
 		AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
+
 		if (base.isAuthority)
 		{
 			BulletAttack bulletAttack = new BulletAttack();
@@ -136,7 +145,7 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.Skill;
+		return InterruptPriority.PrioritySkill;
 	}
 	}
 }
