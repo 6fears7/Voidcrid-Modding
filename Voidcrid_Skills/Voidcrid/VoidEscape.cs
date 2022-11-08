@@ -10,17 +10,25 @@ using UnityEngine.AddressableAssets;
 namespace Voidcrid {
 public class VoidEscape : StealthMode
 {
-    
+
+		public CharacterBody body;
+
+    [SerializeField]
+	
     private new GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
     private new string smokeBombMuzzleString = "MuzzleCenter";
-
+	[SerializeField]
     private GameObject explosionPrefab =  Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
 	
+	private TemporaryVisualEffect voidFogEffect;
+
+	public GameObject voidFogInstance = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VoidFogMildEffect.prefab").WaitForCompletion();
 	public float voidJailChance = 5f;
 	public override void OnEnter()
 	{
 		base.OnEnter();
-        
+       	// voidFogInstance = Object.Instantiate(voidFogInstance, FindModelChild("MouthMuzzle"));
+
 		animator = GetModelAnimator();
 		_ = (bool)animator;
 		if ((bool)base.characterBody)
@@ -42,8 +50,15 @@ public class VoidEscape : StealthMode
 	public override void FixedUpdate()
 	{
 		base.FixedUpdate();
-        
 
+		try {
+        UpdateSingleTemporaryVisualEffect(ref voidFogEffect, voidFogInstance, body.radius * 0.5f, 2, "MouthMuzzle");
+		}
+
+		catch {
+
+			Console.print("Error loading Fog effect");
+		}
         
 		if (base.fixedAge > duration)
 		{
@@ -57,6 +72,7 @@ public class VoidEscape : StealthMode
 		
 		{
 			FireSmokebomb();
+
 
 		}
 
@@ -134,8 +150,64 @@ public class VoidEscape : StealthMode
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.Skill;
+		return InterruptPriority.PrioritySkill;
 	}
 
+
+	private void UpdateSingleTemporaryVisualEffect(ref TemporaryVisualEffect tempEffect, GameObject obj, float effectRadius, int count, string childLocatorOverride = "")
+	{
+		bool flag = tempEffect != null;
+		if (flag == count > 0)
+		{
+			return;
+		}
+		if (count > 0)
+		{
+			if (flag)
+			{
+				return;
+			}
+			GameObject gameObject = Object.Instantiate(obj, body.corePosition, Quaternion.identity);
+			tempEffect = gameObject.GetComponent<TemporaryVisualEffect>();
+			tempEffect.parentTransform = body.coreTransform;
+			tempEffect.visualState = TemporaryVisualEffect.VisualState.Enter;
+			tempEffect.healthComponent = body.healthComponent;
+			tempEffect.radius = effectRadius;
+			LocalCameraEffect component = gameObject.GetComponent<LocalCameraEffect>();
+			if ((bool)component)
+			{
+				component.targetCharacter = base.gameObject;
+			}
+			if (string.IsNullOrEmpty(childLocatorOverride))
+			{
+				return;
+			}
+			ModelLocator modelLocator = body.modelLocator;
+			ChildLocator childLocator;
+			if (modelLocator == null)
+			{
+				childLocator = null;
+			}
+			else
+			{
+				Transform modelTransform = modelLocator.modelTransform;
+				childLocator = ((modelTransform != null) ? modelTransform.GetComponent<ChildLocator>() : null);
+			}
+			ChildLocator childLocator2 = childLocator;
+			if ((bool)childLocator2)
+			{
+				Transform transform = childLocator2.FindChild(childLocatorOverride);
+				if ((bool)transform)
+				{
+					tempEffect.parentTransform = transform;
+				}
+			}
+		}
+		else if ((bool)tempEffect)
+		{
+			tempEffect.visualState = TemporaryVisualEffect.VisualState.Exit;
+		}
+	}
 }
+
 }
