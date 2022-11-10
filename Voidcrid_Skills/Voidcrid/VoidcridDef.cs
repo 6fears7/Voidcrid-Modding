@@ -7,12 +7,8 @@ using RoR2;
 using RoR2.Skills;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static RoR2.UI.CharacterSelectController;
-using System.Collections.Generic;
-using System.Linq;
-using RoR2.UI;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
+using System.Reflection;
+
 
 
 namespace Voidcrid
@@ -22,21 +18,39 @@ namespace Voidcrid
         "com.6Fears7.Voidcrid",
         "Voidcrid",
         "1.0.0")]
-    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition))]
+    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition), nameof(LoadoutAPI))]
     public class VoidcridDef : BaseUnityPlugin
     {
-        
+        internal static AssetBundle mainAssetBundle;
+
+     
+        private const string assetbundleName = "acrid3";
+        private const string csProjName = "Voidcrid";
+
+    
+
+
         public void Awake()
         {
 
-          
+            LoadAssetBundle();
 
-            //First we must load our survivor's Body prefab. For this tutorial, we are making a skill for Commando
+      
             //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
             //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
             GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
             
-            
+                        On.RoR2.SurvivorCatalog.Init += (orig) =>
+            {
+                orig();
+
+                AddVoidcridSkin();
+            };
+
+            //Adding language token, so every time game sees `LUMBERJACK_SKIN` it will be replaced with `Lumberjack`
+            //You can also use `LanguageAPI.Add("TOKEN", "Value", "Language")` to add localization for specific language
+            //For example `LanguageAPI.Add("LUMBERJACK_SKIN", "Дровосек", "RU")`
+            LanguageAPI.Add("VOIDCRID_SKIN", "Voidcrid");
             //We use LanguageAPI to add strings to the game, in the form of tokens
             LanguageAPI.Add("Flamethrower", "Deep Flame");
             LanguageAPI.Add("Burn", $"Release a burst of flame, <style=cDeath>burning</style> enemies.");
@@ -102,8 +116,7 @@ namespace Voidcrid
             voidBeam.rechargeStock = 1;
             voidBeam.requiredStock = 1;
             voidBeam.stockToConsume = 1;
-            //For the skill icon, you will have to load a Sprite from your own AssetBundle
-            voidBeam.icon = null;
+            voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");        
             voidBeam.skillDescriptionToken = "VBeam";
             voidBeam.skillName = "Gravity Beam";
             voidBeam.skillNameToken = "Beam";
@@ -167,24 +180,12 @@ namespace Voidcrid
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
-            
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+
             }
 
             
-
         
-            // SkillFamily voidPassive = blarg._skillFamily;
-
-            // Array.Resize(ref voidPassive.variants, voidPassive.variants.Length + 1);
-            // voidPassive.variants[voidPassive.variants.Length - 1] = new SkillFamily.Variant
-
-            // {
-            //     skillDef = passiveDef,
-            //     // unlockableDef =,
-            //     viewableNode = new ViewablesCatalog.Node(passiveDef.skillNameToken, false, null)
-            // };
-
-
             Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
             skillSecondary.variants[skillSecondary.variants.Length - 1] = new SkillFamily.Variant
 
@@ -219,7 +220,107 @@ namespace Voidcrid
             };
 
        }
+        internal static void LoadAssetBundle()
+        {
 
+            
+            try
+            {
+    
+                    // using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{csProjName}.{assetbundleName}"))
+ 
+                        mainAssetBundle = AssetBundle.LoadFromFile(Assembly.GetExecutingAssembly().Location.Replace("Voidcrid.dll", "acrid3"));
+                    
+                Debug.Log("Loaded assetbundle" );
+
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Failed to load assetbundle. Make sure your assetbundle name is setup correctly\n" + e );
+                return;
+            }
+
+        }
+
+        
+          private void AddVoidcridSkin()
+        {
+
+            var bodyName = "CrocoBody";
+
+
+            var bodyPrefab = BodyCatalog.FindBodyPrefab(bodyName);
+            //Getting necessary components
+            var renderers = bodyPrefab.GetComponentsInChildren<Renderer>(true);
+            var skinController = bodyPrefab.GetComponentInChildren<ModelSkinController>();
+            var mdl = skinController.gameObject;
+
+                var skin = new LoadoutAPI.SkinDefInfo
+            {
+                //Icon for your skin in the game, it can be any image, or you can use `LoadoutAPI.CreateSkinIcon` to easily create an icon that looks similar to the icons in the game.
+                Icon = LoadoutAPI.CreateSkinIcon(Color.black, Color.magenta, Color.red, Color.magenta),
+                //Replace `LumberJackCommando` with your skin name that can be used to access it through the code
+                Name = "fingers3",
+                //Replace `LUMBERJACK_SKIN` with your token
+                NameToken = "VOIDCRID_SKIN",
+                RootObject = mdl,
+              
+                BaseSkins = new SkinDef[] { skinController.skins[0] },
+                //Name of achievement after which skin will be unlocked
+                //Leave that field empty if you want skin to be always available 
+                // UnlockableDef = "",
+                //This is used to disable/enable some gameobjects in body prefab.
+                GameObjectActivations = new SkinDef.GameObjectActivation[0],
+                //This is used to define which material should be used on a specific renderer.
+                //Only one material per renderer(mesh) is can be used
+                RendererInfos = new CharacterModel.RendererInfo[]
+                {
+                    //To add another material replacement simply copy past this block right after and add `,` after the first one.
+                   
+                    new CharacterModel.RendererInfo
+                    {
+                        //Loading material from AssetBundle replace "@SkinTest:Assets/Resources/matLumberJack.mat" with your value.
+                        //It should be in this format `{provider name}:{path to asset in unity}`
+                        //To get path to asset you can right click on your asset in Unity and select `Copy path` option
+                        defaultMaterial = Resources.Load<Material>("Assets/Resources/ModdedAcrid/Default-Material.mat"),
+
+                        //Should mesh cast shadows
+                        defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+                        //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
+                        ignoreOverlays = false,
+                      
+                        renderer = renderers[2]
+                    }
+                },
+                //This is used to define which mesh should be used on a specific renderer.
+                // MeshReplacements = new SkinDef.MeshReplacement[]
+                // {
+                //     //To add another mesh replacement simply copy past this block right after and add `,` after the first one.
+                //     new SkinDef.MeshReplacement
+                //     {
+                //         //Loading mesh from AssetBundle look at material replacement commentary to learn about how value should be changed.
+                //         mesh = Resources.Load<Mesh>(@"Voidcrid:Assets/Resources/ModdedAcrid/CrocoMesh.mesh"),
+                //         //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
+                //         renderer = renderers[2]
+                //     }
+                // },
+                //You probably don't need to touch this line
+                ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
+                //This is used to add skins for minions e.g. EngiTurrets
+                MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
+            };
+
+            //Adding new skin to a character's skin controller
+            Array.Resize(ref skinController.skins, skinController.skins.Length + 1);
+            skinController.skins[skinController.skins.Length - 1] = LoadoutAPI.CreateNewSkinDef(skin);
+
+            //Adding new skin into BodyCatalog
+
+            var skinsField = typeof(BodyCatalog).GetFieldValue<SkinDef[][]>("skins");
+            skinsField[(int) BodyCatalog.FindBodyIndex(bodyPrefab)] = skinController.skins;
+
+    }
 
 
     }
