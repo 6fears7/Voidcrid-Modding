@@ -20,7 +20,7 @@ public class NullBeam : BaseSkillState
 
 	private float minDistance = 1f;
 
-	private float voidJailChance = 0.5f;
+	private float voidJailChance = 0.1f;
 
 	// private string attackSound;
 	// private string endAttackSoundString = Voidcridbreath.endAttackSoundString;
@@ -35,9 +35,9 @@ public class NullBeam : BaseSkillState
 	private GameObject tracerEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerCaptureTracer.prefab").WaitForCompletion();
 	private float spreadBloomValue = 0.3f;
 
-	private float maximumDuration = 4f;
+	private float maximumDuration = 2.5f;
 
-	private float procCoefficientPerSecond = 0.5f;
+	private float procCoefficientPerSecond = 0.1f;
 
 	private float forcePerSecond = 2f;
 
@@ -145,7 +145,7 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.PrioritySkill;
+		return InterruptPriority.Skill;
 	}
 	}
 }
