@@ -12,13 +12,13 @@
     <None Remove="libs\**" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <None Remove="moddedacrid" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="moddedacrid" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.*">

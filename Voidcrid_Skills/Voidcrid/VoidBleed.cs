@@ -20,7 +20,7 @@ public class VoidBleed : BaseSkillState
 
         private float voidJailChance = .05f;
 
-        private float bleedChance = 10f;
+        private float poisonChance = 50f;
         public  static float procCoefficient = 1f;
         public static float attackRecoil = 1.5f;
         public static float hitHopVelocity = 5.5f;
@@ -49,7 +49,7 @@ public class VoidBleed : BaseSkillState
         private bool inHitPause;
 
         private DamageType voidAttack;
-        private DamageType bleedAttack;
+        private DamageType poisonAttack;
 
 	private GameObject leftFistEffectInstance;
  
@@ -60,9 +60,7 @@ public class VoidBleed : BaseSkillState
 
         private float stopwatch;
         private  Animator animator;
-        private BaseState.HitStopCachedState hitStopCachedState;
         private Transform modelBaseTransform;
-        private Vector3 storedVelocity;
 
         
 
@@ -72,7 +70,7 @@ public class VoidBleed : BaseSkillState
 		{
 
             voidAttack = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            bleedAttack = (Util.CheckRoll(bleedChance, base.characterBody.master) ? DamageType.BleedOnHit : DamageType.Generic);
+            poisonAttack = (Util.CheckRoll(poisonChance, base.characterBody.master) ? DamageType.PoisonOnHit : DamageType.Generic);
 			BlastAttack obj = new BlastAttack
 			{
                
@@ -84,7 +82,7 @@ public class VoidBleed : BaseSkillState
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
 				baseDamage = base.damageStat,
 				falloffModel = BlastAttack.FalloffModel.None,
-				damageType =  (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : bleedAttack),
+				damageType =  (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack),
 
 				baseForce = blastAttackForce
 
@@ -108,7 +106,7 @@ public class VoidBleed : BaseSkillState
 		{
 			origin = footPosition,
 			scale = blastAttackRadius
-		}, transmit: false);
+		}, transmit: true);
 
         }
     }
@@ -172,9 +170,9 @@ public class VoidBleed : BaseSkillState
 
             if (this.hitPauseTimer <= 0f && this.inHitPause)
             {
-                base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator); 
+                // base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator); 
                 this.inHitPause = false;
-                if (this.storedVelocity != Vector3.zero) base.characterMotor.velocity = this.storedVelocity;
+                // if (this.storedVelocity != Vector3.zero) base.characterMotor.velocity = this.storedVelocity;
             }
 
             if (!this.inHitPause)
@@ -223,7 +221,7 @@ public class VoidBleed : BaseSkillState
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Skill;
+            return InterruptPriority.PrioritySkill;
         }
 
     }

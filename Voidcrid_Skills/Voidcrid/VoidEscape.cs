@@ -5,13 +5,17 @@ using UnityEngine;
 using UnityEngine.Networking;
 using EntityStates.Bandit2;
 using UnityEngine.AddressableAssets;
+using EntityStates.VoidRaidCrab.Weapon;
+
 
 
 namespace Voidcrid {
 public class VoidEscape : StealthMode
 {
 
-		public CharacterBody body;
+	private TemporaryVisualEffect voidFog;
+
+	public CharacterBody body;
 
     [SerializeField]
 	
@@ -20,7 +24,7 @@ public class VoidEscape : StealthMode
 	[SerializeField]
     private GameObject explosionPrefab =  Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
 	
-	private TemporaryVisualEffect voidFogEffect;
+	private  FireGravityBump FGBSound = new FireGravityBump();
 
 	public GameObject voidFogInstance = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VoidFogMildEffect.prefab").WaitForCompletion();
 	public float voidJailChance = 5f;
@@ -36,6 +40,7 @@ public class VoidEscape : StealthMode
 			if (NetworkServer.active)
 			{
 				base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
+				base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
 				base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
 			}
 			base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
@@ -44,21 +49,15 @@ public class VoidEscape : StealthMode
 		FireSmokebomb();
 
 
-		Util.PlaySound(enterStealthSound, base.gameObject);
+		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
+		characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true, "Head");
+
 	}
 
 	public override void FixedUpdate()
 	{
 		base.FixedUpdate();
 
-		try {
-        UpdateSingleTemporaryVisualEffect(ref voidFogEffect, voidFogInstance, body.radius * 0.5f, 2, "MouthMuzzle");
-		}
-
-		catch {
-
-			Console.print("Error loading Fog effect");
-		}
         
 		if (base.fixedAge > duration)
 		{
@@ -77,7 +76,7 @@ public class VoidEscape : StealthMode
 		}
 
 
-		Util.PlaySound(exitStealthSound, base.gameObject);
+		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
 		if ((bool)base.characterBody)
 		{
 			base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
@@ -85,12 +84,16 @@ public class VoidEscape : StealthMode
 			{
 				base.characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
 				base.characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
+				base.characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
+
 			}
 		}
 		if ((bool)animator)
 		{
 			animator.SetLayerWeight(animator.GetLayerIndex("Body, StealthWeapon"), 0f);
 		}
+		    characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,false, "Head");
+
 		base.OnExit();
 	}
 
@@ -129,12 +132,13 @@ public class VoidEscape : StealthMode
 		{
 		EffectManager.SimpleMuzzleFlash(smokeBombEffectPrefab, base.gameObject, smokeBombMuzzleString, transmit: false);
 		Vector3 footPosition = base.characterBody.footPosition;
+		
 
 		EffectManager.SpawnEffect(explosionPrefab, new EffectData
 		{
 			origin = footPosition,
 			scale = blastAttackRadius
-		}, transmit: false);
+		}, transmit: true);
 
 
 
@@ -150,64 +154,11 @@ public class VoidEscape : StealthMode
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.PrioritySkill;
+		return InterruptPriority.Skill;
 	}
 
 
-	private void UpdateSingleTemporaryVisualEffect(ref TemporaryVisualEffect tempEffect, GameObject obj, float effectRadius, int count, string childLocatorOverride = "")
-	{
-		bool flag = tempEffect != null;
-		if (flag == count > 0)
-		{
-			return;
-		}
-		if (count > 0)
-		{
-			if (flag)
-			{
-				return;
-			}
-			GameObject gameObject = Object.Instantiate(obj, body.corePosition, Quaternion.identity);
-			tempEffect = gameObject.GetComponent<TemporaryVisualEffect>();
-			tempEffect.parentTransform = body.coreTransform;
-			tempEffect.visualState = TemporaryVisualEffect.VisualState.Enter;
-			tempEffect.healthComponent = body.healthComponent;
-			tempEffect.radius = effectRadius;
-			LocalCameraEffect component = gameObject.GetComponent<LocalCameraEffect>();
-			if ((bool)component)
-			{
-				component.targetCharacter = base.gameObject;
-			}
-			if (string.IsNullOrEmpty(childLocatorOverride))
-			{
-				return;
-			}
-			ModelLocator modelLocator = body.modelLocator;
-			ChildLocator childLocator;
-			if (modelLocator == null)
-			{
-				childLocator = null;
-			}
-			else
-			{
-				Transform modelTransform = modelLocator.modelTransform;
-				childLocator = ((modelTransform != null) ? modelTransform.GetComponent<ChildLocator>() : null);
-			}
-			ChildLocator childLocator2 = childLocator;
-			if ((bool)childLocator2)
-			{
-				Transform transform = childLocator2.FindChild(childLocatorOverride);
-				if ((bool)transform)
-				{
-					tempEffect.parentTransform = transform;
-				}
-			}
-		}
-		else if ((bool)tempEffect)
-		{
-			tempEffect.visualState = TemporaryVisualEffect.VisualState.Exit;
-		}
-	}
+	
 }
 
 }

@@ -29,7 +29,7 @@ namespace Voidcrid
 	private new string endAttackSoundString = Flamebreath.endAttackSoundString;
 
 
-	private new const float flamethrowerEffectBaseDistance = 20f;
+	private new const float flamethrowerEffectBaseDistance = 15f;
 
       
         public override void OnEnter()
@@ -60,7 +60,7 @@ namespace Voidcrid
 
 	if (flamethrowerEffectPrefab)
             {
-                EffectManager.SimpleMuzzleFlash(flamethrowerEffectPrefab, base.gameObject, "MouthMuzzle", false);
+                EffectManager.SimpleMuzzleFlash(flamethrowerEffectPrefab, base.gameObject, "MouthMuzzle", true);
             }
 	if (NetworkServer.active  && (bool)muzzleTransform )
 	{
@@ -144,7 +144,7 @@ namespace Voidcrid
 	}
 		public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.PrioritySkill;
+		return InterruptPriority.Skill;
 	}
 	}
 }

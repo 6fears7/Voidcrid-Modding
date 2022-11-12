@@ -53,16 +53,16 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_SKIN", "Voidcrid");
             //We use LanguageAPI to add strings to the game, in the form of tokens
             LanguageAPI.Add("Flamethrower", "Deep Flame");
-            LanguageAPI.Add("Burn", $"Release a burst of flame, <style=cDeath>burning</style> enemies.");
-            LanguageAPI.Add("Beam", "N?ll Beam");
+            LanguageAPI.Add("Burn", $"<style=cDeath>Burning.</style> Release a burst of flame, <style=cDeath>igniting</style> enemies.");
+            LanguageAPI.Add("Beam", $"<style=cArtifact>N?ll Beam</style>");
             LanguageAPI.Add("VBeam", $"<style=cArtifact>Void.</style> Draw from the <style=cArtifact>Void</style>, firing a laser beam for 4 seconds.");
-            LanguageAPI.Add("Escape", "Ethereal Dr?ft");
+            LanguageAPI.Add("Escape", $"<style=cArtifact>Ethereal Dr?ft</style>");
             LanguageAPI.Add("VEscape", $"<style=cArtifact>Void.</style> Slip into the Void, with a chance to take enemies with you.");
 
-            LanguageAPI.Add("Slash", "Entr?py");
-            LanguageAPI.Add("VSlash_Desc", "<style=cArtifact>Void.</style> <style=cDeath>Bleed.</style> <style=cIsDamage>Unstable.</style> Engulf the Void, <style=cDeath>harming</style> yourself for 25% health with a chance to <style=cArtifact>jail</style> or inflict <style=cDeath>bleed</style> on enemies.");
+            LanguageAPI.Add("Entropy", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
+            LanguageAPI.Add("VEntropy_Desc", "<style=cArtifact>Void.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Engulf the Void, <style=cDeath>harming</style> yourself for 25% health with a chance to <style=cArtifact>jail</style> or poison <style=cDeath>bleed</style> enemies.");
 
-            LanguageAPI.Add("VOIDCRID_PASSIVE", "Welcome to the <style=cArtifact>Void.</style>");
+            LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
 
             LanguageAPI.Add("VOIDCRID", "Voidcrid");
@@ -73,15 +73,14 @@ namespace Voidcrid
             SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
-            SkillDef voidBite = ScriptableObject.CreateInstance<SkillDef>();
+            SkillDef voidPoison = ScriptableObject.CreateInstance<SkillDef>();
             SurvivorDef voidcrid = ScriptableObject.CreateInstance<SurvivorDef>();
-    
+            // UnlockableDef voidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
            
-            
-            // SkillDef passive = ScriptableObject.CreateInstance<SkillDef>();
-
-            // NoneDef.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidcridDef));
-            // passiveDef.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidcridDef));
+            // voidcridUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+            // voidcridUnlock._cachedName = "Voidcrid";
+            // voidcridUnlock.nameToken = "VOIDCRID";
+           
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
             voidBreath.baseMaxStock = 1;
@@ -96,8 +95,7 @@ namespace Voidcrid
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
-            //For the skill icon, you will have to load a Sprite from your own AssetBundle
-            voidBreath.icon = null;
+            voidBreath.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridfire.jpg");    
             voidBreath.skillDescriptionToken = "Burn";
             voidBreath.skillName = "Firebreath";
             voidBreath.skillNameToken = "Flamethrower";
@@ -116,33 +114,33 @@ namespace Voidcrid
             voidBeam.rechargeStock = 1;
             voidBeam.requiredStock = 1;
             voidBeam.stockToConsume = 1;
-            voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");        
+            voidBeam.icon = null;    
             voidBeam.skillDescriptionToken = "VBeam";
             voidBeam.skillName = "Gravity Beam";
             voidBeam.skillNameToken = "Beam";
 
 
             
-            voidBite.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
-            voidBite.activationStateMachineName = "Weapon";
-  		    voidBite.baseMaxStock = 1;
-		    voidBite.baseRechargeInterval = 4f;
-		    voidBite.beginSkillCooldownOnSkillEnd = true;
-		    voidBite.canceledFromSprinting = false;
-		    voidBite.fullRestockOnAssign = true;
-		    voidBite.interruptPriority = InterruptPriority.Any;
-		    voidBite.resetCooldownTimerOnUse = false;
-		    voidBite.isCombatSkill = true;
-		    voidBite.mustKeyPress = false;
-		    voidBite.cancelSprintingOnActivation = true;
-		    voidBite.rechargeStock = 1;
-		    voidBite.requiredStock = 1;
-		    voidBite.stockToConsume = 1;
-            //For the skill icon, you will have to load a Sprite from your own AssetBundle
-            voidBite.icon = null;
-            voidBite.skillDescriptionToken = "VSlash_Desc";
-            voidBite.skillName = "Slash";
-            voidBite.skillNameToken = "Slash";
+            voidPoison.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
+            voidPoison.activationStateMachineName = "Weapon";
+  		    voidPoison.baseMaxStock = 1;
+		    voidPoison.baseRechargeInterval = 4f;
+		    voidPoison.beginSkillCooldownOnSkillEnd = true;
+		    voidPoison.canceledFromSprinting = false;
+		    voidPoison.fullRestockOnAssign = true;
+		    voidPoison.interruptPriority = InterruptPriority.Any;
+		    voidPoison.resetCooldownTimerOnUse = false;
+		    voidPoison.isCombatSkill = true;
+		    voidPoison.mustKeyPress = false;
+		    voidPoison.cancelSprintingOnActivation = true;
+		    voidPoison.rechargeStock = 1;
+		    voidPoison.requiredStock = 1;
+		    voidPoison.stockToConsume = 1;
+            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("voidbleed.png");    
+
+            voidPoison.skillDescriptionToken = "VEntropy_Desc";
+            voidPoison.skillName = "Entropy";
+            voidPoison.skillNameToken = "Entropy";
 
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
             voidEscape.activationStateMachineName = "Weapon";
@@ -159,7 +157,7 @@ namespace Voidcrid
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
 
-            voidEscape.icon = null;
+            voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
             voidEscape.skillDescriptionToken = "VEscape";
             voidEscape.skillName = "Void Escape";
             voidEscape.skillNameToken = "Escape";
@@ -167,6 +165,7 @@ namespace Voidcrid
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddSkillDef(voidBeam);
             ContentAddition.AddSkillDef(voidEscape);
+            // ContentAddition.AddUnlockableDef(voidcridUnlock);
 
      
             SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
@@ -198,9 +197,9 @@ namespace Voidcrid
             Array.Resize(ref specialSkill.variants, specialSkill.variants.Length + 1);
             specialSkill.variants[specialSkill.variants.Length - 1] = new SkillFamily.Variant
             {
-                skillDef = voidBite,
-                // unlockableDef =,
-                viewableNode = new ViewablesCatalog.Node(voidBite.skillNameToken, false, null)
+                skillDef = voidPoison,
+                // unlockableDef = voidcridUnlock,
+                viewableNode = new ViewablesCatalog.Node(voidPoison.skillNameToken, false, null)
             };
 
             Array.Resize(ref skillUtility.variants, skillUtility.variants.Length + 1);
