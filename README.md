@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![Alt text](\lobby\lobby.png "Loadout")
+![Lobby]("\lobby\lobby.png")
 
 
 ## New Abilites:
