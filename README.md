@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![Alt text](icon.png?raw=true "Title")
+![Alt text](https://github.com/6fears7/Voidcrid-Modding/blob/main/Images/Risk%20of%20Rain%202%2011_22_2022%201_04_27%20PM.png "Loadout")
 
 
 ## New Abilites:
