@@ -1,8 +1,5 @@
 using EntityStates;
 using EntityStates.Croco;
-// using EntityStates.Huntress;
-using EntityStates.LemurianBruiserMonster;
-using EntityStates.Mage;
 using RoR2;
 using UnityEngine;
 using RoR2.Projectile;
@@ -43,7 +40,8 @@ public class VoidBleed : BaseSkillState
 		// private GameObject biteEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBiteEffect.prefab").WaitForCompletion();	
         private  float hitPauseTimer;
         [SerializeField]
-		private GameObject aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ImpBoss/ImpBossGroundSlam.prefab").WaitForCompletion();	
+
+        private GameObject aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosion.prefab").WaitForCompletion();	
 
         private float blastAttackProcCoefficient = 1;
         private bool inHitPause;
@@ -56,8 +54,8 @@ public class VoidBleed : BaseSkillState
 	private GameObject rightFistEffectInstance;
 
     [SerializeField]
-    public GameObject fistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorCorruptDeathCharge.prefab").WaitForCompletion();
-
+    public GameObject leftfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerDeathBombExplosion.prefab").WaitForCompletion();
+    public GameObject rightfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoFistEffect.prefab").WaitForCompletion();
         private float stopwatch;
         private  Animator animator;
         private Transform modelBaseTransform;
@@ -66,11 +64,7 @@ public class VoidBleed : BaseSkillState
 
         private  void FireSmash()
 	{
-		if (NetworkServer.active)
-		{
-
-            voidAttack = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            poisonAttack = (Util.CheckRoll(poisonChance, base.characterBody.master) ? DamageType.PoisonOnHit : DamageType.Generic);
+            
 			BlastAttack obj = new BlastAttack
 			{
                
@@ -80,7 +74,7 @@ public class VoidBleed : BaseSkillState
 				position = base.transform.position,
 				attacker = base.gameObject,
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-				baseDamage = base.damageStat,
+				baseDamage = base.damageStat * .1f,
 				falloffModel = BlastAttack.FalloffModel.None,
 				damageType =  (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack),
 
@@ -95,11 +89,10 @@ public class VoidBleed : BaseSkillState
 			
 
 			obj.Fire();
-        }
+        // }
 
-        if ((bool)fistEffectPrefab)
+        if ((bool)leftfistEffectPrefab && rightfistEffectPrefab)
 		{
-		// EffectManager.SimpleMuzzleFlash(fistEffectPrefab, base.gameObject, "MouthMuzzle", transmit: false);
 		Vector3 footPosition = base.characterBody.footPosition;
 
 		EffectManager.SpawnEffect(aoePrefab, new EffectData
@@ -113,15 +106,17 @@ public class VoidBleed : BaseSkillState
         public override void OnEnter()
         {
             base.OnEnter();
+            base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
-            leftFistEffectInstance = Object.Instantiate(fistEffectPrefab, FindModelChild("MuzzleHandL"));
-		    rightFistEffectInstance = Object.Instantiate(fistEffectPrefab, FindModelChild("MuzzleHandR"));
+            voidAttack = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            poisonAttack = DamageType.PoisonOnHit;
+
+            leftFistEffectInstance = Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
+		    rightFistEffectInstance = Object.Instantiate(rightfistEffectPrefab, FindModelChild("MuzzleHandR"));
 
             this.duration = baseDuration / this.attackSpeedStat;
             this.earlyExitDuration = this.duration * earlyExitTime;
             this.hasFired = false;
-            base.characterBody.isSprinting = false;
-            base.characterBody.outOfCombatStopwatch = 0f;
             this.moveSpeedStat = 0f;
             this.childLocator = base.GetModelChildLocator();
             this.modelBaseTransform = base.GetModelBaseTransform();
@@ -130,20 +125,27 @@ public class VoidBleed : BaseSkillState
             bool grounded = base.characterMotor.isGrounded;
             bool moving = this.animator.GetBool("isMoving");
 
-            string swingAnimState = currentAttack % 2 == 0 ? "Slash3" : "Slash3";
+            string setAnimState = "Slash3";
 
             this.animator.SetBool("attacking", true);
             float num = Mathf.Max(duration, 0.2f);
 
-            PlayCrossfade("Gesture, Additive", swingAnimState, "Slash.playbackRate", num, 0.05f);
-		    PlayCrossfade("Gesture, Override", swingAnimState, "Slash.playbackRate", num,  0.05f);
-        
+            PlayCrossfade("Gesture, Additive", setAnimState, "Slash.playbackRate", num, 0.05f);
+		    PlayCrossfade("Gesture, Override", setAnimState, "Slash.playbackRate", num,  0.05f);
+            
 
             float dmg = VoidBleed.damageCoefficient;
 
-          			ProcChainMask procChainMask = default(ProcChainMask);
+          	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
-			
+
+            if (poisonAttack ==  DamageType.PoisonOnHit)
+			{
+				base.healthComponent.HealFraction(.25f, procChainMask);
+			}
+			else
+			{
+
 				DamageInfo damageInfo = new DamageInfo();
 				damageInfo.damage = (.25f * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
@@ -156,15 +158,15 @@ public class VoidBleed : BaseSkillState
 				damageInfo.procCoefficient = 0f;
 				damageInfo.procChainMask = procChainMask;
 				base.healthComponent.TakeDamage(damageInfo);
-
-                base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
                 
+        }
         }
 
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            this.moveSpeedStat = 0f;
 
             this.hitPauseTimer -= Time.fixedDeltaTime;
 
@@ -213,9 +215,11 @@ public class VoidBleed : BaseSkillState
         public override void OnExit()
         {
             if (!this.hasFired) this.FireSmash();
+            this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
             base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-
+		    EntityState.Destroy(leftFistEffectInstance);
+		    EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();
         }
 

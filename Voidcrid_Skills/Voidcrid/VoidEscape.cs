@@ -14,12 +14,13 @@ public class VoidEscape : StealthMode
 {
 
 	private TemporaryVisualEffect voidFog;
+	public static DamageReport onCharacterDeathGlobal;
 
 	public CharacterBody body;
 
     [SerializeField]
 	
-    private new GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
+    private new GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathPreExplosion.prefab").WaitForCompletion();
     private new string smokeBombMuzzleString = "MuzzleCenter";
 	[SerializeField]
     private GameObject explosionPrefab =  Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
@@ -27,7 +28,7 @@ public class VoidEscape : StealthMode
 	private  FireGravityBump FGBSound = new FireGravityBump();
 
 	public GameObject voidFogInstance = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VoidFogMildEffect.prefab").WaitForCompletion();
-	public float voidJailChance = 5f;
+	public float voidJailChance = 3f;
 	public override void OnEnter()
 	{
 		base.OnEnter();
@@ -37,12 +38,12 @@ public class VoidEscape : StealthMode
 		_ = (bool)animator;
 		if ((bool)base.characterBody)
 		{
-			if (NetworkServer.active)
-			{
+			// if (NetworkServer.active)
+			// {
 				base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
 				base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
 				base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
-			}
+			// }
 			base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
 		}
 
@@ -50,7 +51,7 @@ public class VoidEscape : StealthMode
 
 
 		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
-		characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true, "Head");
+		base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true, "Head");
 
 	}
 
@@ -80,19 +81,19 @@ public class VoidEscape : StealthMode
 		if ((bool)base.characterBody)
 		{
 			base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
-			if (NetworkServer.active)
-			{
+			// if (NetworkServer.active)
+			// {
 				base.characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
 				base.characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
 				base.characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
 
-			}
+			// }
 		}
 		if ((bool)animator)
 		{
 			animator.SetLayerWeight(animator.GetLayerIndex("Body, StealthWeapon"), 0f);
 		}
-		    characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,false, "Head");
+		    base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,false, "Head");
 
 		base.OnExit();
 	}
@@ -118,15 +119,15 @@ public class VoidEscape : StealthMode
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
 				baseDamage = 1,
 				falloffModel = BlastAttack.FalloffModel.None,
-				damageType =  (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.SlowOnHit),
+				damageType =  (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Stun1s),
 				baseForce = blastAttackForce
 
 			};
 			obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
 			obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
-			
 
 			obj.Fire();
+			
 		}
 		if ((bool)smokeBombEffectPrefab)
 		{
@@ -154,7 +155,7 @@ public class VoidEscape : StealthMode
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.Skill;
+		return InterruptPriority.PrioritySkill;
 	}
 
 

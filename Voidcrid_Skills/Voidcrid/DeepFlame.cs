@@ -28,7 +28,6 @@ namespace Voidcrid
 	[SerializeField]
 	private new string endAttackSoundString = Flamebreath.endAttackSoundString;
 
-
 	private new const float flamethrowerEffectBaseDistance = 15f;
 
       
@@ -58,11 +57,12 @@ namespace Voidcrid
 	PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", flamethrowerDuration);
 	Ray aimRay = GetAimRay();
 
-	if (flamethrowerEffectPrefab)
-            {
-                EffectManager.SimpleMuzzleFlash(flamethrowerEffectPrefab, base.gameObject, "MouthMuzzle", true);
-            }
-	if (NetworkServer.active  && (bool)muzzleTransform )
+	// if (flamethrowerEffectPrefab)
+    //         {
+    //             EffectManager.SimpleMuzzleFlash(tracerEffectPrefab, base.gameObject, "MouthMuzzle", true);
+    //          }
+	// if (NetworkServer.active  &&
+	if  (muzzleTransform)
 	{
 		BulletAttack bulletAttack = new BulletAttack();
 		bulletAttack.owner = base.gameObject;
@@ -93,7 +93,7 @@ namespace Voidcrid
         public override void OnExit()
         {
 	    	Util.PlaySound(endAttackSoundString, base.gameObject);
-	PlayCrossfade("Gesture, Override", "BufferEmpty", 0.1f);
+	PlayCrossfade("Gesture, Override", "BufferEmpty", 0.05f);
 	if ((bool)flamethrowerEffectInstance)
 	{
 		EntityState.Destroy(flamethrowerEffectInstance.gameObject);
@@ -106,6 +106,7 @@ namespace Voidcrid
 	{
 	base.FixedUpdate();
 	stopwatch += Time.fixedDeltaTime;
+	
 
 	if (stopwatch >= entryDuration && stopwatch < entryDuration + flamethrowerDuration && !hasBegunFlamethrower)
 	{
@@ -114,10 +115,18 @@ namespace Voidcrid
 		if ((bool)childLocator)
 		{
 			muzzleTransform = childLocator.FindChild("MouthMuzzle");
+			
 			flamethrowerEffectInstance = Object.Instantiate(flamethrowerEffectPrefab, muzzleTransform).transform;
 			flamethrowerEffectInstance.transform.localPosition = Vector3.zero;
 			flamethrowerEffectInstance.GetComponent<ScaleParticleSystemDuration>().newDuration = flamethrowerDuration;
+		// 	EffectManager.SpawnEffect(flamethrowerEffectPrefab, new EffectData
+		// {
+		// 	origin = flamethrowerEffectInstance.transform.localPosition,
+		// 	scale = radius
+		// }, transmit: true);
 		}
+
+		
 	}
 	if (stopwatch >= entryDuration + flamethrowerDuration && hasBegunFlamethrower)
 	{
@@ -132,6 +141,8 @@ namespace Voidcrid
 			flamethrowerStopwatch -= 1f / tickFrequency;
 			FireFlame("MouthMuzzle");
 		}
+
+	
 	}
 	else if ((bool)flamethrowerEffectInstance)
 	{
