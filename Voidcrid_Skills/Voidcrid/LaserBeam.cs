@@ -20,7 +20,7 @@ public class NullBeam : BaseSkillState
 
 	private float minDistance = 1f;
 
-	private float voidJailChance = 0.1f;
+	private float voidJailChance = 0.3f;
 
 	// private string attackSound;
 	// private string endAttackSoundString = Voidcridbreath.endAttackSoundString;
@@ -60,11 +60,11 @@ public class NullBeam : BaseSkillState
 		base.OnEnter();
 		minimumDuration = baseDuration / attackSpeedStat;
 		
-		if (NetworkServer.active)
-		{
+		// if (NetworkServer.active)
+		// {
 			base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
-		}
+		// }
 		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", maximumDuration);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
 		// blinkVfxInstance = Object.Instantiate(beamVfxPrefab);
 		// blinkVfxInstance.transform.SetParent(base.characterBody.aimOriginTransform, worldPositionStays: false);
@@ -103,11 +103,11 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 		// {
 		// 	VfxKillBehavior.KillVfxObject(blinkVfxInstance);
 		// }
-		if (NetworkServer.active)
-		{
+		// if (NetworkServer.active)
+		// {
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
-		}
+		// }
 		base.OnExit();
 	}
 

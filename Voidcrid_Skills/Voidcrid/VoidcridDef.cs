@@ -5,9 +5,11 @@ using R2API;
 using R2API.Utils;
 using RoR2;
 using RoR2.Skills;
+using RoR2.Achievements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Reflection;
+// using Voidcrid.Achievements;
 
 
 
@@ -15,20 +17,20 @@ namespace Voidcrid
 {
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin(
-        "com.6Fears7.Voidcrid",
+        "com.sixfears7.Voidcrid",
         "Voidcrid",
         "1.0.0")]
-    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition), nameof(LoadoutAPI))]
+    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition), nameof(LoadoutAPI), nameof(UnlockableAPI))]
     public class VoidcridDef : BaseUnityPlugin
     {
         internal static AssetBundle mainAssetBundle;
+        GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
 
      
         private const string assetbundleName = "acrid3";
         private const string csProjName = "Voidcrid";
 
-    
-
+        // public static UnlockableDef VoidcridSkinDef;
 
         public void Awake()
         {
@@ -38,48 +40,47 @@ namespace Voidcrid
       
             //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
             //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
-            GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
             
-                        On.RoR2.SurvivorCatalog.Init += (orig) =>
-            {
-                orig();
+            //             On.RoR2.SurvivorCatalog.Init += (orig) =>
+            // {
+            //     orig();
 
-                AddVoidcridSkin();
-            };
+            //     // AddVoidcridSkin();
+            // };
 
-            //Adding language token, so every time game sees `LUMBERJACK_SKIN` it will be replaced with `Lumberjack`
-            //You can also use `LanguageAPI.Add("TOKEN", "Value", "Language")` to add localization for specific language
-            //For example `LanguageAPI.Add("LUMBERJACK_SKIN", "Дровосек", "RU")`
+
             LanguageAPI.Add("VOIDCRID_SKIN", "Voidcrid");
             //We use LanguageAPI to add strings to the game, in the form of tokens
-            LanguageAPI.Add("Flamethrower", "Deep Flame");
-            LanguageAPI.Add("Burn", $"<style=cDeath>Burning.</style> Release a burst of flame, <style=cDeath>igniting</style> enemies.");
-            LanguageAPI.Add("Beam", $"<style=cArtifact>N?ll Beam</style>");
-            LanguageAPI.Add("VBeam", $"<style=cArtifact>Void.</style> Draw from the <style=cArtifact>Void</style>, firing a laser beam for 4 seconds.");
-            LanguageAPI.Add("Escape", $"<style=cArtifact>Ethereal Dr?ft</style>");
-            LanguageAPI.Add("VEscape", $"<style=cArtifact>Void.</style> Slip into the Void, with a chance to take enemies with you.");
+            LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
+            LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>N?ll Beam</style>");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style>.");
+            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>Ethereal Dr?ft</style>");
+            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style>, with a chance to take enemies with you.");
 
-            LanguageAPI.Add("Entropy", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
-            LanguageAPI.Add("VEntropy_Desc", "<style=cArtifact>Void.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Engulf the Void, <style=cDeath>harming</style> yourself for 25% health with a chance to <style=cArtifact>jail</style> or poison <style=cDeath>bleed</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for 25% health to obliterate or <style=cIsHealing>poison</style> enemies.");
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
 
-            LanguageAPI.Add("VOIDCRID", "Voidcrid");
+            // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "Voidcrid: Alone at Last");
+            // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESC", "As Acrid, face your captor when all hope is lost.");
 
-            LanguageAPI.Add("VOIDCRID_DESC", "All the details");
 
-            //Now we must create a SkillDef
+
+
+        //    UnlockableDef voidcridSkinUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+            // voidcridSkinUnlock.cachedName = "Survivors.Croco.Voidcrid";
+            // voidcridSkinUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDCLEAR_NAME";
+            // voidcridSkinUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+            // ContentAddition.AddUnlockableDef(voidcridSkinUnlock);
             SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidPoison = ScriptableObject.CreateInstance<SkillDef>();
-            SurvivorDef voidcrid = ScriptableObject.CreateInstance<SurvivorDef>();
-            // UnlockableDef voidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
-           
-            // voidcridUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
-            // voidcridUnlock._cachedName = "Voidcrid";
-            // voidcridUnlock.nameToken = "VOIDCRID";
+            // SkinDef voidSkin = ScriptableObject.CreateInstance<SkinDef>();
+
            
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
@@ -89,16 +90,16 @@ namespace Voidcrid
             voidBreath.canceledFromSprinting = false;
             voidBreath.cancelSprintingOnActivation = true;
             voidBreath.fullRestockOnAssign = true;
-            voidBreath.interruptPriority = InterruptPriority.Any;
+            voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
             voidBreath.mustKeyPress = false;
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
-            voidBreath.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridfire.jpg");    
-            voidBreath.skillDescriptionToken = "Burn";
-            voidBreath.skillName = "Firebreath";
-            voidBreath.skillNameToken = "Flamethrower";
+            voidBreath.icon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");    
+            voidBreath.skillDescriptionToken = "VOIDCRID_FLAMEBREATH_DESC";
+            voidBreath.skillName = "VOIDCRID_FLAMEBREATH";
+            voidBreath.skillNameToken = "VOIDCRID_FLAMEBREATH";
 
             voidBeam.activationState = new SerializableEntityStateType(typeof(Voidcrid.NullBeam));
             voidBeam.activationStateMachineName = "Weapon";
@@ -108,16 +109,16 @@ namespace Voidcrid
             voidBeam.canceledFromSprinting = false;
             voidBeam.cancelSprintingOnActivation = true;
             voidBeam.fullRestockOnAssign = true;
-            voidBeam.interruptPriority = InterruptPriority.Any;
+            voidBeam.interruptPriority = InterruptPriority.PrioritySkill;
             voidBeam.isCombatSkill = true;
             voidBeam.mustKeyPress = false;
             voidBeam.rechargeStock = 1;
             voidBeam.requiredStock = 1;
             voidBeam.stockToConsume = 1;
-            voidBeam.icon = null;    
-            voidBeam.skillDescriptionToken = "VBeam";
-            voidBeam.skillName = "Gravity Beam";
-            voidBeam.skillNameToken = "Beam";
+            voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("nullbeam2.png");        
+            voidBeam.skillDescriptionToken = "VOIDCRID_NULLBEAM_DESC";
+            voidBeam.skillName = "VOIDCRID_NULLBEAM";
+            voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
 
 
             
@@ -128,7 +129,7 @@ namespace Voidcrid
 		    voidPoison.beginSkillCooldownOnSkillEnd = true;
 		    voidPoison.canceledFromSprinting = false;
 		    voidPoison.fullRestockOnAssign = true;
-		    voidPoison.interruptPriority = InterruptPriority.Any;
+		    voidPoison.interruptPriority = InterruptPriority.PrioritySkill;
 		    voidPoison.resetCooldownTimerOnUse = false;
 		    voidPoison.isCombatSkill = true;
 		    voidPoison.mustKeyPress = false;
@@ -136,11 +137,11 @@ namespace Voidcrid
 		    voidPoison.rechargeStock = 1;
 		    voidPoison.requiredStock = 1;
 		    voidPoison.stockToConsume = 1;
-            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("voidbleed.png");    
+            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");    
 
-            voidPoison.skillDescriptionToken = "VEntropy_Desc";
-            voidPoison.skillName = "Entropy";
-            voidPoison.skillNameToken = "Entropy";
+            voidPoison.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
+            voidPoison.skillName = "VOIDCRID_ENTROPY";
+            voidPoison.skillNameToken = "VOIDCRID_ENTROPY";
 
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
             voidEscape.activationStateMachineName = "Weapon";
@@ -150,7 +151,7 @@ namespace Voidcrid
             voidEscape.canceledFromSprinting = false;
             voidEscape.cancelSprintingOnActivation = true;
             voidEscape.fullRestockOnAssign = true;
-            voidEscape.interruptPriority = InterruptPriority.Any;
+            voidEscape.interruptPriority = InterruptPriority.PrioritySkill;
             voidEscape.isCombatSkill = true;
             voidEscape.mustKeyPress = false;
             voidEscape.rechargeStock = 1;
@@ -158,9 +159,9 @@ namespace Voidcrid
             voidEscape.stockToConsume = 1;
 
             voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
-            voidEscape.skillDescriptionToken = "VEscape";
-            voidEscape.skillName = "Void Escape";
-            voidEscape.skillNameToken = "Escape";
+            voidEscape.skillDescriptionToken = "VOIDCRID_VOIDRIFT_DESC";
+            voidEscape.skillName = "VOIDCRID_VOIDDRIFT";
+            voidEscape.skillNameToken = "VOIDCRID_VOIDDRIFT";
 
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddSkillDef(voidBeam);
@@ -218,6 +219,7 @@ namespace Voidcrid
                 viewableNode = new ViewablesCatalog.Node(voidBreath.skillNameToken, false, null)
             };
 
+
        }
         internal static void LoadAssetBundle()
         {
@@ -243,84 +245,138 @@ namespace Voidcrid
         }
 
         
-          private void AddVoidcridSkin()
-        {
-
-            var bodyName = "CrocoBody";
+        //   private void AddVoidcridSkin()
+        // {
 
 
-            var bodyPrefab = BodyCatalog.FindBodyPrefab(bodyName);
-            //Getting necessary components
-            var renderers = bodyPrefab.GetComponentsInChildren<Renderer>(true);
-            var skinController = bodyPrefab.GetComponentInChildren<ModelSkinController>();
-            var mdl = skinController.gameObject;
 
-                var skin = new LoadoutAPI.SkinDefInfo
-            {
-                //Icon for your skin in the game, it can be any image, or you can use `LoadoutAPI.CreateSkinIcon` to easily create an icon that looks similar to the icons in the game.
-                Icon = LoadoutAPI.CreateSkinIcon(Color.black, Color.magenta, Color.red, Color.magenta),
-                //Replace `LumberJackCommando` with your skin name that can be used to access it through the code
-                Name = "fingers3",
-                //Replace `LUMBERJACK_SKIN` with your token
-                NameToken = "VOIDCRID_SKIN",
-                RootObject = mdl,
-              
-                BaseSkins = new SkinDef[] { skinController.skins[0] },
-                //Name of achievement after which skin will be unlocked
-                //Leave that field empty if you want skin to be always available 
-                // UnlockableDef = "",
-                //This is used to disable/enable some gameobjects in body prefab.
-                GameObjectActivations = new SkinDef.GameObjectActivation[0],
-                //This is used to define which material should be used on a specific renderer.
-                //Only one material per renderer(mesh) is can be used
-                RendererInfos = new CharacterModel.RendererInfo[]
-                {
-                    //To add another material replacement simply copy past this block right after and add `,` after the first one.
+        //     var bodyName = "CrocoBody";
+
+
+        //     var bodyPrefab = BodyCatalog.FindBodyPrefab(bodyName);
+        //     //Getting necessary components
+        //     var renderers = bodyPrefab.GetComponentsInChildren<Renderer>(true);
+        //     var skinController = bodyPrefab.GetComponentInChildren<ModelSkinController>();
+        //     var mdl = skinController.gameObject;
+
+        //     var blarg = new LoadoutAPI.SkinDefInfo
+        //     {
+        //         //Icon for your skin in the game, it can be any image, or you can use `LoadoutAPI.CreateSkinIcon` to easily create an icon that looks similar to the icons in the game.
+        //         Icon = LoadoutAPI.CreateSkinIcon(Color.black, Color.magenta, Color.red, Color.magenta),
+        //         //Replace `LumberJackCommando` with your skin name that can be used to access it through the code
+        //         Name = "Voidcrid",
+        //         //Replace `LUMBERJACK_SKIN` with your token
+        //         NameToken = "VOIDCRID_SKIN",
+        //         RootObject = mdl,
+                
+        //         BaseSkins = new SkinDef[] { skinController.skins[0] },
+
+        //         UnlockableDef = VoidcridSkinDef,
+
+  
+        //         GameObjectActivations = new SkinDef.GameObjectActivation[0],
+        //         //This is used to define which material should be used on a specific renderer.
+        //         //Only one material per renderer(mesh) is can be used
+        //         RendererInfos = new CharacterModel.RendererInfo[]
+        //         {
+        //             //To add another material replacement simply copy past this block right after and add `,` after the first one.
                    
-                    new CharacterModel.RendererInfo
-                    {
-                        //Loading material from AssetBundle replace "@SkinTest:Assets/Resources/matLumberJack.mat" with your value.
-                        //It should be in this format `{provider name}:{path to asset in unity}`
-                        //To get path to asset you can right click on your asset in Unity and select `Copy path` option
-                        defaultMaterial = Resources.Load<Material>("Assets/Resources/ModdedAcrid/Default-Material.mat"),
+        //             new CharacterModel.RendererInfo
+        //             {
+        //                 //Loading material from AssetBundle replace "@SkinTest:Assets/Resources/matLumberJack.mat" with your value.
+        //                 //It should be in this format `{provider name}:{path to asset in unity}`
+        //                 //To get path to asset you can right click on your asset in Unity and select `Copy path` option
+        //                 defaultMaterial = mainAssetBundle.LoadAsset<Material>("pinkvoid.mat"),
 
-                        //Should mesh cast shadows
-                        defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-                        //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
-                        ignoreOverlays = false,
+        //                 //Should mesh cast shadows
+        //                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+        //                 //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
+        //                 ignoreOverlays = false,
                       
-                        renderer = renderers[2]
-                    }
-                },
-                //This is used to define which mesh should be used on a specific renderer.
-                // MeshReplacements = new SkinDef.MeshReplacement[]
-                // {
-                //     //To add another mesh replacement simply copy past this block right after and add `,` after the first one.
-                //     new SkinDef.MeshReplacement
-                //     {
-                //         //Loading mesh from AssetBundle look at material replacement commentary to learn about how value should be changed.
-                //         mesh = Resources.Load<Mesh>(@"Voidcrid:Assets/Resources/ModdedAcrid/CrocoMesh.mesh"),
-                //         //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
-                //         renderer = renderers[2]
-                //     }
-                // },
-                //You probably don't need to touch this line
-                ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
-                //This is used to add skins for minions e.g. EngiTurrets
-                MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
-            };
+        //                 renderer = renderers[2]
+        //             },
 
-            //Adding new skin to a character's skin controller
-            Array.Resize(ref skinController.skins, skinController.skins.Length + 1);
-            skinController.skins[skinController.skins.Length - 1] = LoadoutAPI.CreateNewSkinDef(skin);
+        //                   new CharacterModel.RendererInfo
+        //             {
+                       
+        //                 defaultMaterial = mainAssetBundle.LoadAsset<Material>("pink.mat"),
 
-            //Adding new skin into BodyCatalog
+        //                 //Should mesh cast shadows
+        //                 defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+        //                 //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
+        //                 ignoreOverlays = false,
+                      
+        //                 renderer = renderers[3]
+        //             }
+                    
+        //         },
+                
 
-            var skinsField = typeof(BodyCatalog).GetFieldValue<SkinDef[][]>("skins");
-            skinsField[(int) BodyCatalog.FindBodyIndex(bodyPrefab)] = skinController.skins;
+                
+        //         // This is used to define which mesh should be used on a specific renderer.
+        //         MeshReplacements = new SkinDef.MeshReplacement[]
+        //         {
+        //             //To add another mesh replacement simply copy past this block right after and add `,` after the first one.
+        //             new SkinDef.MeshReplacement
+        //             {
+        //                 //Loading mesh from AssetBundle look at material replacement commentary to learn about how value should be changed.
+        //                 mesh = mainAssetBundle.LoadAsset<Mesh>("FINALLYFXD.mesh"),
+        //                 //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
+        //                 renderer = renderers[2]
+        //             }
+        //         },
+        //         //You probably don't need to touch this line
+        //         ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
+        //         //This is used to add skins for minions e.g. EngiTurrets
+        //         MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
+        //     };
+
+        
+        
+
+    //         //Adding new skin to a character's skin controller
+    //         Array.Resize(ref skinController.skins, skinController.skins.Length + 1);
+    //         skinController.skins[skinController.skins.Length - 1] = LoadoutAPI.CreateNewSkinDef(blarg);
+
+    //         //Adding new skin into BodyCatalog
+
+    //         var skinsField = typeof(BodyCatalog).GetFieldValue<SkinDef[][]>("skins");
+    //         skinsField[(int) BodyCatalog.FindBodyIndex(bodyPrefab)] = skinController.skins;
+
+    // }
+
 
     }
 
+    // public abstract class VoidcridUnlockable : ModdedUnlockable
+    // {
+    //     public abstract string AchievementTokenPrefix { get; }
+    //     public abstract string AchievementSpriteName { get; }
 
-    }
+    //     public override string AchievementIdentifier { get => "ACHIEVEMENT_VOIDCRIDCLEAR_NAME"; }
+    //     public override string UnlockableIdentifier { get => "ACHIEVEMENT_VOIDCRIDCLEAR_NAME"; }
+    //     public override string AchievementNameToken { get => "ACHIEVEMENT_VOIDCRIDCLEAR_NAME"; }
+    //     public override string AchievementDescToken { get =>"ACHIEVEMENT_VOIDCRIDCLEAR_DESC" ;}
+    //     public override string UnlockableNameToken { get => "ACHIEVEMENT_VOIDCRIDCLEAR_NAME" ;}
+
+    //     public override Sprite Sprite => VoidcridDef.mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+
+    //     public override Func<string> GetHowToUnlock
+    //     {
+    //         get => () => Language.GetStringFormatted("ACHIEVEMENT_VOIDCRIDCLEAR_DESC", new object[]
+    //                         {
+    //                             Language.GetString(AchievementDescToken),
+    //                             Language.GetString(AchievementDescToken)
+    //                         });
+    //     }
+
+    //     public override Func<string> GetUnlocked
+    //     {
+    //         get => () => Language.GetStringFormatted("ACHIEVEMENT_VOIDCRIDCLEAR_NAME", new object[]
+    //                         {
+    //                             Language.GetString(AchievementNameToken),
+    //                             Language.GetString(AchievementDescToken)
+    //                         });
+    //     }
+    // }
 }
