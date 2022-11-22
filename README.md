@@ -13,6 +13,9 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
+![Alt text](bazooka.png?raw=true "Title")
+
+
 ## New Abilites:
 - Flamebreath
 - N?ll Beam
