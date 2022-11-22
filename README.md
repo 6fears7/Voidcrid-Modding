@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![Alt text](https://github.com/6fears7/Voidcrid-Modding/blob/main/Images/Risk%20of%20Rain%202%2011_22_2022%201_04_27%20PM.png "Loadout")
+![Alt text](.\lobby\lobby.png "Loadout")
 
 
 ## New Abilites:
@@ -39,6 +39,14 @@ Rethink the way Acrid prowls the battlefield. Tap into the horrors you once suff
 @Unanimate Objec in the Risk of Rain 2 Discord for any feedback.
 
 ## Changelog:
+
+1.0.1 - Nerf Gun
+*Dev Notes: 
+- Reduced Special damage output to not obliterate everything. 
+- Swapped out Special VFX with new VFX more in line with the Void.
+- Added damage percentages to skills in lobby.
+- Reduced jail chance on Utility
+
 
 1.0.0 - Initial release
 
