@@ -1,0 +1,10 @@
+{
+    "name": "Voidcrid",
+    "version_number": "1.0.0",
+    "website_url": "",
+    "description": "While held and tortured in captivity, Acrid is reborn.",
+    "dependencies": [
+        "bbepis-BepInExPack-5.4.1905",
+        "tristanmcpherson-R2API-4.3.5"
+    ]
+}
