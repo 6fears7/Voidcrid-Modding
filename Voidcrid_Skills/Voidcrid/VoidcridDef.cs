@@ -52,14 +52,14 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_SKIN", "Voidcrid");
             //We use LanguageAPI to add strings to the game, in the form of tokens
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
-            LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
             LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>N?ll Beam</style>");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style>.");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile</style>. Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
             LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>Ethereal Dr?ft</style>");
-            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style>, with a chance to take enemies with you.");
+            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
 
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for 25% health to obliterate or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for 25% health to obliterate for <style=cIsDamage>500%</style> damage or <style=cIsHealing>poison</style> enemies.");
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
@@ -85,7 +85,7 @@ namespace Voidcrid
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
             voidBreath.baseMaxStock = 1;
-            voidBreath.baseRechargeInterval = 1f;
+            voidBreath.baseRechargeInterval = 0.5f;
             voidBreath.beginSkillCooldownOnSkillEnd = true;
             voidBreath.canceledFromSprinting = false;
             voidBreath.cancelSprintingOnActivation = true;
