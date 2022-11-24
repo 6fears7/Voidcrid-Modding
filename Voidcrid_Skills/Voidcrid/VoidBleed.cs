@@ -3,6 +3,7 @@ using EntityStates.Croco;
 using RoR2;
 using UnityEngine;
 using RoR2.Projectile;
+using System;
 using UnityEngine.AddressableAssets;
 
 using EntityStates.VoidSurvivor;
@@ -49,6 +50,10 @@ public class VoidBleed : BaseSkillState
         private DamageType voidAttack;
         private DamageType poisonAttack;
 
+       
+
+        private CrocoDamageTypeController crocoDamageTypeController;
+
 	private GameObject leftFistEffectInstance;
  
 	private GameObject rightFistEffectInstance;
@@ -60,22 +65,23 @@ public class VoidBleed : BaseSkillState
         private  Animator animator;
         private Transform modelBaseTransform;
 
-        
-
         private  void FireSmash()
 	{
+        
+
             
 			BlastAttack obj = new BlastAttack
+
+            
 			{
                
-
 				radius = blastAttackRadius,
 				procCoefficient = blastAttackProcCoefficient,
 				position = base.transform.position,
 				attacker = base.gameObject,
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-				baseDamage = base.damageStat * .1f,
-				falloffModel = BlastAttack.FalloffModel.None,
+				baseDamage = base.damageStat * .3f
+,				falloffModel = BlastAttack.FalloffModel.None,
 				damageType =  (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack),
 
 				baseForce = blastAttackForce
@@ -91,7 +97,7 @@ public class VoidBleed : BaseSkillState
 			obj.Fire();
         // }
 
-        if ((bool)leftfistEffectPrefab && rightfistEffectPrefab)
+        if ((bool)leftFistEffectInstance && rightFistEffectInstance)
 		{
 		Vector3 footPosition = base.characterBody.footPosition;
 
@@ -106,13 +112,15 @@ public class VoidBleed : BaseSkillState
         public override void OnEnter()
         {
             base.OnEnter();
+            
+            crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
             base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             voidAttack = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            poisonAttack = DamageType.PoisonOnHit;
+            poisonAttack = (Util.CheckRoll(poisonChance, base.characterBody.master) ? crocoDamageTypeController.GetDamageType() : DamageType.Generic);
 
-            leftFistEffectInstance = Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
-		    rightFistEffectInstance = Object.Instantiate(rightfistEffectPrefab, FindModelChild("MuzzleHandR"));
+            leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
+		    rightFistEffectInstance = UnityEngine.Object.Instantiate(rightfistEffectPrefab, FindModelChild("MuzzleHandR"));
 
             this.duration = baseDuration / this.attackSpeedStat;
             this.earlyExitDuration = this.duration * earlyExitTime;
@@ -139,7 +147,7 @@ public class VoidBleed : BaseSkillState
           	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
 
-            if (poisonAttack ==  DamageType.PoisonOnHit)
+            if (poisonAttack == crocoDamageTypeController.GetDamageType())
 			{
 				base.healthComponent.HealFraction(.25f, procChainMask);
 			}
@@ -187,7 +195,7 @@ public class VoidBleed : BaseSkillState
                 if (this.animator) this.animator.SetFloat("Slash3.playbackRate", 3f);
             }
 
-            if (this.stopwatch >= this.duration * 0.45f && this.stopwatch <= this.duration * .9f)
+            if (this.stopwatch >= this.duration * 0.45f && this.stopwatch <= this.duration * .6f)
             {
                 this.FireSmash();
             }
@@ -214,7 +222,6 @@ public class VoidBleed : BaseSkillState
 
         public override void OnExit()
         {
-            if (!this.hasFired) this.FireSmash();
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
             base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);

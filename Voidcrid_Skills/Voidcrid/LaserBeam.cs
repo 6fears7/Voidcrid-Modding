@@ -47,7 +47,7 @@ public class NullBeam : BaseSkillState
 
 	private float minimumDuration;
 
-	private float damageCoefficientPerSecond = 0.5f;
+	private float damageCoefficientPerSecond = 0.3f;
 
 	private float maxSpread = 2f;
 

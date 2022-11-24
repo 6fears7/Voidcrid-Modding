@@ -33,7 +33,7 @@ public class VoidEscape : StealthMode
 	{
 		base.OnEnter();
        	// voidFogInstance = Object.Instantiate(voidFogInstance, FindModelChild("MouthMuzzle"));
-
+		
 		animator = GetModelAnimator();
 		_ = (bool)animator;
 		if ((bool)base.characterBody)
@@ -51,7 +51,9 @@ public class VoidEscape : StealthMode
 
 
 		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
-		base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true, "Head");
+		// Hack to pull the visual state without actually updating the effect
+		base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true);
+		
 
 	}
 
@@ -93,7 +95,7 @@ public class VoidEscape : StealthMode
 		{
 			animator.SetLayerWeight(animator.GetLayerIndex("Body, StealthWeapon"), 0f);
 		}
-		    base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,false, "Head");
+		    base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,false);
 
 		base.OnExit();
 	}
