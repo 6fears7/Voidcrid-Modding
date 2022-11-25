@@ -5,10 +5,11 @@ using R2API;
 using R2API.Utils;
 using RoR2;
 using RoR2.Skills;
-using RoR2.Achievements;
+// using RoR2.Achievements;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Reflection;
+using BepInEx.Configuration;
 // using Voidcrid.Achievements;
 
 
@@ -21,8 +22,23 @@ namespace Voidcrid
         "Voidcrid",
         "1.0.0")]
     [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition), nameof(LoadoutAPI), nameof(UnlockableAPI))]
+    
     public class VoidcridDef : BaseUnityPlugin
     {
+        
+
+        public static ConfigEntry<float> NullBeamOverrideJailChance { get; set; }
+        public static ConfigEntry<float> EntropyOverrideJailChance { get; set; }
+        public static ConfigEntry<float> EtherealDriftOverrideJailChance { get; set; }
+        public static ConfigEntry<float> NullBeamOverrideDamage{ get; set; }
+        public static ConfigEntry<float> NullBeamOverrideDuration { get; set; }
+        public static ConfigEntry<float> FlamebreathOverrideDuration { get; set; }
+        public static ConfigEntry<float> EntropyOverrideDamage { get; set; }
+        public static ConfigEntry<float> EntropyOverrideFireSpeed { get; set; }
+
+
+        
+
         internal static AssetBundle mainAssetBundle;
         GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
 
@@ -33,8 +49,68 @@ namespace Voidcrid
         // public static UnlockableDef VoidcridSkinDef;
 
         public void Awake()
-        {
 
+        
+        {
+            
+               		NullBeamOverrideJailChance = Config.Bind<float>(
+					"JailChance",
+					"NullBeamJailChance",
+					.1f,
+					"Null Beam jail chance, measured in percentage."
+				);
+                
+                    EtherealDriftOverrideJailChance = Config.Bind<float>(
+					"JailChance",
+					"EtherealDriftJailChance",
+					5f,
+					"Ethereal Drift jail chance, measured in percentage."
+				);
+
+                    EntropyOverrideJailChance = Config.Bind<float>(
+					"JailChance",
+					"EntropyJailChance",
+					3f,
+					"NullBeam jail chance, measured in percentage"
+				);
+
+                    NullBeamOverrideDamage = Config.Bind<float>(
+					"NullBeam",
+					"Damage",
+					0.3f,
+					"NullBeam damageCoefficientPerSecond damage"
+				);
+
+                    NullBeamOverrideDuration = Config.Bind<float>(
+					"NullBeam",
+					"Duration",
+					2.5f,
+					"NullBeam maximumDuration, measured in seconds"
+				);
+
+                    EntropyOverrideDamage = Config.Bind<float>(
+					"Entropy",
+					"Damage",
+					3f,
+					"Entropy damage multiplier"
+				);
+
+                     EntropyOverrideFireSpeed = Config.Bind<float>(
+					"Entropy",
+					"Firing Speed",
+					0.3f,
+					"Entropy successive attack speed, measured in seconds"
+				);
+
+                     FlamebreathOverrideDuration = Config.Bind<float>(
+					"Flamebreath",
+					"Duration",
+					2f,
+					"Flamebreath's duration, measured in seconds. Note this skill's full duration is baseDuration (changed here) + Attack Speed stat"
+				);
+     
+                
+                
             LoadAssetBundle();
 
       
@@ -54,12 +130,12 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
             LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>N?ll Beam</style>");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile</style>. Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
             LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>Ethereal Dr?ft</style>");
             LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
 
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for 25% health to obliterate for <style=cIsDamage>500%</style> damage or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>400% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
@@ -111,7 +187,6 @@ namespace Voidcrid
             voidBeam.fullRestockOnAssign = true;
             voidBeam.interruptPriority = InterruptPriority.PrioritySkill;
             voidBeam.isCombatSkill = true;
-            voidBeam.mustKeyPress = false;
             voidBeam.rechargeStock = 1;
             voidBeam.requiredStock = 1;
             voidBeam.stockToConsume = 1;
@@ -119,13 +194,14 @@ namespace Voidcrid
             voidBeam.skillDescriptionToken = "VOIDCRID_NULLBEAM_DESC";
             voidBeam.skillName = "VOIDCRID_NULLBEAM";
             voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
+            voidBeam.mustKeyPress = true;
 
 
             
             voidPoison.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
             voidPoison.activationStateMachineName = "Weapon";
   		    voidPoison.baseMaxStock = 1;
-		    voidPoison.baseRechargeInterval = 4f;
+		    voidPoison.baseRechargeInterval = 6f;
 		    voidPoison.beginSkillCooldownOnSkillEnd = true;
 		    voidPoison.canceledFromSprinting = false;
 		    voidPoison.fullRestockOnAssign = true;
@@ -137,7 +213,8 @@ namespace Voidcrid
 		    voidPoison.rechargeStock = 1;
 		    voidPoison.requiredStock = 1;
 		    voidPoison.stockToConsume = 1;
-            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");    
+            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
+            voidPoison.mustKeyPress = true;   
 
             voidPoison.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
             voidPoison.skillName = "VOIDCRID_ENTROPY";
@@ -157,6 +234,7 @@ namespace Voidcrid
             voidEscape.rechargeStock = 1;
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
+            voidEscape.mustKeyPress = true;
 
             voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
             voidEscape.skillDescriptionToken = "VOIDCRID_VOIDRIFT_DESC";

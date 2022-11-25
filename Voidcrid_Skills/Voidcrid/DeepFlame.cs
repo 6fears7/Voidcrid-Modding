@@ -40,7 +40,7 @@ namespace Voidcrid
 	stopwatch = 0f;
 	entryDuration = baseEntryDuration;
 	exitDuration = baseExitDuration;
-	flamethrowerDuration = baseFlamethrowerDuration + attackSpeedStat;
+	flamethrowerDuration = VoidcridDef.FlamebreathOverrideDuration.Value + attackSpeedStat;
 	Transform modelTransform = GetModelTransform();
 	if ((bool)base.characterBody)
 	{
