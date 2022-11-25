@@ -17,8 +17,6 @@ public class VoidBleed : BaseSkillState
         public  static float damageCoefficient = 5f;
 
         private float voidJailChance = .05f;
-
-        private float poisonChance = 50f;
         public  static float procCoefficient = 1f;
         public static float attackRecoil = 1.5f;
         public static float hitHopVelocity = 5.5f;
@@ -33,12 +31,14 @@ public class VoidBleed : BaseSkillState
         private float blastAttackRadius = 10f;
         private float earlyExitDuration;
         private ChildLocator childLocator;
-        private bool hasFired;
-
+        private bool hasFired1;
+        private bool hasFired2;
+        private bool hasFinishedFiring;
         [SerializeField]
-        private float blastAttackForce = 20f;
+        private float blastAttackForce = 1000f;
 
-		// private GameObject biteEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBiteEffect.prefab").WaitForCompletion();	
+		// private GameObject groundImpact = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/LaserImpactEffect.prefab").WaitForCompletion();
+
         private  float hitPauseTimer;
         [SerializeField]
 
@@ -58,19 +58,28 @@ public class VoidBleed : BaseSkillState
  
 	private GameObject rightFistEffectInstance;
 
+    private float entropyFiringSpeed = .3f;
+
+    private DamageType entropyDamage;
+
+    private float baseEntropyDamage = 3f;
+
     [SerializeField]
     public GameObject leftfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerDeathBombExplosion.prefab").WaitForCompletion();
     public GameObject rightfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoFistEffect.prefab").WaitForCompletion();
-        private float stopwatch;
+    
+    private float stopwatch;
         private  Animator animator;
         private Transform modelBaseTransform;
+
+        private BlastAttack obj;
 
         private  void FireSmash()
 	{
         
 
             
-			BlastAttack obj = new BlastAttack
+			obj = new BlastAttack
 
             
 			{
@@ -80,16 +89,17 @@ public class VoidBleed : BaseSkillState
 				position = base.transform.position,
 				attacker = base.gameObject,
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-				baseDamage = base.damageStat * .3f
+				baseDamage = base.damageStat * VoidcridDef.EntropyOverrideDamage.Value
 ,				falloffModel = BlastAttack.FalloffModel.None,
-				damageType =  (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack),
-
+				damageType =  entropyDamage,
+                
 				baseForce = blastAttackForce
 
 
                
 
 			};
+            obj.bonusForce = Vector3.back * blastAttackForce;
 			obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
 			obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
 			
@@ -116,15 +126,18 @@ public class VoidBleed : BaseSkillState
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
             base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
-            voidAttack = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            poisonAttack = (Util.CheckRoll(poisonChance, base.characterBody.master) ? crocoDamageTypeController.GetDamageType() : DamageType.Generic);
+            voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            poisonAttack = crocoDamageTypeController.GetDamageType();
+            entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
 		    rightFistEffectInstance = UnityEngine.Object.Instantiate(rightfistEffectPrefab, FindModelChild("MuzzleHandR"));
 
             this.duration = baseDuration / this.attackSpeedStat;
             this.earlyExitDuration = this.duration * earlyExitTime;
-            this.hasFired = false;
+            this.hasFired1 = false;
+            this.hasFired2 = false;
+            this.hasFinishedFiring = false;
             this.moveSpeedStat = 0f;
             this.childLocator = base.GetModelChildLocator();
             this.modelBaseTransform = base.GetModelBaseTransform();
@@ -147,7 +160,7 @@ public class VoidBleed : BaseSkillState
           	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
 
-            if (poisonAttack == crocoDamageTypeController.GetDamageType())
+            if (entropyDamage == poisonAttack)
 			{
 				base.healthComponent.HealFraction(.25f, procChainMask);
 			}
@@ -195,22 +208,44 @@ public class VoidBleed : BaseSkillState
                 if (this.animator) this.animator.SetFloat("Slash3.playbackRate", 3f);
             }
 
-            if (this.stopwatch >= this.duration * 0.45f && this.stopwatch <= this.duration * .6f)
+            if (this.stopwatch >= this.duration * VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
+            // && this.stopwatch <= this.duration * .6f
             {
                 this.FireSmash();
+                this.hasFired1 = true;
+                
+            }
+
+             if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
+
+            {
+                this.FireSmash();
+                this.hasFired2 = true;
+                
+            }
+
+            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
+
+            {
+                this.FireSmash();
+                this.hasFinishedFiring = true;
+                
             }
 
 
-            if (base.fixedAge >= this.earlyExitDuration && base.inputBank.skill1.down)
-            {
-                var nextAttack = new VoidBleed();
-                nextAttack.currentAttack = this.currentAttack + 1;
-                this.outer.SetNextState(nextAttack);
-                return;
-            }
 
-            if (base.fixedAge >= this.duration && base.isAuthority)
+
+            // if (base.fixedAge >= this.earlyExitDuration && base.inputBank.skill1.down)
+            // {
+            //     var nextAttack = new VoidBleed();
+            //     nextAttack.currentAttack = this.currentAttack + 1;
+            //     this.outer.SetNextState(nextAttack);
+            //     return;
+            // }
+
+            if (base.isAuthority && this.hasFinishedFiring == true)
             {
+                // base.fixedAge >= this.duration && 
                 this.outer.SetNextStateToMain();
                 base.StartAimMode(0.2f, false);
                 return;
@@ -235,5 +270,7 @@ public class VoidBleed : BaseSkillState
             return InterruptPriority.PrioritySkill;
         }
 
+
     }
+    
 }

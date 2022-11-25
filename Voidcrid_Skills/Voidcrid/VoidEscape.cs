@@ -121,7 +121,7 @@ public class VoidEscape : StealthMode
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
 				baseDamage = 1,
 				falloffModel = BlastAttack.FalloffModel.None,
-				damageType =  (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Stun1s),
+				damageType =  (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Stun1s),
 				baseForce = blastAttackForce
 
 			};
@@ -157,7 +157,7 @@ public class VoidEscape : StealthMode
 
 	public override InterruptPriority GetMinimumInterruptPriority()
 	{
-		return InterruptPriority.PrioritySkill;
+		return InterruptPriority.Skill;
 	}
 
 

@@ -8,8 +8,12 @@ using EntityStates.VoidSurvivor.Weapon;
 using RoR2.Items;
 
 namespace Voidcrid {
+
+
 public class NullBeam : BaseSkillState
 {
+	
+
 	private string muzzle = "MouthMuzzle";
 
 	private float baseDuration = 1f;
@@ -65,7 +69,7 @@ public class NullBeam : BaseSkillState
 			base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
 		// }
-		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", maximumDuration);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
+		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", VoidcridDef.NullBeamOverrideDuration.Value);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
 		// blinkVfxInstance = Object.Instantiate(beamVfxPrefab);
 		// blinkVfxInstance.transform.SetParent(base.characterBody.aimOriginTransform, worldPositionStays: false);
 	}
@@ -91,7 +95,7 @@ public class NullBeam : BaseSkillState
 			}
 			// blinkVfxInstance.transform.forward = point - blinkVfxInstance.transform.position;
 			// EffectManager.SpawnEffect(beamVfxPrefab, effectData, transmit: true);
-if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
+if(base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
 			outer.SetNextStateToMain();
 		}
 	}
@@ -131,10 +135,10 @@ if(base.isAuthority && ( fixedAge >= maximumDuration || ( fixedAge >= baseDurati
 			bulletAttack.smartCollision = false;
 			bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
 			bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
-			bulletAttack.damage = damageCoefficientPerSecond * damageStat;
+			bulletAttack.damage = VoidcridDef.NullBeamOverrideDamage.Value * damageStat;
 			bulletAttack.procCoefficient = procCoefficientPerSecond;
 			bulletAttack.force = forcePerSecond;
-			bulletAttack.damageType = (Util.CheckRoll(voidJailChance, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+			bulletAttack.damageType = (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
 			bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);
 			bulletAttack.hitEffectPrefab = hitEffectPrefab;
 			bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
