@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using System.Reflection;
 using BepInEx.Configuration;
+using System.Runtime.CompilerServices;
 // using Voidcrid.Achievements;
 
 
@@ -22,7 +23,8 @@ namespace Voidcrid
         "Voidcrid",
         "1.0.0")]
     [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition), nameof(LoadoutAPI), nameof(UnlockableAPI))]
-    
+    [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
+
     public class VoidcridDef : BaseUnityPlugin
     {
         
@@ -35,9 +37,13 @@ namespace Voidcrid
         public static ConfigEntry<float> FlamebreathOverrideDuration { get; set; }
         public static ConfigEntry<float> EntropyOverrideDamage { get; set; }
         public static ConfigEntry<float> EntropyOverrideFireSpeed { get; set; }
+        public static ConfigEntry<float> EtherealDriftOverrideDamage {get; set;}
 
+        public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
 
-        
+        public static SkillDef voidScepter;
+        public static bool ancientScepterInstalled = false;
+
 
         internal static AssetBundle mainAssetBundle;
         GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
@@ -47,7 +53,7 @@ namespace Voidcrid
         private const string csProjName = "Voidcrid";
 
         // public static UnlockableDef VoidcridSkinDef;
-
+        // [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         public void Awake()
 
         
@@ -71,7 +77,7 @@ namespace Voidcrid
 					"JailChance",
 					"EntropyJailChance",
 					3f,
-					"NullBeam jail chance, measured in percentage"
+					"Entropy jail chance, measured in percentage"
 				);
 
                     NullBeamOverrideDamage = Config.Bind<float>(
@@ -108,11 +114,33 @@ namespace Voidcrid
 					2f,
 					"Flamebreath's duration, measured in seconds. Note this skill's full duration is baseDuration (changed here) + Attack Speed stat"
 				);
+
+                    EtherealDriftOverrideDamage = Config.Bind<float>(
+					"Ethereal Drift",
+					"Damage",
+					1f,
+					"Blast Attack base damage"
+				);
+
+                
+                    VoidcridPassiveShow = Config.Bind<bool>(
+					"Voidcrid",
+					"Display",
+					true,
+					"Shows the Voidcrid fake Passive description"
+				);
      
                 
                 
             LoadAssetBundle();
 
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            {
+                ancientScepterInstalled = true;
+                Debug.Log("ANCIENT SCEPTER REGISTERED");
+                ScepterSkillSetup();
+                ScepterSetup();
+            }
       
             //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
             //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
@@ -155,7 +183,7 @@ namespace Voidcrid
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidPoison = ScriptableObject.CreateInstance<SkillDef>();
-            // SkinDef voidSkin = ScriptableObject.CreateInstance<SkinDef>();
+
 
            
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
@@ -253,13 +281,18 @@ namespace Voidcrid
             SkillFamily specialSkill = skillLocator.special.skillFamily;
             SkillFamily skillUtility = skillLocator.utility.skillFamily;
 
-            if (voidcridBodyPrefab) {
+            if (VoidcridPassiveShow.Value == true) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
             skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
 
+            }
+
+            else {
+
+                skillLocator.passiveSkill.enabled = false;
             }
 
             
@@ -299,6 +332,54 @@ namespace Voidcrid
 
 
        }
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            private void ScepterSetup()
+        {
+
+            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
+
+            // if (Modules.Config.legacyCruelSun.Value) {
+            //     AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(scepterCruelSunLegacyDef, "RobPaladinBody", SkillSlot.Special, 4);
+            // }
+  
+
+        }
+
+            private void ScepterSkillSetup()
+        {
+
+
+            voidScepter = ScriptableObject.CreateInstance<SkillDef>();
+
+            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>400% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+
+
+            voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidScepter));
+            voidScepter.activationStateMachineName = "Weapon";
+  		    voidScepter.baseMaxStock = 1;
+		    voidScepter.baseRechargeInterval = 6f;
+		    voidScepter.beginSkillCooldownOnSkillEnd = true;
+		    voidScepter.canceledFromSprinting = false;
+		    voidScepter.fullRestockOnAssign = true;
+		    voidScepter.interruptPriority = InterruptPriority.PrioritySkill;
+		    voidScepter.resetCooldownTimerOnUse = false;
+		    voidScepter.isCombatSkill = true;
+		    voidScepter.mustKeyPress = false;
+		    voidScepter.cancelSprintingOnActivation = true;
+		    voidScepter.rechargeStock = 1;
+		    voidScepter.requiredStock = 1;
+		    voidScepter.stockToConsume = 1;
+            voidScepter.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+            voidScepter.mustKeyPress = true;
+            voidScepter.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
+            voidScepter.skillName = "VOIDCRID_ENTROPY";
+            voidScepter.skillNameToken = "VOIDCRID_ENTROPY";
+
+            ContentAddition.AddSkillDef(voidScepter);
+
+
+        }
         internal static void LoadAssetBundle()
         {
 
