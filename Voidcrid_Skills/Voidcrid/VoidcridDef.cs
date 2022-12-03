@@ -38,6 +38,16 @@ namespace Voidcrid
         public static ConfigEntry<float> EntropyOverrideDamage { get; set; }
         public static ConfigEntry<float> EntropyOverrideFireSpeed { get; set; }
         public static ConfigEntry<float> EtherealDriftOverrideDamage {get; set;}
+        public static ConfigEntry<float> ScepterEntropyOverrideDamage {get; set;}
+
+        public static ConfigEntry<float> ScepterEntropyOverrideFireSpeed {get; set;}
+        public static ConfigEntry<float> ScepterEntropyOverrideVoidJailChance {get; set;}
+        public static ConfigEntry<int> ScepterEntropyOverrideDiseaseHops {get; set;}
+        public static ConfigEntry<float> FlamebreathOverrideRecharge {get; set;}
+        public static ConfigEntry<float> NullBeamOverrideRecharge {get; set;}
+        public static ConfigEntry<float> EtherealDriftOverrideRecharge {get; set;}
+        public static ConfigEntry<float> EntropyOverrideRecharge {get; set;}
+        public static ConfigEntry<float> ScepterEntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
 
@@ -58,7 +68,42 @@ namespace Voidcrid
 
         
         {
-            
+                    FlamebreathOverrideRecharge = Config.Bind<float>(
+					"Recharge Interval",
+					"Flamebreath Recharge",
+					0.5f,
+					"Measured in seconds"
+				);
+
+                    NullBeamOverrideRecharge = Config.Bind<float>(
+					"Recharge Interval",
+					"Null Beam Recharge",
+					10f,
+					"Measured in seconds"
+				);
+
+                    EtherealDriftOverrideRecharge = Config.Bind<float>(
+					"Recharge Interval",
+					"Ethereal Drift Recharge",
+					8f,
+					"Measured in seconds"
+				);
+
+                    EntropyOverrideRecharge = Config.Bind<float>(
+					"Recharge Interval",
+					"Entropy Recharge",
+					6f,
+					"Measured in seconds"
+				);
+
+                
+                    ScepterEntropyOverrideRecharge = Config.Bind<float>(
+					"Recharge Interval",
+					"Deeprotted Entropy Recharge",
+					6f,
+					"Measured in seconds"
+				);
+                
                		NullBeamOverrideJailChance = Config.Bind<float>(
 					"JailChance",
 					"NullBeamJailChance",
@@ -122,11 +167,25 @@ namespace Voidcrid
 					"Blast Attack base damage"
 				);
 
+                    ScepterEntropyOverrideDamage = Config.Bind<float>(
+					"Deeprotted Entropy (Scepter)",
+					"Damage",
+					4f,
+					"Scepter's Entropy Blast Attack base damage"
+				);
+
+                    ScepterEntropyOverrideFireSpeed = Config.Bind<float>(
+					"Deeprotted Entropy (Scepter)",
+					"Firing Speed",
+					0.3f,
+					"Scepter's Entropy successive attack speed, measured in seconds"
+				);
+
                 
                     VoidcridPassiveShow = Config.Bind<bool>(
 					"Voidcrid",
 					"Display",
-					true,
+					false,
 					"Shows the Voidcrid fake Passive description"
 				);
      
@@ -157,13 +216,12 @@ namespace Voidcrid
             //We use LanguageAPI to add strings to the game, in the form of tokens
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>N?ll Beam</style>");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
             LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
-            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>Ethereal Dr?ft</style>");
+            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
             LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
-
-            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>400% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
@@ -189,14 +247,14 @@ namespace Voidcrid
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
             voidBreath.baseMaxStock = 1;
-            voidBreath.baseRechargeInterval = 0.5f;
+            voidBreath.baseRechargeInterval = FlamebreathOverrideRecharge.Value;
             voidBreath.beginSkillCooldownOnSkillEnd = true;
             voidBreath.canceledFromSprinting = false;
             voidBreath.cancelSprintingOnActivation = true;
             voidBreath.fullRestockOnAssign = true;
             voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
-            voidBreath.mustKeyPress = false;
+            voidBreath.mustKeyPress = true; //test this with Backpack
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
@@ -208,7 +266,7 @@ namespace Voidcrid
             voidBeam.activationState = new SerializableEntityStateType(typeof(Voidcrid.NullBeam));
             voidBeam.activationStateMachineName = "Weapon";
             voidBeam.baseMaxStock = 1;
-            voidBeam.baseRechargeInterval = 10f;
+            voidBeam.baseRechargeInterval = NullBeamOverrideRecharge.Value;
             voidBeam.beginSkillCooldownOnSkillEnd = true;
             voidBeam.canceledFromSprinting = false;
             voidBeam.cancelSprintingOnActivation = true;
@@ -229,7 +287,7 @@ namespace Voidcrid
             voidPoison.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
             voidPoison.activationStateMachineName = "Weapon";
   		    voidPoison.baseMaxStock = 1;
-		    voidPoison.baseRechargeInterval = 6f;
+		    voidPoison.baseRechargeInterval = EntropyOverrideRecharge.Value;
 		    voidPoison.beginSkillCooldownOnSkillEnd = true;
 		    voidPoison.canceledFromSprinting = false;
 		    voidPoison.fullRestockOnAssign = true;
@@ -251,14 +309,13 @@ namespace Voidcrid
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
             voidEscape.activationStateMachineName = "Weapon";
             voidEscape.baseMaxStock = 1;
-            voidEscape.baseRechargeInterval = 8f;
+            voidEscape.baseRechargeInterval = EtherealDriftOverrideRecharge.Value;
             voidEscape.beginSkillCooldownOnSkillEnd = true;
             voidEscape.canceledFromSprinting = false;
             voidEscape.cancelSprintingOnActivation = true;
             voidEscape.fullRestockOnAssign = true;
             voidEscape.interruptPriority = InterruptPriority.PrioritySkill;
             voidEscape.isCombatSkill = true;
-            voidEscape.mustKeyPress = false;
             voidEscape.rechargeStock = 1;
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
@@ -351,14 +408,14 @@ namespace Voidcrid
 
             voidScepter = ScriptableObject.CreateInstance<SkillDef>();
 
-            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>Entr<style=cIsHealing>?</style>py</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", "<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>400% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY", $"<style=cArtifact>「Deeprotted Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID__SCEPTER_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Damage is increased to <style=cIsDamage>{ScepterEntropyOverrideDamage.Value}00% x 3</style> and if held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 15% </style> of your health and applies your passive.</style>");
 
 
             voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidScepter));
             voidScepter.activationStateMachineName = "Weapon";
   		    voidScepter.baseMaxStock = 1;
-		    voidScepter.baseRechargeInterval = 6f;
+		    voidScepter.baseRechargeInterval = ScepterEntropyOverrideRecharge.Value;
 		    voidScepter.beginSkillCooldownOnSkillEnd = true;
 		    voidScepter.canceledFromSprinting = false;
 		    voidScepter.fullRestockOnAssign = true;
@@ -370,11 +427,11 @@ namespace Voidcrid
 		    voidScepter.rechargeStock = 1;
 		    voidScepter.requiredStock = 1;
 		    voidScepter.stockToConsume = 1;
-            voidScepter.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+            voidScepter.icon = mainAssetBundle.LoadAsset<Sprite>("deeprotentropy.png");
             voidScepter.mustKeyPress = true;
-            voidScepter.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
-            voidScepter.skillName = "VOIDCRID_ENTROPY";
-            voidScepter.skillNameToken = "VOIDCRID_ENTROPY";
+            voidScepter.skillDescriptionToken = "VOIDCRID__SCEPTER_ENTROPY_DESC";
+            voidScepter.skillName = "VOIDCRID_SCEPTER_ENTROPY";
+            voidScepter.skillNameToken = "VOIDCRID_SCEPTER_ENTROPY";
 
             ContentAddition.AddSkillDef(voidScepter);
 
