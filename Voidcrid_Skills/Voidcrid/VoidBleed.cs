@@ -16,7 +16,7 @@ public class VoidBleed : BaseSkillState
         public  static float baseDuration = 2f;
         public  static float damageCoefficient = 5f;
 
-        private float voidJailChance = .05f;
+        // private float voidJailChance = .05f;
         public  static float procCoefficient = 1f;
         public static float attackRecoil = 1.5f;
         public static float hitHopVelocity = 5.5f;
@@ -58,11 +58,11 @@ public class VoidBleed : BaseSkillState
  
 	private GameObject rightFistEffectInstance;
 
-    private float entropyFiringSpeed = .3f;
+    // private float entropyFiringSpeed = .3f;
 
     private DamageType entropyDamage;
 
-    private float baseEntropyDamage = 3f;
+    // private float baseEntropyDamage = 3f;
 
     [SerializeField]
     public GameObject leftfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerDeathBombExplosion.prefab").WaitForCompletion();
