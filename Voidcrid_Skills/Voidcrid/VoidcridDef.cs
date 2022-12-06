@@ -11,6 +11,7 @@ using UnityEngine.AddressableAssets;
 using System.Reflection;
 using BepInEx.Configuration;
 using System.Runtime.CompilerServices;
+using  System.Collections.Generic;
 // using Voidcrid.Achievements;
 
 
@@ -40,13 +41,21 @@ namespace Voidcrid
         public static ConfigEntry<float> EtherealDriftOverrideDamage {get; set;}
         public static ConfigEntry<float> ScepterEntropyOverrideDamage {get; set;}
 
+        public static ConfigEntry<float> FlamebreathOverrideDamage {get; set;}
         public static ConfigEntry<float> ScepterEntropyOverrideFireSpeed {get; set;}
         public static ConfigEntry<float> ScepterEntropyOverrideVoidJailChance {get; set;}
-        public static ConfigEntry<int> ScepterEntropyOverrideDiseaseHops {get; set;}
+
+        public static ConfigEntry<float> ScepterEntropyOverrideRadius {get; set;}
+
         public static ConfigEntry<float> FlamebreathOverrideRecharge {get; set;}
+
+        public static ConfigEntry<float> FlamebreathOverrideTickFreq {get; set;}
+
         public static ConfigEntry<float> NullBeamOverrideRecharge {get; set;}
         public static ConfigEntry<float> EtherealDriftOverrideRecharge {get; set;}
         public static ConfigEntry<float> EntropyOverrideRecharge {get; set;}
+
+        public static ConfigEntry<float> EntropyOverrideRadius {get; set;}
         public static ConfigEntry<float> ScepterEntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
@@ -153,11 +162,18 @@ namespace Voidcrid
 					"Entropy successive attack speed, measured in seconds"
 				);
 
-                     FlamebreathOverrideDuration = Config.Bind<float>(
+                FlamebreathOverrideDuration = Config.Bind<float>(
 					"Flamebreath",
 					"Duration",
 					2f,
-					"Flamebreath's duration, measured in seconds. Note this skill's full duration is baseDuration (changed here) + Attack Speed stat"
+					"Flamebreath's duration, measured in seconds. Total duration: (Flamebreath duration + Attack Speed stat)"
+				);
+
+                FlamebreathOverrideDamage = Config.Bind<float>(
+					"Flamebreath",
+					"Damage",
+					10f,
+					"Flamebreath's totalDamageCoefficient, is divided over Flamebreath duration * tickFrequency: (totalDamageCoef / [Flamebreath duration * tickFrequency])"
 				);
 
                     EtherealDriftOverrideDamage = Config.Bind<float>(
@@ -165,6 +181,13 @@ namespace Voidcrid
 					"Damage",
 					1f,
 					"Blast Attack base damage"
+				);
+
+                    EntropyOverrideRadius = Config.Bind<float>(
+					"Entropy",
+					"Radius",
+					12f,
+					"Blast Attack radius"
 				);
 
                     ScepterEntropyOverrideDamage = Config.Bind<float>(
@@ -181,6 +204,13 @@ namespace Voidcrid
 					"Scepter's Entropy successive attack speed, measured in seconds"
 				);
 
+                    ScepterEntropyOverrideRadius = Config.Bind<float>(
+					"Deeprotted Entropy (Scepter)",
+					"Radius",
+					12f,
+					"Scepter's Entropy radius"
+				);
+
                 
                     VoidcridPassiveShow = Config.Bind<bool>(
 					"Voidcrid",
@@ -188,8 +218,8 @@ namespace Voidcrid
 					false,
 					"Shows the Voidcrid fake Passive description"
 				);
-     
-                
+
+                    
                 
             LoadAssetBundle();
 
@@ -352,8 +382,7 @@ namespace Voidcrid
                 skillLocator.passiveSkill.enabled = false;
             }
 
-            
-        
+
             Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
             skillSecondary.variants[skillSecondary.variants.Length - 1] = new SkillFamily.Variant
 
@@ -387,7 +416,6 @@ namespace Voidcrid
                 viewableNode = new ViewablesCatalog.Node(voidBreath.skillNameToken, false, null)
             };
 
-
        }
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
             private void ScepterSetup()
@@ -401,6 +429,7 @@ namespace Voidcrid
   
 
         }
+
 
             private void ScepterSkillSetup()
         {

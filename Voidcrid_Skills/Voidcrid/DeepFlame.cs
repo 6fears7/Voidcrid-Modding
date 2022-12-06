@@ -5,6 +5,7 @@ using EntityStates.LemurianBruiserMonster;
 using R2API.Networking;
 using RoR2.Items;
 using UnityEngine.Networking;
+using EntityStates.Croco;
 
 
 
@@ -18,7 +19,9 @@ namespace Voidcrid
 
 	private static new float maxDistance = 20f;
 
-	private new float baseFlamethrowerDuration = 2f;
+	private new float baseFlamethrowerDuration = VoidcridDef.FlamebreathOverrideDuration.Value;
+
+	private new float totalDamageCoefficient = VoidcridDef.FlamebreathOverrideDamage.Value;
 
 	[SerializeField]
 	private  new GameObject flamethrowerEffectPrefab = Flamebreath.flamethrowerEffectPrefab;
@@ -40,7 +43,7 @@ namespace Voidcrid
 	stopwatch = 0f;
 	entryDuration = baseEntryDuration;
 	exitDuration = baseExitDuration;
-	flamethrowerDuration = VoidcridDef.FlamebreathOverrideDuration.Value + attackSpeedStat;
+	flamethrowerDuration = baseFlamethrowerDuration + attackSpeedStat;
 	Transform modelTransform = GetModelTransform();
 	if ((bool)base.characterBody)
 	{
