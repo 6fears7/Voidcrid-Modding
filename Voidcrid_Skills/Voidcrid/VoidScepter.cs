@@ -8,6 +8,7 @@ using UnityEngine.AddressableAssets;
 using System.Collections.Generic;
 using System.Linq;
 using RoR2.Orbs;
+using UnityEngine.Networking;
 
 
 namespace Voidcrid {
@@ -29,7 +30,7 @@ public class VoidScepter : BaseSkillState
 
         private float switchAttacks = 50f;
         
-        private float blastAttackRadius = 10f;
+        private float blastAttackRadius = VoidcridDef.ScepterEntropyOverrideRadius.Value;
         private float earlyExitDuration;
         private ChildLocator childLocator;
         private bool hasFired1;
@@ -39,13 +40,14 @@ public class VoidScepter : BaseSkillState
         [SerializeField]
         private float blastAttackForce = 1000f;
 
-		// private GameObject groundImpact = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/LaserImpactEffect.prefab").WaitForCompletion();
+		private GameObject groundImpact = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabGravityBumpExplosionGround.prefab").WaitForCompletion();
 
         private  float hitPauseTimer;
         [SerializeField]
 
-        private GameObject aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
-// RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab
+        private GameObject aoePrefab;
+        // Addressables.LoadAssetAsync<GameObject>("RoR2/Base/EliteIce/AffixWhiteExplosion.prefab").WaitForCompletion();
+        // Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
         private GameObject aoe2 = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabTripleBeamExplosion.prefab").WaitForCompletion();	
 
         private float blastAttackProcCoefficient = 1;
@@ -137,7 +139,15 @@ public class VoidScepter : BaseSkillState
             base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            
+            if (VoidcridDef.Seasonal.Value == true) {
+            poisonAttack = DamageType.Freeze2s;
+            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/EliteIce/AffixWhiteExplosion.prefab").WaitForCompletion();
+
+            } else if(VoidcridDef.Seasonal.Value == false) {
             poisonAttack = crocoDamageTypeController.GetDamageType();
+            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
+            }
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
@@ -167,6 +177,8 @@ public class VoidScepter : BaseSkillState
             
 
             float dmg = VoidBleed.damageCoefficient;
+            if (NetworkServer.active)
+		{
 
           	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
@@ -191,6 +203,7 @@ public class VoidScepter : BaseSkillState
 				damageInfo.procChainMask = procChainMask;
 				base.healthComponent.TakeDamage(damageInfo);
                 
+        }
         }
         }
 
@@ -282,6 +295,9 @@ public class VoidScepter : BaseSkillState
 
           private void Bombardment() {
 
+            if (NetworkServer.active)
+		{
+
 				DamageInfo damageInfo = new DamageInfo();
 				damageInfo.damage = (.15f * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
@@ -293,7 +309,7 @@ public class VoidScepter : BaseSkillState
 				damageInfo.damageType = DamageType.NonLethal;
 				damageInfo.procCoefficient = 0f;
 				base.healthComponent.TakeDamage(damageInfo);
-
+        }
 				GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 			
 				float damage = 1f;
@@ -314,9 +330,9 @@ public class VoidScepter : BaseSkillState
                     
 				});
 
+	}
+
         } 
 
 
     }
-    
-}

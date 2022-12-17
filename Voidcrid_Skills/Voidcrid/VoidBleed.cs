@@ -28,7 +28,7 @@ public class VoidBleed : BaseSkillState
 
         private float switchAttacks = 50f;
         
-        private float blastAttackRadius = 10f;
+        private float blastAttackRadius = VoidcridDef.EntropyOverrideRadius.Value;
         private float earlyExitDuration;
         private ChildLocator childLocator;
         private bool hasFired1;
@@ -46,7 +46,6 @@ public class VoidBleed : BaseSkillState
 
         private float blastAttackProcCoefficient = 1;
         private bool inHitPause;
-
         private DamageType voidAttack;
         private DamageType poisonAttack;
 
@@ -124,10 +123,21 @@ public class VoidBleed : BaseSkillState
             base.OnEnter();
             
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
-            base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+                if (NetworkServer.active){
+            base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
+                }
+            if (VoidcridDef.Seasonal.Value == true) {
+
+            poisonAttack = DamageType.Freeze2s;
+            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/EliteIce/AffixWhiteExplosion.prefab").WaitForCompletion();
+
+            } else if(VoidcridDef.Seasonal.Value == false){
             poisonAttack = crocoDamageTypeController.GetDamageType();
+            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
+
+            }
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
@@ -157,6 +167,9 @@ public class VoidBleed : BaseSkillState
 
             float dmg = VoidBleed.damageCoefficient;
 
+            if (NetworkServer.active)
+		{
+
           	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
 
@@ -180,6 +193,7 @@ public class VoidBleed : BaseSkillState
 				damageInfo.procChainMask = procChainMask;
 				base.healthComponent.TakeDamage(damageInfo);
                 
+        }
         }
         }
 
@@ -259,7 +273,10 @@ public class VoidBleed : BaseSkillState
         {
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
+                if (NetworkServer.active){
             base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
+            base.characterBody.RemoveBuff(RoR2Content.Buffs.AffixWhite);
+                }
 		    EntityState.Destroy(leftFistEffectInstance);
 		    EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();
@@ -274,3 +291,56 @@ public class VoidBleed : BaseSkillState
     }
     
 }
+
+
+//   RaycastHit[] hits = Physics.SphereCastAll(decayMuzzle.position, decayEffect.radius, Vector3.up);
+//         foreach (RaycastHit hit in hits)
+//         {
+//             HealthComponent healthComponent = hit.collider.GetComponent<HealthComponent>();
+//             if (healthComponent)
+//             {
+//                 healthComponent.TakeDamage(new DamageInfo
+//                 {
+//                     damage = damagePerSecond * Time.fixedDeltaTime,
+//                     position = hit.point,
+//                     damageType = DamageType.Generic,
+//                     attacker = base.gameObject,
+//                     inflictor = base.gameObject,
+//                     force = Vector3.zero
+//                 });
+//             }
+//         }
+//     }
+// }
+
+// public override void FixedUpdate()
+// {
+//     base.FixedUpdate();
+
+//     // Update the decay effect
+//     decayEffect.Update();
+
+//     // Calculate the remaining number of unstable atoms using the nuclear decay formula
+//     float remainingUnstableAtoms = base.characterBody.initialUnstableAtoms * Mathf.Exp(-decayRate * Time.fixedDeltaTime);
+//     base.characterBody.SetUnstableAtoms(remainingUnstableAtoms);
+
+//     // End the decay effect when the duration has elapsed
+//     if (base.fixedAge > decayDuration)
+//     {
+//         outer.SetNextStateToMain();
+//     }
+// }
+
+// public override void OnExit()
+// {
+//     // Destroy the decay effect
+//     decayEffect.Destroy();
+
+//     base.OnExit();
+// }
+// }
+// }
+
+
+
+
