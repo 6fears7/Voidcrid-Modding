@@ -60,6 +60,8 @@ namespace Voidcrid
 
         public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
 
+        public static ConfigEntry<bool> Seasonal {get; set;}
+
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
 
@@ -77,6 +79,8 @@ namespace Voidcrid
 
         
         {
+
+            
                     FlamebreathOverrideRecharge = Config.Bind<float>(
 					"Recharge Interval",
 					"Flamebreath Recharge",
@@ -215,9 +219,17 @@ namespace Voidcrid
                     VoidcridPassiveShow = Config.Bind<bool>(
 					"Voidcrid",
 					"Display",
-					false,
+					true,
 					"Shows the Voidcrid fake Passive description"
 				);
+
+                 Seasonal = Config.Bind<bool>(
+					"Voidcrid",
+					"Seasonal",
+					true,
+					"Activates seasonal attributes"
+				);
+
 
                     
                 
@@ -249,13 +261,16 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
             LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
             LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
-            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
+            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
 
+
+            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
+            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
-
+            
             // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "Voidcrid: Alone at Last");
             // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESC", "As Acrid, face your captor when all hope is lost.");
 
@@ -271,7 +286,7 @@ namespace Voidcrid
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidPoison = ScriptableObject.CreateInstance<SkillDef>();
-
+    
 
            
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
@@ -359,6 +374,7 @@ namespace Voidcrid
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddSkillDef(voidBeam);
             ContentAddition.AddSkillDef(voidEscape);
+            ContentAddition.AddSkillDef(voidPoison);
             // ContentAddition.AddUnlockableDef(voidcridUnlock);
 
      
@@ -368,13 +384,19 @@ namespace Voidcrid
             SkillFamily specialSkill = skillLocator.special.skillFamily;
             SkillFamily skillUtility = skillLocator.utility.skillFamily;
 
-            if (VoidcridPassiveShow.Value == true) {
+            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
             skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
 
+            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
+            skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridSeasonal.png");
+            
             }
 
             else {
