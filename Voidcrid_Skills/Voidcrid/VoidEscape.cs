@@ -33,9 +33,20 @@ public class VoidEscape : StealthMode
 
 	private DamageType seasonalAttack;
 	private bool hasBuff = false;
+
+	[Command]
+void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
+{
+    // Add the buff to the character body
+    characterBody.GetComponent<CharacterBody>().AddBuff(buffDef);
+}
+
 	public override void OnEnter()
 	{
 		base.OnEnter();
+		
+		CrocoDamageTypeController blarg = new CrocoDamageTypeController();
+		
 		
        	// voidFogInstance = Object.Instantiate(voidFogInstance, FindModelChild("MouthMuzzle"));
 		if (VoidcridDef.Seasonal.Value == true) {
@@ -49,15 +60,28 @@ public class VoidEscape : StealthMode
 		}
 		animator = GetModelAnimator();
 		_ = (bool)animator;
+
+			if (base.characterBody)
+			{
+				if (NetworkServer.active)
+				{   Debug.Log("Active Server check");
+					base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
+					base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
+					base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
+
+    				// Send the command to the client to give the buff
+					// CmdGiveBuffToClient(RoR2Content.Buffs.Cloak, base.characterBody.gameObject);
+					// CmdGiveBuffToClient(RoR2Content.Buffs.CloakSpeed, base.characterBody.gameObject);
+					// CmdGiveBuffToClient(RoR2Content.Buffs.VoidFogStrong, base.characterBody.gameObject);
+				}
+				Debug.Log("Active Server check has failed again");
+
+
 	
-	if (NetworkServer.active) {
-				characterBody.AddBuff(RoR2Content.Buffs.Cloak);
-				characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
-				characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
-						
-	}
+
 			hasBuff = true;	
 			base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
+			}
 	
 
 		FireSmokebomb();
@@ -93,6 +117,9 @@ public class VoidEscape : StealthMode
 
 
 		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
+
+			if (base.characterBody)
+			{
 		if (NetworkServer.active && hasBuff)
 		{
 				characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
@@ -103,6 +130,7 @@ public class VoidEscape : StealthMode
 		}
 			hasBuff = false;
 			base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
+			}
 
 		if ((bool)animator)
 		{
