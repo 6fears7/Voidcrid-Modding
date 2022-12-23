@@ -85,6 +85,10 @@
               "target": "Package",
               "version": "[1.0.2, )"
             },
+            "R2API.Unlockable": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
             "RiskOfRain2.GameLibs": {
               "target": "Package",
               "version": "[1.2.4-r.0, )"
