@@ -69,9 +69,21 @@
               "version": "[2.0.3, )",
               "autoReferenced": true
             },
-            "R2API": {
+            "R2API.ContentManagement": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "R2API.Core": {
               "target": "Package",
               "version": "[5.0.3, )"
+            },
+            "R2API.Language": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "R2API.Networking": {
+              "target": "Package",
+              "version": "[1.0.2, )"
             },
             "RiskOfRain2.GameLibs": {
               "target": "Package",
