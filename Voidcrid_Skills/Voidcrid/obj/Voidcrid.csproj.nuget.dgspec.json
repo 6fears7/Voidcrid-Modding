@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {}
+    "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {
+    "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
+        "projectUniqueName": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
         "projectName": "Voidcrid",
-        "projectPath": "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
+        "projectPath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
         "packagesPath": "C:\\Users\\lol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\Voidcrid\\obj\\",
+        "outputPath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\lol\\Desktop\\Voidcrid_Skills\\NuGet.Config",
+          "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\NuGet.Config",
           "C:\\Users\\lol\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -71,7 +71,7 @@
             },
             "R2API": {
               "target": "Package",
-              "version": "[4.3.5, )"
+              "version": "[5.0.3, )"
             },
             "RiskOfRain2.GameLibs": {
               "target": "Package",

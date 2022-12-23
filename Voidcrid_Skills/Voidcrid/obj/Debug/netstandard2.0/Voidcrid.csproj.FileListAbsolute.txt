@@ -8,3 +8,13 @@ C:\Users\lol\Desktop\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.
 C:\Users\lol\Desktop\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.CoreCompileInputs.cache
 C:\Users\lol\Desktop\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.dll
 C:\Users\lol\Desktop\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.pdb
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\Voidcrid.deps.json
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\Voidcrid.dll
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\Voidcrid.pdb
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.AssemblyReference.cache
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.AssemblyInfoInputs.cache
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.AssemblyInfo.cs
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.CoreCompileInputs.cache
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.dll
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.pdb
