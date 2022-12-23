@@ -46,6 +46,8 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 		
 		CrocoDamageTypeController blarg = new CrocoDamageTypeController();
 		
+		
+       	// voidFogInstance = Object.Instantiate(voidFogInstance, FindModelChild("MouthMuzzle"));
 		if (VoidcridDef.Seasonal.Value == true) {
 
 			seasonalAttack = DamageType.Freeze2s;
@@ -53,6 +55,7 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 		} else if (VoidcridDef.Seasonal.Value == false) {
 
 			seasonalAttack = DamageType.Generic;
+
 		}
 		animator = GetModelAnimator();
 		_ = (bool)animator;
@@ -71,6 +74,11 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 					// CmdGiveBuffToClient(RoR2Content.Buffs.VoidFogStrong, base.characterBody.gameObject);
 				}
 				Debug.Log("Active Server check has failed again");
+
+
+	
+
+			hasBuff = true;	
 			base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
 			}
 	
@@ -109,9 +117,9 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 
 		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
 
-	if (base.characterBody)
-		{
-		if (NetworkServer.active)
+			if (base.characterBody)
+			{
+		if (NetworkServer.active && hasBuff)
 		{
 				characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
 				characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);

@@ -74,6 +74,8 @@ namespace Voidcrid
         public void Awake()
 
         
+
+        
         {
             		
                     
@@ -238,7 +240,7 @@ namespace Voidcrid
                 ScepterSkillSetup();
                 ScepterSetup();
             }
-      
+
             //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
             //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
             
@@ -260,24 +262,23 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
             LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
+            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
+            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
 
 
+            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
+            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
             LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
             LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
             
-            // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "Voidcrid: Alone at Last");
-            // LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESC", "As Acrid, face your captor when all hope is lost.");
+            
 
-
-
-
-        //    UnlockableDef voidcridSkinUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
-            // voidcridSkinUnlock.cachedName = "Survivors.Croco.Voidcrid";
-            // voidcridSkinUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDCLEAR_NAME";
-            // voidcridSkinUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
-            // ContentAddition.AddUnlockableDef(voidcridSkinUnlock);
             SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
@@ -290,12 +291,14 @@ namespace Voidcrid
             voidBreath.activationStateMachineName = "Weapon";
             voidBreath.baseMaxStock = 1;
             voidBreath.baseRechargeInterval = FlamebreathOverrideRecharge.Value;
+            voidBreath.baseRechargeInterval = FlamebreathOverrideRecharge.Value;
             voidBreath.beginSkillCooldownOnSkillEnd = true;
             voidBreath.canceledFromSprinting = false;
             voidBreath.cancelSprintingOnActivation = true;
             voidBreath.fullRestockOnAssign = true;
             voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
+            voidBreath.mustKeyPress = true; //test this with Backpack
             voidBreath.mustKeyPress = true; //test this with Backpack
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
@@ -308,6 +311,7 @@ namespace Voidcrid
             voidBeam.activationState = new SerializableEntityStateType(typeof(Voidcrid.NullBeam));
             voidBeam.activationStateMachineName = "Weapon";
             voidBeam.baseMaxStock = 1;
+            voidBeam.baseRechargeInterval = NullBeamOverrideRecharge.Value;
             voidBeam.baseRechargeInterval = NullBeamOverrideRecharge.Value;
             voidBeam.beginSkillCooldownOnSkillEnd = true;
             voidBeam.canceledFromSprinting = false;
@@ -323,12 +327,14 @@ namespace Voidcrid
             voidBeam.skillName = "VOIDCRID_NULLBEAM";
             voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
             voidBeam.mustKeyPress = true;
+            voidBeam.mustKeyPress = true;
 
 
             
             voidPoison.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
             voidPoison.activationStateMachineName = "Weapon";
   		    voidPoison.baseMaxStock = 1;
+		    voidPoison.baseRechargeInterval = EntropyOverrideRecharge.Value;
 		    voidPoison.baseRechargeInterval = EntropyOverrideRecharge.Value;
 		    voidPoison.beginSkillCooldownOnSkillEnd = true;
 		    voidPoison.canceledFromSprinting = false;
@@ -343,6 +349,8 @@ namespace Voidcrid
 		    voidPoison.stockToConsume = 1;
             voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
             voidPoison.mustKeyPress = true;   
+            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
+            voidPoison.mustKeyPress = true;   
 
             voidPoison.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
             voidPoison.skillName = "VOIDCRID_ENTROPY";
@@ -351,6 +359,7 @@ namespace Voidcrid
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
             voidEscape.activationStateMachineName = "Weapon";
             voidEscape.baseMaxStock = 1;
+            voidEscape.baseRechargeInterval = EtherealDriftOverrideRecharge.Value;
             voidEscape.baseRechargeInterval = EtherealDriftOverrideRecharge.Value;
             voidEscape.beginSkillCooldownOnSkillEnd = true;
             voidEscape.canceledFromSprinting = false;
@@ -362,6 +371,7 @@ namespace Voidcrid
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
             voidEscape.mustKeyPress = true;
+            voidEscape.mustKeyPress = true;
 
             voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
             voidEscape.skillDescriptionToken = "VOIDCRID_VOIDRIFT_DESC";
@@ -371,6 +381,7 @@ namespace Voidcrid
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddSkillDef(voidBeam);
             ContentAddition.AddSkillDef(voidEscape);
+            ContentAddition.AddSkillDef(voidPoison);
             ContentAddition.AddSkillDef(voidPoison);
             // ContentAddition.AddUnlockableDef(voidcridUnlock);
 
@@ -395,7 +406,8 @@ namespace Voidcrid
             skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
             skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridSeasonal.png");
             
-            }
+
+            } 
 
             else {
 
@@ -492,10 +504,8 @@ namespace Voidcrid
             
             try
             {
-    
-                    // using (var assetStream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{csProjName}.{assetbundleName}"))
- 
-                        mainAssetBundle = AssetBundle.LoadFromFile(Assembly.GetExecutingAssembly().Location.Replace("Voidcrid.dll", "acrid3"));
+                    
+                mainAssetBundle = AssetBundle.LoadFromFile(Assembly.GetExecutingAssembly().Location.Replace("Voidcrid.dll", "acrid3"));
                     
                 Debug.Log("Loaded assetbundle" );
 
@@ -508,6 +518,8 @@ namespace Voidcrid
             }
 
         }
+    }
+}
 
         
         //   private void AddVoidcridSkin()
@@ -611,8 +623,6 @@ namespace Voidcrid
     // }
 
 
-    }
-
     // public abstract class VoidcridUnlockable : ModdedUnlockable
     // {
     //     public abstract string AchievementTokenPrefix { get; }
@@ -644,4 +654,4 @@ namespace Voidcrid
     //                         });
     //     }
     // }
-}
+
