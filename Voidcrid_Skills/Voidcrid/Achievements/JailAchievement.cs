@@ -8,7 +8,6 @@ namespace Voidcrid.Achievements {
         private class VoidcridJailUnlock : BaseServerAchievement
         {
             protected virtual int jailRequirement => 1;
-            // protected virtual BodyIndex newtBodyIndex => BodyCatalog.FindBodyIndex("ShopkeeperBody");
             
              private int _jailAchievement = 0;
              protected virtual BodyIndex jailBodyIndex => BodyCatalog.FindBodyIndex("VoidJailerBody");
