@@ -65,21 +65,26 @@ namespace Voidcrid
 
         internal static AssetBundle mainAssetBundle;
         GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
-
-     
         private const string assetbundleName = "acrid3";
         private const string csProjName = "Voidcrid";
 
 
-        private static UnlockableDef survivorUnlock;
+        private static UnlockableDef entropyUnlock;
+
+        private static UnlockableDef ethUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
+
         public void Awake()
 
         
         {
-            		
-                    
+
+            //  gameEnding = SurvivorCatalog.GetSurvivorDef(SurvivorCatalog.FindSurvivorIndex("Croco"));
+            //  gameEnding.outroFlavorToken = "VOIDCRID_OUTRO_FLAVOR";
+            //  gameEnding.cachedName = "Pain";
+            //  gameEnding.displayNameToken = "VOIDCRID_OUTRO_FLAVOR";
+
                     FlamebreathOverrideRecharge = Config.Bind<float>(
 					"Recharge Interval",
 					"Flamebreath Recharge",
@@ -154,7 +159,7 @@ namespace Voidcrid
                     EntropyOverrideDamage = Config.Bind<float>(
 					"Entropy",
 					"Damage",
-					3f,
+					4f,
 					"Entropy damage multiplier"
 				);
 
@@ -196,7 +201,7 @@ namespace Voidcrid
                     ScepterEntropyOverrideDamage = Config.Bind<float>(
 					"Deeprotted Entropy (Scepter)",
 					"Damage",
-					4f,
+					5f,
 					"Scepter's Entropy Blast Attack base damage"
 				);
 
@@ -229,11 +234,13 @@ namespace Voidcrid
 					"Activates seasonal attributes"
 				);
 
-
-                    
-                
             LoadAssetBundle();
-            // CreateUnlockableDef();
+            SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
+
+            FlamebreathSetup(skillLocator);
+            NullBeamSetup(skillLocator);
+            VoidEscapeSetup(skillLocator);
+            EntropySetup(skillLocator);
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
@@ -242,34 +249,6 @@ namespace Voidcrid
                 ScepterSkillSetup();
                 ScepterSetup();
             }
-
-            //If you would like to load a different survivor, you can find the key for their Body prefab at the following link
-            //https://xiaoxiao921.github.io/GithubActionCacheTest/assetPathsDump.html
-            
-            //             On.RoR2.SurvivorCatalog.Init += (orig) =>
-            // {
-            //     orig();
-
-            //     // AddVoidcridSkin();
-            // };
-
-
-            // LanguageAPI.Add("VOIDCRID_SKIN", "Voidcrid");
-            LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
-            LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
-            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
-            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
-            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
-            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
-            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
-            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
-            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
-
 
             LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
             LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
@@ -281,20 +260,58 @@ namespace Voidcrid
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
 	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "There are no friends at dusk.");
 
-            if (VoidcridPassiveShow.Value == true) {
+            LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right to jail");
+            LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_DESCRIPTION", "As Acrid, jail a Jailer.");
+
+
+
+            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
+
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
+            skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
 
             LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
             LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
+
+
+
+            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
+            skillLocator.passiveSkill.enabled = true;
+            skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
+            skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridSeasonal.png");
+            
+
+            } 
+
+            else {
+
+                skillLocator.passiveSkill.enabled = false;
             }
-            
-            
-            SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
-            SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
-            SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
-            SkillDef voidPoison = ScriptableObject.CreateInstance<SkillDef>();
-    
-          
-          
+
+
+
+       }
+
+
+
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+            private void ScepterSetup()
+        {
+
+            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
+  
+
+        }
+
+            private void FlamebreathSetup(SkillLocator skillLocator) {
+            LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
+            LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
+             
+             SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
            
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
@@ -317,6 +334,27 @@ namespace Voidcrid
             voidBreath.skillName = "VOIDCRID_FLAMEBREATH";
             voidBreath.skillNameToken = "VOIDCRID_FLAMEBREATH";
 
+            ContentAddition.AddSkillDef(voidBreath);
+
+            SkillFamily skillPrimary = skillLocator.primary.skillFamily;
+
+            Array.Resize(ref skillPrimary.variants, skillPrimary.variants.Length + 1);
+            skillPrimary.variants[skillPrimary.variants.Length - 1] = new SkillFamily.Variant
+            {
+                skillDef = voidBreath,
+                // unlockableDef = ,
+                viewableNode = new ViewablesCatalog.Node(voidBreath.skillNameToken, false, null)
+            };
+
+        }
+
+        private void NullBeamSetup(SkillLocator skillLocator) {
+
+            LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
+            LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
+            SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
+
+
             voidBeam.activationState = new SerializableEntityStateType(typeof(Voidcrid.NullBeam));
             voidBeam.activationStateMachineName = "Weapon";
             voidBeam.baseMaxStock = 1;
@@ -338,32 +376,25 @@ namespace Voidcrid
             voidBeam.mustKeyPress = true;
             voidBeam.mustKeyPress = true;
 
+            ContentAddition.AddSkillDef(voidBeam);
+            SkillFamily skillSecondary = skillLocator.secondary.skillFamily;
 
-            
-            voidPoison.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidBleed));
-            voidPoison.activationStateMachineName = "Weapon";
-  		    voidPoison.baseMaxStock = 1;
-		    voidPoison.baseRechargeInterval = EntropyOverrideRecharge.Value;
-		    voidPoison.baseRechargeInterval = EntropyOverrideRecharge.Value;
-		    voidPoison.beginSkillCooldownOnSkillEnd = true;
-		    voidPoison.canceledFromSprinting = false;
-		    voidPoison.fullRestockOnAssign = true;
-		    voidPoison.interruptPriority = InterruptPriority.PrioritySkill;
-		    voidPoison.resetCooldownTimerOnUse = false;
-		    voidPoison.isCombatSkill = true;
-		    voidPoison.mustKeyPress = false;
-		    voidPoison.cancelSprintingOnActivation = true;
-		    voidPoison.rechargeStock = 1;
-		    voidPoison.requiredStock = 1;
-		    voidPoison.stockToConsume = 1;
-            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
-            voidPoison.mustKeyPress = true;   
-            voidPoison.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
-            voidPoison.mustKeyPress = true;   
+            Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
+            skillSecondary.variants[skillSecondary.variants.Length - 1] = new SkillFamily.Variant
 
-            voidPoison.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
-            voidPoison.skillName = "VOIDCRID_ENTROPY";
-            voidPoison.skillNameToken = "VOIDCRID_ENTROPY";
+            {
+                skillDef = voidBeam,
+                // unlockableDef =,
+                viewableNode = new ViewablesCatalog.Node(voidBeam.skillNameToken, false, null)
+            };
+        }
+
+
+        private void VoidEscapeSetup(SkillLocator skillLocator) {
+
+            LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
+            LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
+            SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
 
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
             voidEscape.activationStateMachineName = "Weapon";
@@ -380,102 +411,75 @@ namespace Voidcrid
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
             voidEscape.mustKeyPress = true;
-            voidEscape.mustKeyPress = true;
-
             voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
             voidEscape.skillDescriptionToken = "VOIDCRID_VOIDRIFT_DESC";
             voidEscape.skillName = "VOIDCRID_VOIDDRIFT";
             voidEscape.skillNameToken = "VOIDCRID_VOIDDRIFT";
 
-            ContentAddition.AddSkillDef(voidBreath);
-            ContentAddition.AddSkillDef(voidBeam);
             ContentAddition.AddSkillDef(voidEscape);
-            ContentAddition.AddSkillDef(voidPoison);
-            ContentAddition.AddSkillDef(voidPoison);
-            // ContentAddition.AddUnlockableDef(voidcridUnlock);
-
-     
-            SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
-            SkillFamily skillPrimary = skillLocator.primary.skillFamily;
-            SkillFamily skillSecondary = skillLocator.secondary.skillFamily;
-            SkillFamily specialSkill = skillLocator.special.skillFamily;
             SkillFamily skillUtility = skillLocator.utility.skillFamily;
-            
 
-                survivorUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
-                survivorUnlock.cachedName = "Skins.Croco.Voidcrid";
-                survivorUnlock.nameToken = "ACHIEVEMENT_GRANDFATHERPARADOX_NAME";
-                survivorUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");
-                ContentAddition.AddUnlockableDef(survivorUnlock);
-
-            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
-
-            skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
-            skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
-
-            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
-            skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
-            skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridSeasonal.png");
-            
-
-            } 
-
-            else {
-
-                skillLocator.passiveSkill.enabled = false;
-            }
-
-
-            Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
-            skillSecondary.variants[skillSecondary.variants.Length - 1] = new SkillFamily.Variant
-
-            {
-                skillDef = voidBeam,
-                // unlockableDef =,
-                viewableNode = new ViewablesCatalog.Node(voidBeam.skillNameToken, false, null)
-            };
-
-            Array.Resize(ref specialSkill.variants, specialSkill.variants.Length + 1);
-            specialSkill.variants[specialSkill.variants.Length - 1] = new SkillFamily.Variant
-            {
-                skillDef = voidPoison,
-                // unlockableDef = voidcridUnlock,
-                viewableNode = new ViewablesCatalog.Node(voidPoison.skillNameToken, false, null)
-            };
+            ethUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+            ethUnlock.cachedName = "Skins.Croco.Blackrid";
+            ethUnlock.nameToken = "ACHIEVEMENT_RIGHTTOJAIL_NAME";
+            ethUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");
+            ContentAddition.AddUnlockableDef(ethUnlock);
 
             Array.Resize(ref skillUtility.variants, skillUtility.variants.Length + 1);
             skillUtility.variants[skillUtility.variants.Length - 1] = new SkillFamily.Variant
             {
                 skillDef = voidEscape,
-                // unlockableDef =,
+                unlockableDef = ethUnlock,
                 viewableNode = new ViewablesCatalog.Node(voidEscape.skillNameToken, false, null)
             };
 
-            Array.Resize(ref skillPrimary.variants, skillPrimary.variants.Length + 1);
-            skillPrimary.variants[skillPrimary.variants.Length - 1] = new SkillFamily.Variant
+        }
+
+         private void EntropySetup(SkillLocator skillLocator) {
+        LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
+        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+         SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
+            Entropy.activationState = new SerializableEntityStateType(typeof(Voidcrid.Entropy));
+            Entropy.activationStateMachineName = "Weapon";
+  		    Entropy.baseMaxStock = 1;
+		    Entropy.baseRechargeInterval = EntropyOverrideRecharge.Value;
+		    Entropy.beginSkillCooldownOnSkillEnd = true;
+		    Entropy.canceledFromSprinting = false;
+		    Entropy.fullRestockOnAssign = true;
+		    Entropy.interruptPriority = InterruptPriority.PrioritySkill;
+		    Entropy.resetCooldownTimerOnUse = false;
+		    Entropy.isCombatSkill = true;
+		    Entropy.mustKeyPress = false;
+		    Entropy.cancelSprintingOnActivation = true;
+		    Entropy.rechargeStock = 1;
+		    Entropy.requiredStock = 1;
+		    Entropy.stockToConsume = 1;
+            Entropy.mustKeyPress = true;   
+            Entropy.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
+            Entropy.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
+            Entropy.skillName = "VOIDCRID_ENTROPY";
+            Entropy.skillNameToken = "VOIDCRID_ENTROPY";
+
+            ContentAddition.AddSkillDef(Entropy);
+
+            entropyUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+            entropyUnlock.cachedName = "Skins.Croco.Voidcrid";
+            entropyUnlock.nameToken = "ACHIEVEMENT_GRANDFATHERPARADOX_NAME";
+            entropyUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
+            ContentAddition.AddUnlockableDef(entropyUnlock);
+
+            SkillFamily specialSkill = skillLocator.special.skillFamily;
+
+            Array.Resize(ref specialSkill.variants, specialSkill.variants.Length + 1);
+            specialSkill.variants[specialSkill.variants.Length - 1] = new SkillFamily.Variant
             {
-                skillDef = voidBreath,
-                unlockableDef = survivorUnlock,
-                viewableNode = new ViewablesCatalog.Node(voidBreath.skillNameToken, false, null)
+                skillDef = Entropy,
+                unlockableDef = entropyUnlock,
+                viewableNode = new ViewablesCatalog.Node(Entropy.skillNameToken, false, null)
             };
 
-       }
-
-
-
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-            private void ScepterSetup()
-        {
-
-            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
-  
-
-        }
+         
+         }
 
 
             private void ScepterSkillSetup()
@@ -511,9 +515,11 @@ namespace Voidcrid
 
             ContentAddition.AddSkillDef(voidScepter);
 
-
-
         }
+
+
+
+
         internal static void LoadAssetBundle()
         {
 
@@ -535,89 +541,6 @@ namespace Voidcrid
 
         }
 
-    //                 private void AddVoidcridSkin()
-    //     {
-
-    //         try {
-
-    //         var bodyPrefab = BodyCatalog.FindBodyPrefab(voidcridBodyPrefab);
-    //         //Getting necessary components
-    //         var renderers = bodyPrefab.GetComponentsInChildren<Renderer>(true);
-    //         var skinController = bodyPrefab.GetComponentInChildren<ModelSkinController>();
-    //         var mdl = skinController.gameObject;
-
-    //             var skin = new LoadoutAPI.SkinDefInfo
-    //         {
-    //             //Icon for your skin in the game, it can be any image, or you can use `LoadoutAPI.CreateSkinIcon` to easily create an icon that looks similar to the icons in the game.
-    //             Icon = LoadoutAPI.CreateSkinIcon(Color.black, Color.magenta, Color.red, Color.magenta),
-    //             //Replace `LumberJackCommando` with your skin name that can be used to access it through the code
-    //             Name = "fingers3",
-    //             //Replace `LUMBERJACK_SKIN` with your token
-    //             NameToken = "VOIDCRID_SKIN",
-    //             RootObject = mdl,
-    //             //Defining skins that will be applyed before our.
-    //             //Default skin index - 0, Monsoon skin index - 1
-    //             //Or you can use `BaseSkins = Array.Empty<SkinDef>(),` if you don't want to add base skin
-    //             //Because we will replace only Commando mesh, but not his pistols we have to use base skin.
-    //             BaseSkins = new SkinDef[] { skinController.skins[0] },
-    //             //Name of achievement after which skin will be unlocked
-    //             //Leave that field empty if you want skin to be always available 
-    //             // UnlockableDef = "",
-    //             //This is used to disable/enable some gameobjects in body prefab.
-    //             GameObjectActivations = new SkinDef.GameObjectActivation[0],
-    //             //This is used to define which material should be used on a specific renderer.
-    //             //Only one material per renderer(mesh) is can be used
-    //             RendererInfos = new CharacterModel.RendererInfo[]
-    //             {
-    //                 //To add another material replacement simply copy past this block right after and add `,` after the first one.
-    //                 new CharacterModel.RendererInfo
-    //                 {
-    //                     //Loading material from AssetBundle replace "@SkinTest:Assets/Resources/matLumberJack.mat" with your value.
-    //                     //It should be in this format `{provider name}:{path to asset in unity}`
-    //                     //To get path to asset you can right click on your asset in Unity and select `Copy path` option
-    //                     defaultMaterial = mainAssetBundle.LoadAsset<Material>("FINALLYFXD.mesh"),
-    //                     //Should mesh cast shadows
-    //                     defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
-    //                     //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
-    //                     ignoreOverlays = false,
-    //                     //Which renderer(mesh) to replace.
-    //                     //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
-    //                     renderer = renderers[2]
-    //                 }
-    //             },
-    //             //This is used to define which mesh should be used on a specific renderer.
-    //             MeshReplacements = new SkinDef.MeshReplacement[]
-    //             {
-    //                 //To add another mesh replacement simply copy past this block right after and add `,` after the first one.
-    //                 new SkinDef.MeshReplacement
-    //                 {
-    //                     //Loading mesh from AssetBundle look at material replacement commentary to learn about how value should be changed.
-    //                     mesh = mainAssetBundle.LoadAsset<Mesh>("FINALLYFXD.mesh"),
-    //                     //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
-    //                     renderer = renderers[2]
-    //                 }
-    //             },
-    //             //You probably don't need to touch this line
-    //             ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
-    //             //This is used to add skins for minions e.g. EngiTurrets
-    //             MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
-    //         };
-
-    //         //Adding new skin to a character's skin controller
-    //         Array.Resize(ref skinController.skins, skinController.skins.Length + 1);
-    //         skinController.skins[skinController.skins.Length - 1] = LoadoutAPI.CreateNewSkinDef(skin);
-
-    //         //Adding new skin into BodyCatalog
-
-    //         var skinsField = typeof(BodyCatalog).GetFieldValue<SkinDef[][]>("skins");
-    //         skinsField[(int) BodyCatalog.FindBodyIndex(voidcridBodyPrefab)] = skinController.skins;
-
-    //     } catch (Exception e)
-    //     {
-
-    //         Debug.LogWarning($" \"{e}\" Failed to add to \"{voidcridBodyPrefab}\"");
-    //     }
-    // }
     }
 
 }

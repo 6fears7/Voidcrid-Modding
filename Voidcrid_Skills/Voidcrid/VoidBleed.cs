@@ -10,7 +10,7 @@ using EntityStates.VoidSurvivor;
 using UnityEngine.Networking;
 
 namespace Voidcrid {
-public class VoidBleed : BaseSkillState
+public class Entropy : BaseSkillState
 {    
 
         public  static float baseDuration = 2f;
@@ -166,7 +166,7 @@ public class VoidBleed : BaseSkillState
 		    PlayCrossfade("Gesture, Override", setAnimState, "Slash.playbackRate", num,  0.05f);
             
 
-            float dmg = VoidBleed.damageCoefficient;
+            float dmg = Entropy.damageCoefficient;
 
             if (NetworkServer.active)
 		{
