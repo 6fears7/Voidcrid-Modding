@@ -36,7 +36,8 @@
     <PackageReference Include="R2API.Networking" Version="1.0.2" />
     <PackageReference Include="R2API.Language" Version="1.0.0" />
     <PackageReference Include="R2API.ContentManagement" Version="1.0.1" />
-
+    <PackageReference Include="R2API.Unlockable" Version="1.0.0" />
+    <PackageReference Include="R2API.Loadout" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

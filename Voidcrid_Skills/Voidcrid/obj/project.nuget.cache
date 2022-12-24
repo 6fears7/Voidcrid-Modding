@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "P/3oEtF6TcpHUgKhgIaU2C814ocCjr8DfrQ8728rmPKA6RPffiAIEqJv/t1OA04IJWjbba5BZTOiNRCnI7+FBQ==",
+  "dgSpecHash": "EUplb/D1sV5Xa1MvOSh0hQXCr2StE1dA4llqojwbs5KRbrugIjvMZ/bJiPNmz5va2oiW1iIQsAZoUZeU9EjVDw==",
   "success": true,
   "projectFilePath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
   "expectedPackageFiles": [
@@ -18,7 +18,9 @@
     "C:\\Users\\lol\\.nuget\\packages\\r2api.contentmanagement\\1.0.1\\r2api.contentmanagement.1.0.1.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.core\\5.0.3\\r2api.core.5.0.3.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.language\\1.0.0\\r2api.language.1.0.0.nupkg.sha512",
+    "C:\\Users\\lol\\.nuget\\packages\\r2api.loadout\\1.0.0\\r2api.loadout.1.0.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.networking\\1.0.2\\r2api.networking.1.0.2.nupkg.sha512",
+    "C:\\Users\\lol\\.nuget\\packages\\r2api.unlockable\\1.0.0\\r2api.unlockable.1.0.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\riskofrain2.gamelibs\\1.2.4-r.0\\riskofrain2.gamelibs.1.2.4-r.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
