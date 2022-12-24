@@ -16,7 +16,9 @@
           "R2API.ContentManagement": "1.0.1",
           "R2API.Core": "5.0.3",
           "R2API.Language": "1.0.0",
+          "R2API.Loadout": "1.0.0",
           "R2API.Networking": "1.0.2",
+          "R2API.Unlockable": "1.0.0",
           "RiskOfRain2.GameLibs": "1.2.4-r.0",
           "UnityEngine.Modules": "2019.4.26"
         },
@@ -165,6 +167,22 @@
           }
         }
       },
+      "R2API.Loadout/1.0.0": {
+        "dependencies": {
+          "BepInEx.Core": "5.4.19",
+          "MMHOOK.RoR2": "2022.9.20",
+          "R2API.ContentManagement": "1.0.1",
+          "R2API.Core": "5.0.3",
+          "RiskOfRain2.GameLibs": "1.2.4-r.0",
+          "UnityEngine.Modules": "2019.4.26"
+        },
+        "runtime": {
+          "lib/netstandard2.0/R2API.Loadout.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "R2API.Networking/1.0.2": {
         "dependencies": {
           "BepInEx.Core": "5.4.19",
@@ -177,6 +195,22 @@
           "lib/netstandard2.0/R2API.Networking.dll": {
             "assemblyVersion": "1.0.2.0",
             "fileVersion": "1.0.2.0"
+          }
+        }
+      },
+      "R2API.Unlockable/1.0.0": {
+        "dependencies": {
+          "BepInEx.Core": "5.4.19",
+          "MMHOOK.RoR2": "2022.9.20",
+          "R2API.ContentManagement": "1.0.1",
+          "R2API.Core": "5.0.3",
+          "RiskOfRain2.GameLibs": "1.2.4-r.0",
+          "UnityEngine.Modules": "2019.4.26"
+        },
+        "runtime": {
+          "lib/netstandard2.0/R2API.Unlockable.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
           }
         }
       },
@@ -869,12 +903,26 @@
       "path": "r2api.language/1.0.0",
       "hashPath": "r2api.language.1.0.0.nupkg.sha512"
     },
+    "R2API.Loadout/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mMt2W+tKCcKVLy5I+zFtZw+vDTt8EivmFRu1hBgjL01Yk4gHmHa2C85sHuzOeDaJa6mWfR8R3EPxx5zZ8b6iAQ==",
+      "path": "r2api.loadout/1.0.0",
+      "hashPath": "r2api.loadout.1.0.0.nupkg.sha512"
+    },
     "R2API.Networking/1.0.2": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-v5vEfaj4U8dD/UCVPE2xcRxgnrOd9NSn5Dw+oAjkSOTr/s/mY6GFdyRpab9mZ0vqi6PW1usHNSkF5clCEcE1Rw==",
       "path": "r2api.networking/1.0.2",
       "hashPath": "r2api.networking.1.0.2.nupkg.sha512"
+    },
+    "R2API.Unlockable/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-r9b5F4/JGZ7sC9dDqepbbLS4vDTvhFh7ha9tCbkIveimyGVjVF2zbV9w1CRcAeGapT/Bo6e7PqbKgAgqKY1KyA==",
+      "path": "r2api.unlockable/1.0.0",
+      "hashPath": "r2api.unlockable.1.0.0.nupkg.sha512"
     },
     "RiskOfRain2.GameLibs/1.2.4-r.0": {
       "type": "package",

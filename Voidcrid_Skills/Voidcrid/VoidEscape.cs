@@ -39,7 +39,6 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
     // Add the buff to the character body
     characterBody.GetComponent<CharacterBody>().AddBuff(buffDef);
 }
-
 	public override void OnEnter()
 	{
 		base.OnEnter();

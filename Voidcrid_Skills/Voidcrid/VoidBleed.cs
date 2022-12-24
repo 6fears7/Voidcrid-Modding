@@ -104,7 +104,8 @@ public class VoidBleed : BaseSkillState
 			
 
 			obj.Fire();
-        // }
+
+
 
         if ((bool)leftFistEffectInstance && rightFistEffectInstance)
 		{
@@ -169,7 +170,6 @@ public class VoidBleed : BaseSkillState
 
             if (NetworkServer.active)
 		{
-
           	ProcChainMask procChainMask = default(ProcChainMask);
 			procChainMask.AddProc(ProcType.VoidSurvivorCrush);
 
