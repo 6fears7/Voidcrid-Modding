@@ -60,7 +60,6 @@ public class NullBeam : BaseSkillState
 	public override void OnEnter()
 	{
 
-	
 		base.OnEnter();
 		minimumDuration = baseDuration / attackSpeedStat;
 		

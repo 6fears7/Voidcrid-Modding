@@ -176,7 +176,7 @@ public class VoidScepter : BaseSkillState
 		    PlayCrossfade("Gesture, Override", setAnimState, "Slash.playbackRate", num,  0.05f);
             
 
-            float dmg = VoidBleed.damageCoefficient;
+            float dmg = Entropy.damageCoefficient;
             if (NetworkServer.active)
 		{
 
