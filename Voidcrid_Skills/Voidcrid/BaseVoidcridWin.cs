@@ -6,7 +6,7 @@ namespace Voidcrid.Achievements {
 	public class VoidcridWin : BaseAchievement
 {
        
-    [RegisterAchievement("Bisquick5", "Skins.Croco.Voidcrid", null,  typeof(VoidcridServerUnlock))]
+    [RegisterAchievement("GrandfatherParadox", "Skins.Croco.Voidcrid", null,  typeof(VoidcridServerUnlock))]
     public class VoidcridUnlockAcievement : BaseAchievement
     {
 
@@ -54,6 +54,7 @@ namespace Voidcrid.Achievements {
                     this._paradoxAchieved++;
 
                     if (this._paradoxAchieved >= newtRequirement) {
+                        Debug.Log("Trying to kill");
                         currentPlayerMaster.TrueKill();
                         base.Grant();
                         

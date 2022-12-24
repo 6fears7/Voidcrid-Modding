@@ -278,8 +278,8 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
             
-            LanguageAPI.Add("ACHIEVEMENT_BISQUICK5_NAME" , "Grandfather Paradox");
-	        LanguageAPI.Add("ACHIEVEMENT_BISQUICK5_DESCRIPTION", "There are no friends at dusk.");
+            LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
+	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "There are no friends at dusk.");
 
             if (VoidcridPassiveShow.Value == true) {
 
@@ -404,7 +404,7 @@ namespace Voidcrid
 
                 survivorUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
                 survivorUnlock.cachedName = "Skins.Croco.Voidcrid";
-                survivorUnlock.nameToken = "ACHIEVEMENT_BISQUICK5_NAME";
+                survivorUnlock.nameToken = "ACHIEVEMENT_GRANDFATHERPARADOX_NAME";
                 survivorUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");
                 ContentAddition.AddUnlockableDef(survivorUnlock);
 
