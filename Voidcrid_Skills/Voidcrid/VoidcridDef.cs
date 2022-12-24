@@ -233,7 +233,7 @@ namespace Voidcrid
                     
                 
             LoadAssetBundle();
-            CreateUnlockableDef();
+            // CreateUnlockableDef();
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
@@ -278,8 +278,8 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
             
-            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME" , "Grandfather Paradox");
-	        LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "You monster.");
+            LanguageAPI.Add("ACHIEVEMENT_BISQUICK5_NAME" , "Grandfather Paradox");
+	        LanguageAPI.Add("ACHIEVEMENT_BISQUICK5_DESCRIPTION", "There are no friends at dusk.");
 
             if (VoidcridPassiveShow.Value == true) {
 
@@ -402,6 +402,12 @@ namespace Voidcrid
             SkillFamily skillUtility = skillLocator.utility.skillFamily;
             
 
+                survivorUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+                survivorUnlock.cachedName = "Skins.Croco.Voidcrid";
+                survivorUnlock.nameToken = "ACHIEVEMENT_BISQUICK5_NAME";
+                survivorUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");
+                ContentAddition.AddUnlockableDef(survivorUnlock);
+
             if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
 
             skillLocator.passiveSkill.enabled = true;
@@ -453,7 +459,7 @@ namespace Voidcrid
             skillPrimary.variants[skillPrimary.variants.Length - 1] = new SkillFamily.Variant
             {
                 skillDef = voidBreath,
-                // unlockableDef =,
+                unlockableDef = survivorUnlock,
                 viewableNode = new ViewablesCatalog.Node(voidBreath.skillNameToken, false, null)
             };
 
@@ -506,6 +512,7 @@ namespace Voidcrid
             ContentAddition.AddSkillDef(voidScepter);
 
 
+
         }
         internal static void LoadAssetBundle()
         {
@@ -527,21 +534,90 @@ namespace Voidcrid
             }
 
         }
-    
-            private static UnlockableDef CreateUnlockableDef()
-        {
-            if (!survivorUnlock)
-            {
-                survivorUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
-                survivorUnlock.cachedName = "Skins.Croco.Voidcrid";
-                survivorUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDUNLOCK_NAME";
-                survivorUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("deeprotentropy.png");
-                ContentAddition.AddUnlockableDef(survivorUnlock);
-            }
 
-            // if (Config.forceUnlock) return null;
-            return survivorUnlock;
-        }
+    //                 private void AddVoidcridSkin()
+    //     {
+
+    //         try {
+
+    //         var bodyPrefab = BodyCatalog.FindBodyPrefab(voidcridBodyPrefab);
+    //         //Getting necessary components
+    //         var renderers = bodyPrefab.GetComponentsInChildren<Renderer>(true);
+    //         var skinController = bodyPrefab.GetComponentInChildren<ModelSkinController>();
+    //         var mdl = skinController.gameObject;
+
+    //             var skin = new LoadoutAPI.SkinDefInfo
+    //         {
+    //             //Icon for your skin in the game, it can be any image, or you can use `LoadoutAPI.CreateSkinIcon` to easily create an icon that looks similar to the icons in the game.
+    //             Icon = LoadoutAPI.CreateSkinIcon(Color.black, Color.magenta, Color.red, Color.magenta),
+    //             //Replace `LumberJackCommando` with your skin name that can be used to access it through the code
+    //             Name = "fingers3",
+    //             //Replace `LUMBERJACK_SKIN` with your token
+    //             NameToken = "VOIDCRID_SKIN",
+    //             RootObject = mdl,
+    //             //Defining skins that will be applyed before our.
+    //             //Default skin index - 0, Monsoon skin index - 1
+    //             //Or you can use `BaseSkins = Array.Empty<SkinDef>(),` if you don't want to add base skin
+    //             //Because we will replace only Commando mesh, but not his pistols we have to use base skin.
+    //             BaseSkins = new SkinDef[] { skinController.skins[0] },
+    //             //Name of achievement after which skin will be unlocked
+    //             //Leave that field empty if you want skin to be always available 
+    //             // UnlockableDef = "",
+    //             //This is used to disable/enable some gameobjects in body prefab.
+    //             GameObjectActivations = new SkinDef.GameObjectActivation[0],
+    //             //This is used to define which material should be used on a specific renderer.
+    //             //Only one material per renderer(mesh) is can be used
+    //             RendererInfos = new CharacterModel.RendererInfo[]
+    //             {
+    //                 //To add another material replacement simply copy past this block right after and add `,` after the first one.
+    //                 new CharacterModel.RendererInfo
+    //                 {
+    //                     //Loading material from AssetBundle replace "@SkinTest:Assets/Resources/matLumberJack.mat" with your value.
+    //                     //It should be in this format `{provider name}:{path to asset in unity}`
+    //                     //To get path to asset you can right click on your asset in Unity and select `Copy path` option
+    //                     defaultMaterial = mainAssetBundle.LoadAsset<Material>("FINALLYFXD.mesh"),
+    //                     //Should mesh cast shadows
+    //                     defaultShadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On,
+    //                     //Should mesh be ignored by overlays. For example shield outline from `Personal Shield Generator`
+    //                     ignoreOverlays = false,
+    //                     //Which renderer(mesh) to replace.
+    //                     //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
+    //                     renderer = renderers[2]
+    //                 }
+    //             },
+    //             //This is used to define which mesh should be used on a specific renderer.
+    //             MeshReplacements = new SkinDef.MeshReplacement[]
+    //             {
+    //                 //To add another mesh replacement simply copy past this block right after and add `,` after the first one.
+    //                 new SkinDef.MeshReplacement
+    //                 {
+    //                     //Loading mesh from AssetBundle look at material replacement commentary to learn about how value should be changed.
+    //                     mesh = mainAssetBundle.LoadAsset<Mesh>("FINALLYFXD.mesh"),
+    //                     //Index you need can be found here: https://github.com/risk-of-thunder/R2Wiki/wiki/Creating-skin-for-vanilla-characters-with-custom-model#renderers
+    //                     renderer = renderers[2]
+    //                 }
+    //             },
+    //             //You probably don't need to touch this line
+    //             ProjectileGhostReplacements = new SkinDef.ProjectileGhostReplacement[0],
+    //             //This is used to add skins for minions e.g. EngiTurrets
+    //             MinionSkinReplacements = new SkinDef.MinionSkinReplacement[0],
+    //         };
+
+    //         //Adding new skin to a character's skin controller
+    //         Array.Resize(ref skinController.skins, skinController.skins.Length + 1);
+    //         skinController.skins[skinController.skins.Length - 1] = LoadoutAPI.CreateNewSkinDef(skin);
+
+    //         //Adding new skin into BodyCatalog
+
+    //         var skinsField = typeof(BodyCatalog).GetFieldValue<SkinDef[][]>("skins");
+    //         skinsField[(int) BodyCatalog.FindBodyIndex(voidcridBodyPrefab)] = skinController.skins;
+
+    //     } catch (Exception e)
+    //     {
+
+    //         Debug.LogWarning($" \"{e}\" Failed to add to \"{voidcridBodyPrefab}\"");
+    //     }
+    // }
     }
 
 }
