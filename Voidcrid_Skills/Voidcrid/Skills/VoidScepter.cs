@@ -64,11 +64,9 @@ public class VoidScepter : BaseSkillState
  
 	private GameObject rightFistEffectInstance;
 
-    // private float entropyFiringSpeed = .3f;
 
     private DamageType entropyDamage;
 
-    // private float baseEntropyDamage = 3f;
 
     [SerializeField]
     public GameObject leftfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
@@ -101,21 +99,21 @@ public class VoidScepter : BaseSkillState
                 
 				baseForce = blastAttackForce
 
-
-               
+            
 
 			};
             obj.bonusForce = Vector3.back * blastAttackForce;
 			obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
 			obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
+            
 			
 
 			obj.Fire();
-        // }
 
         if ((bool)leftFistEffectInstance && rightFistEffectInstance)
 		{
 		Vector3 footPosition = base.characterBody.footPosition;
+        
 
 		EffectManager.SpawnEffect(aoePrefab, new EffectData
 		{
@@ -313,7 +311,6 @@ public class VoidScepter : BaseSkillState
 				GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 			
 				float damage = 1f;
-                // Util.OnHitProcDamage(damageInfo.damage, component2.damage, damageCoefficient10);
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
 				{
 					damage = damage,

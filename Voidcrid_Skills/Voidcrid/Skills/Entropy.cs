@@ -57,7 +57,7 @@ public class Entropy : BaseSkillState
  
 	private GameObject rightFistEffectInstance;
 
-    // private float entropyFiringSpeed = .3f;
+    private bool firedBombardment;
 
     private DamageType entropyDamage;
 
@@ -143,7 +143,6 @@ public class Entropy : BaseSkillState
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
 		    rightFistEffectInstance = UnityEngine.Object.Instantiate(rightfistEffectPrefab, FindModelChild("MuzzleHandR"));
-
             this.duration = baseDuration / this.attackSpeedStat;
             this.earlyExitDuration = this.duration * earlyExitTime;
             this.hasFired1 = false;
@@ -207,9 +206,7 @@ public class Entropy : BaseSkillState
 
             if (this.hitPauseTimer <= 0f && this.inHitPause)
             {
-                // base.ConsumeHitStopCachedState(this.hitStopCachedState, base.characterMotor, this.animator); 
                 this.inHitPause = false;
-                // if (this.storedVelocity != Vector3.zero) base.characterMotor.velocity = this.storedVelocity;
             }
 
             if (!this.inHitPause)
@@ -246,20 +243,16 @@ public class Entropy : BaseSkillState
                 
             }
 
+              if (IsKeyDownAuthority() && hasFinishedFiring) {
+
+                    Bombardment();
+                    this.firedBombardment = true;
+                }
 
 
-
-            // if (base.fixedAge >= this.earlyExitDuration && base.inputBank.skill1.down)
-            // {
-            //     var nextAttack = new VoidBleed();
-            //     nextAttack.currentAttack = this.currentAttack + 1;
-            //     this.outer.SetNextState(nextAttack);
-            //     return;
-            // }
-
-            if (base.isAuthority && this.hasFinishedFiring == true)
+            if (base.isAuthority &&  (this.hasFinishedFiring == true || this.firedBombardment))
             {
-                // base.fixedAge >= this.duration && 
+
                 this.outer.SetNextStateToMain();
                 base.StartAimMode(0.2f, false);
                 return;
@@ -287,60 +280,47 @@ public class Entropy : BaseSkillState
             return InterruptPriority.PrioritySkill;
         }
 
+         private void Bombardment() {
+
+            if (NetworkServer.active)
+		{
+
+				DamageInfo damageInfo = new DamageInfo();
+				damageInfo.damage = (.15f * base.healthComponent.fullCombinedHealth);
+				damageInfo.position = base.characterBody.corePosition;
+				damageInfo.force = Vector3.zero;
+				damageInfo.damageColorIndex = DamageColorIndex.Void;
+				damageInfo.crit = false;
+				damageInfo.attacker = null;
+				damageInfo.inflictor = null;
+				damageInfo.damageType = DamageType.NonLethal;
+				damageInfo.procCoefficient = 0f;
+				base.healthComponent.TakeDamage(damageInfo);
+        }
+				GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
+			
+				float damage = 1f;
+				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+				{
+					damage = damage,
+                    damageTypeOverride = crocoDamageTypeController.GetDamageType(),
+					crit = RollCrit(),
+					damageColorIndex = DamageColorIndex.Void,
+					position = base.characterBody.footPosition,
+					procChainMask = default(ProcChainMask),
+					force = 6000f,
+					owner = base.gameObject,
+					projectilePrefab = projectilePrefab,
+					rotation = Quaternion.identity,
+					target = null
+                    
+				});
+
+	}
 
     }
     
 }
-
-
-//   RaycastHit[] hits = Physics.SphereCastAll(decayMuzzle.position, decayEffect.radius, Vector3.up);
-//         foreach (RaycastHit hit in hits)
-//         {
-//             HealthComponent healthComponent = hit.collider.GetComponent<HealthComponent>();
-//             if (healthComponent)
-//             {
-//                 healthComponent.TakeDamage(new DamageInfo
-//                 {
-//                     damage = damagePerSecond * Time.fixedDeltaTime,
-//                     position = hit.point,
-//                     damageType = DamageType.Generic,
-//                     attacker = base.gameObject,
-//                     inflictor = base.gameObject,
-//                     force = Vector3.zero
-//                 });
-//             }
-//         }
-//     }
-// }
-
-// public override void FixedUpdate()
-// {
-//     base.FixedUpdate();
-
-//     // Update the decay effect
-//     decayEffect.Update();
-
-//     // Calculate the remaining number of unstable atoms using the nuclear decay formula
-//     float remainingUnstableAtoms = base.characterBody.initialUnstableAtoms * Mathf.Exp(-decayRate * Time.fixedDeltaTime);
-//     base.characterBody.SetUnstableAtoms(remainingUnstableAtoms);
-
-//     // End the decay effect when the duration has elapsed
-//     if (base.fixedAge > decayDuration)
-//     {
-//         outer.SetNextStateToMain();
-//     }
-// }
-
-// public override void OnExit()
-// {
-//     // Destroy the decay effect
-//     decayEffect.Destroy();
-
-//     base.OnExit();
-// }
-// }
-// }
-
 
 
 
