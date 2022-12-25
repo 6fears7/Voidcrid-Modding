@@ -77,7 +77,6 @@ namespace Voidcrid
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
 
-        internal static bool hasVoidcrid;
         public void Awake()
 
         
@@ -271,7 +270,7 @@ namespace Voidcrid
 
 
 
-            if (hasVoidcrid == true && Seasonal.Value == false) {
+            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
@@ -283,7 +282,7 @@ namespace Voidcrid
 
 
 
-            } else if (hasVoidcrid == true && hasVoidcrid == true && Seasonal.Value == true) {
+            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
