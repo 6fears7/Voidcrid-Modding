@@ -30,7 +30,6 @@ namespace Voidcrid.Achievements {
                 if (count >= 4)
                 {
                     Chat.AddMessage(Util.GenerateColoredString("M?NE ME?E T?KEL ??UPHARS?N", Color.magenta));
-                    VoidcridDef.hasVoidcrid = true;
                     base.Grant();
                 }
             }
