@@ -72,9 +72,12 @@ namespace Voidcrid
         private static UnlockableDef entropyUnlock;
 
         private static UnlockableDef ethUnlock;
+
+        private static UnlockableDef VoidcridUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
 
+        internal static bool hasVoidcrid;
         public void Awake()
 
         
@@ -260,24 +263,27 @@ namespace Voidcrid
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
 	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "There are no friends at dusk.");
 
-            LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right to jail");
+            LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right To Jail");
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_DESCRIPTION", "As Acrid, jail a Jailer.");
 
+            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "...Left alone.");
+            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, become the only thing the Void fears.");
 
 
-            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
+
+            if (hasVoidcrid == true && Seasonal.Value == false) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcrid.png");
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon2.png");
 
             LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
             LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
 
 
 
-            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
+            } else if (hasVoidcrid == true && hasVoidcrid == true && Seasonal.Value == true) {
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
@@ -377,6 +383,12 @@ namespace Voidcrid
             voidBeam.mustKeyPress = true;
 
             ContentAddition.AddSkillDef(voidBeam);
+
+            VoidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+            VoidcridUnlock.cachedName = "Skills.Croco.Nullbeam";
+            VoidcridUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDUNLOCK_NAME";
+            VoidcridUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("icon2.png");
+            ContentAddition.AddUnlockableDef(VoidcridUnlock);
             SkillFamily skillSecondary = skillLocator.secondary.skillFamily;
 
             Array.Resize(ref skillSecondary.variants, skillSecondary.variants.Length + 1);
@@ -384,7 +396,7 @@ namespace Voidcrid
 
             {
                 skillDef = voidBeam,
-                // unlockableDef =,
+                unlockableDef = VoidcridUnlock,
                 viewableNode = new ViewablesCatalog.Node(voidBeam.skillNameToken, false, null)
             };
         }
@@ -437,7 +449,7 @@ namespace Voidcrid
 
          private void EntropySetup(SkillLocator skillLocator) {
         LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsUtility>Seasonal.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies.");
+        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 15% </style> of your health and applies your Passive");
          SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
             Entropy.activationState = new SerializableEntityStateType(typeof(Voidcrid.Entropy));
             Entropy.activationStateMachineName = "Weapon";
@@ -488,8 +500,8 @@ namespace Voidcrid
 
             voidScepter = ScriptableObject.CreateInstance<SkillDef>();
 
-            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY", $"<style=cArtifact>「Deeprotted Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID__SCEPTER_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Damage is increased to <style=cIsDamage>{ScepterEntropyOverrideDamage.Value}00% x 3</style> and if held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 15% </style> of your health and applies your passive.</style>");
+            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY", $"<style=cArtifact>「Umbral Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID__SCEPTER_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Damage is increased to <style=cIsDamage>{ScepterEntropyOverrideDamage.Value}00% x 3</style> and if held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 10% </style> of your health and applies your Passive.</style>");
 
 
             voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidScepter));

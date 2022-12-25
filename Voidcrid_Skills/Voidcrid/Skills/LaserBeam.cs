@@ -69,8 +69,7 @@ public class NullBeam : BaseSkillState
 			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
 		 }
 		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", VoidcridDef.NullBeamOverrideDuration.Value);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
-		// blinkVfxInstance = Object.Instantiate(beamVfxPrefab);
-		// blinkVfxInstance.transform.SetParent(base.characterBody.aimOriginTransform, worldPositionStays: false);
+		
 	}
 
 	public override void FixedUpdate()
@@ -79,33 +78,21 @@ public class NullBeam : BaseSkillState
 		FireBullet();
 		Ray aimRay = GetAimRay();
 		base.characterBody.SetAimTimer(3f);
-		// if ((bool)blinkVfxInstance)
-		// {
-			// EffectData effectData = new EffectData
-			// {
-			// 	origin = aimRay.origin,
-			// 	start = aimRay.origin,
-			// 	scale = bulletRadius
-			// };
+
 			Vector3 point = GetAimRay().GetPoint(maxDistance + attackSpeedStat);
 			if (Util.CharacterRaycast(base.gameObject, GetAimRay(), out var hitInfo, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.UseGlobal))
 			{
 				point = hitInfo.point;
 			}
-			// blinkVfxInstance.transform.forward = point - blinkVfxInstance.transform.position;
-			// EffectManager.SpawnEffect(beamVfxPrefab, effectData, transmit: true);
-if(base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
+			
+			if(base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
 			outer.SetNextStateToMain();
 		}
 	}
 
 	public override void OnExit()
 	{
-		// Util.PlaySound(ChargeNovabomb. fire, base.gameObject);
-		// if ((bool)blinkVfxInstance)
-		// {
-		// 	VfxKillBehavior.KillVfxObject(blinkVfxInstance);
-		// }
+
 		if (NetworkServer.active)
 		{
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
@@ -133,7 +120,7 @@ if(base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value 
 			bulletAttack.maxSpread = maxSpread;
 			bulletAttack.radius = bulletRadius;
 			bulletAttack.smartCollision = false;
-			bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
+			bulletAttack.falloffModel = BulletAttack.FalloffModel.DefaultBullet;
 			bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
 			bulletAttack.damage = VoidcridDef.NullBeamOverrideDamage.Value * damageStat;
 			bulletAttack.procCoefficient = procCoefficientPerSecond;
