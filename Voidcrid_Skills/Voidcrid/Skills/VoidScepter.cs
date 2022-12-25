@@ -297,7 +297,7 @@ public class VoidScepter : BaseSkillState
 		{
 
 				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (.15f * base.healthComponent.fullCombinedHealth);
+				damageInfo.damage = (.10f * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
 				damageInfo.force = Vector3.zero;
 				damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -327,7 +327,8 @@ public class VoidScepter : BaseSkillState
                     
 				});
 
-	}
+
+	        }
 
         } 
 
