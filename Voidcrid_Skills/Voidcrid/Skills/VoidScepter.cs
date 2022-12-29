@@ -137,15 +137,9 @@ public class VoidScepter : BaseSkillState
             base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            
-            if (VoidcridDef.Seasonal.Value == true) {
-            poisonAttack = DamageType.Freeze2s;
-            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/EliteIce/AffixWhiteExplosion.prefab").WaitForCompletion();
-
-            } else if(VoidcridDef.Seasonal.Value == false) {
+        
             poisonAttack = crocoDamageTypeController.GetDamageType();
             aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
-            }
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));

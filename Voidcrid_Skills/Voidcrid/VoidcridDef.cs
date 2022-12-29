@@ -22,7 +22,9 @@ namespace Voidcrid
         "1.0.0")]
         
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
-
+    [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.heyimnoob.NoopSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.plasmacore.PlasmaCoreSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
     public class VoidcridDef : BaseUnityPlugin
     {
         
@@ -56,8 +58,6 @@ namespace Voidcrid
         public static ConfigEntry<float> ScepterEntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
-
-        public static ConfigEntry<bool> Seasonal {get; set;}
 
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
@@ -229,13 +229,6 @@ namespace Voidcrid
 					"Shows the Voidcrid fake Passive description"
 				);
 
-                 Seasonal = Config.Bind<bool>(
-					"Voidcrid",
-					"Seasonal",
-					true,
-					"Activates seasonal attributes"
-				);
-
             LoadAssetBundle();
             SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
 
@@ -252,25 +245,21 @@ namespace Voidcrid
                 ScepterSetup();
             }
 
-            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
-            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
-            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE", "<style=cIsUtility>Void</style>crid");
-            LanguageAPI.Add("SEASONAL_VOIDCRID_PASSIVE_DESC", "<style=cIsUtility>Seasonal.</style> Some attacks have a chance to <style=cIsUtility>freeze</style> enemies.");
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
-            LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies.");
+            LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
             
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
-	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "There are no friends at dusk.");
+	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected character, an unfortunate end.");
 
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right To Jail");
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_DESCRIPTION", "As Acrid, jail a Jailer.");
 
-            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "...Left alone.");
-            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, become the only thing the Void fears.");
+            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "...Left alone");
+            LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, corrupt yourself 7 times to break containment.");
 
 
 
-            if (VoidcridPassiveShow.Value == true && Seasonal.Value == false) {
+            if (VoidcridPassiveShow.Value == true) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
@@ -279,18 +268,7 @@ namespace Voidcrid
 
             LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
             LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
-
-
-
-            } else if (VoidcridPassiveShow.Value == true && Seasonal.Value == true) {
-            skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = "SEASONAL_VOIDCRID_PASSIVE";
-            skillLocator.passiveSkill.skillDescriptionToken = "SEASONAL_VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("voidcridSeasonal.png");
-            
-
-            } 
-
+            }
             else {
 
                 skillLocator.passiveSkill.enabled = false;
@@ -386,7 +364,7 @@ namespace Voidcrid
             VoidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             VoidcridUnlock.cachedName = "Skills.Croco.Nullbeam";
             VoidcridUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDUNLOCK_NAME";
-            VoidcridUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("icon2.png");
+            VoidcridUnlock.achievementIcon = mainAssetBundle.LoadAsset<Sprite>("nullbeam2.png");
             ContentAddition.AddUnlockableDef(VoidcridUnlock);
             SkillFamily skillSecondary = skillLocator.secondary.skillFamily;
 
@@ -528,6 +506,33 @@ namespace Voidcrid
 
         }
 
+        public static bool HasDeeprot(SkillLocator sk)
+        {
+            bool hasDeeprot = false;
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.plasmacore.PlasmaCoreSpikestripContent") && sk)
+            {
+                hasDeeprot = HasDeeprotInternal(sk);
+            }
+            return hasDeeprot;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        private static bool HasDeeprotInternal(SkillLocator sk)
+        {
+            bool deeprotEquipped = false;
+            if (PlasmaCoreSpikestripContent.Content.Skills.DeepRot.scriptableObject != null)
+            {
+                foreach(GenericSkill gs in sk.allSkills)
+                {
+                    if (gs.skillDef == PlasmaCoreSpikestripContent.Content.Skills.DeepRot.scriptableObject.SkillDefinition)
+                    {
+                        deeprotEquipped = true;
+                        break;
+                    }
+                }
+            }
+            return deeprotEquipped;
+    }
 
 
 

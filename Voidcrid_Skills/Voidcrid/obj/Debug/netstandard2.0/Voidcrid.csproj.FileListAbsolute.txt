@@ -18,3 +18,7 @@ C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\ob
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.CoreCompileInputs.cache
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.dll
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.pdb
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\GrooveSaladSpikestripContent.dll
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\NoopSpikestrip.dll
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\PlasmaCoreSpikestripContent.dll
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.CopyComplete

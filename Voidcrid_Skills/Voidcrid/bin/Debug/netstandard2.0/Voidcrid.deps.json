@@ -20,7 +20,10 @@
           "R2API.Networking": "1.0.2",
           "R2API.Unlockable": "1.0.0",
           "RiskOfRain2.GameLibs": "1.2.4-r.0",
-          "UnityEngine.Modules": "2019.4.26"
+          "UnityEngine.Modules": "2019.4.26",
+          "GrooveSaladSpikestripContent": "1.0.0.0",
+          "NoopSpikestrip": "1.0.0.0",
+          "PlasmaCoreSpikestripContent": "0.0.0.0"
         },
         "runtime": {
           "Voidcrid.dll": {}
@@ -796,6 +799,30 @@
             "fileVersion": "0.0.0.0"
           }
         }
+      },
+      "GrooveSaladSpikestripContent/1.0.0.0": {
+        "runtime": {
+          "GrooveSaladSpikestripContent.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "NoopSpikestrip/1.0.0.0": {
+        "runtime": {
+          "NoopSpikestrip.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "PlasmaCoreSpikestripContent/0.0.0.0": {
+        "runtime": {
+          "PlasmaCoreSpikestripContent.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
       }
     }
   },
@@ -1126,6 +1153,21 @@
       "sha512": "sha512-2d73AOFATaE0xsSY4qsK65CwT55e7g1myM7C5LMTdVRM57nAWpLWv8x/39uNHYjJQBnXqsQwsadk2H0xsyBsKA==",
       "path": "unityengine.modules/2019.4.26",
       "hashPath": "unityengine.modules.2019.4.26.nupkg.sha512"
+    },
+    "GrooveSaladSpikestripContent/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NoopSpikestrip/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PlasmaCoreSpikestripContent/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

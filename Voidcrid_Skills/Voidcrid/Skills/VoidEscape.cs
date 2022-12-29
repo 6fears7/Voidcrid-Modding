@@ -30,7 +30,9 @@ public class VoidEscape : StealthMode
 	public GameObject voidFogInstance = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VoidFogMildEffect.prefab").WaitForCompletion();
 	public float voidJailChance = 3f;
 
-	private DamageType seasonalAttack;
+	private CrocoDamageTypeController crocoDamageTypeController;
+
+	private DamageType baseAttack;
 	private bool hasBuff = false;
 
 	[Command]
@@ -42,18 +44,19 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 	public override void OnEnter()
 	{
 		base.OnEnter();
-		
-		CrocoDamageTypeController blarg = new CrocoDamageTypeController();
+		bool hasDeeprot = VoidcridDef.HasDeeprot(base.skillLocator);
+
+        crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 		
 		
        	// voidFogInstance = Object.Instantiate(voidFogInstance, FindModelChild("MouthMuzzle"));
-		if (VoidcridDef.Seasonal.Value == true) {
+		if (hasDeeprot == true) {
 
-			seasonalAttack = DamageType.Freeze2s;
+			baseAttack = crocoDamageTypeController.GetDamageType();
 
-		} else if (VoidcridDef.Seasonal.Value == false) {
+		} else {
 
-			seasonalAttack = DamageType.Generic;
+			baseAttack = DamageType.Stun1s;
 
 		}
 		animator = GetModelAnimator();
@@ -62,7 +65,7 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 			if (base.characterBody)
 			{
 				if (NetworkServer.active)
-				{   Debug.Log("Active Server check");
+				{   
 					base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
 					base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
 					base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
@@ -72,7 +75,6 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 					// CmdGiveBuffToClient(RoR2Content.Buffs.CloakSpeed, base.characterBody.gameObject);
 					// CmdGiveBuffToClient(RoR2Content.Buffs.VoidFogStrong, base.characterBody.gameObject);
 				}
-				Debug.Log("Active Server check has failed again");
 
 
 	
@@ -161,7 +163,7 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 				crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
 				baseDamage = VoidcridDef.EtherealDriftOverrideDamage.Value,
 				falloffModel = BlastAttack.FalloffModel.None,
-				damageType =  (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : seasonalAttack),
+				damageType =  (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : baseAttack),
 				baseForce = blastAttackForce
 
 			};
