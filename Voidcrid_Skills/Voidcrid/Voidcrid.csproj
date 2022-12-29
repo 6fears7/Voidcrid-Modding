@@ -85,6 +85,15 @@
       <HintPath>libs\AncientScepter.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="GrooveSaladSpikestripContent">
+      <HintPath>libs\GrooveSaladSpikestripContent.dll</HintPath>
+    </Reference>
+    <Reference Include="NoopSpikestrip">
+      <HintPath>libs\NoopSpikestrip.dll</HintPath>
+    </Reference>
+    <Reference Include="PlasmaCoreSpikestripContent">
+      <HintPath>libs\PlasmaCoreSpikestripContent.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

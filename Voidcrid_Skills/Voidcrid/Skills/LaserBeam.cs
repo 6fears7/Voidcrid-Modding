@@ -51,16 +51,26 @@ public class NullBeam : BaseSkillState
 
 	private float minimumDuration;
 
-	// private float damageCoefficientPerSecond = 0.3f;
 
 	private float maxSpread = 2f;
 
-	// private GameObject blinkVfxInstance;
+    private DamageType deeprotDamage;
+     private DamageType passiveAttack;
+    private float rotAttack = 8f;
+
+	private CrocoDamageTypeController crocoDamageTypeController;
+
+	private float switchAttacks = 50f;
+
+	private DamageType voidAttack;
+
 
 	public override void OnEnter()
 	{
 
 		base.OnEnter();
+		crocoDamageTypeController =  GetComponent<CrocoDamageTypeController>();
+
 		minimumDuration = baseDuration / attackSpeedStat;
 		
 		 if (NetworkServer.active)
@@ -105,6 +115,19 @@ public class NullBeam : BaseSkillState
 	{
 		Ray aimRay = GetAimRay();
 		AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
+		bool hasDeeprot = VoidcridDef.HasDeeprot(base.skillLocator);
+
+		if (hasDeeprot) {
+		passiveAttack = (Util.CheckRoll(rotAttack, base.characterBody.master) ? crocoDamageTypeController.GetDamageType() : DamageType.Generic);
+
+		} else {
+
+			passiveAttack = DamageType.Generic;
+		}
+
+		voidAttack =  (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+
+		deeprotDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? passiveAttack : DamageType.Generic);
 
 
 		if (base.isAuthority)
@@ -125,7 +148,7 @@ public class NullBeam : BaseSkillState
 			bulletAttack.damage = VoidcridDef.NullBeamOverrideDamage.Value * damageStat;
 			bulletAttack.procCoefficient = procCoefficientPerSecond;
 			bulletAttack.force = forcePerSecond;
-			bulletAttack.damageType = (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+			bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidAttack);
 			bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);
 			bulletAttack.hitEffectPrefab = hitEffectPrefab;
 			bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
