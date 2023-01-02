@@ -63,6 +63,10 @@ public class VoidScepter : BaseSkillState
 	private GameObject leftFistEffectInstance;
  
 	private GameObject rightFistEffectInstance;
+    private Material entropyGlow;
+
+    float emissionIntensity = 4f;
+	float minIntensity = 0.3f;
 
 
     private DamageType entropyDamage;
@@ -132,7 +136,8 @@ public class VoidScepter : BaseSkillState
         public override void OnEnter()
         {
             base.OnEnter();
-            
+            entropyGlow =  GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
             base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
@@ -197,6 +202,7 @@ public class VoidScepter : BaseSkillState
                 
         }
         }
+        ManageEntroypGlow();
         }
 
 
@@ -231,7 +237,7 @@ public class VoidScepter : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFired1 = true;
-                
+                ManageEntroypGlow();
             }
 
              if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
@@ -239,7 +245,7 @@ public class VoidScepter : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFired2 = true;
-                
+                ManageEntroypGlow();
             }
 
             if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
@@ -247,7 +253,7 @@ public class VoidScepter : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFinishedFiring = true;
-              
+                ManageEntroypGlow();
                 
             }
 
@@ -279,6 +285,27 @@ public class VoidScepter : BaseSkillState
 		    EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();
         }
+
+        private void ManageEntroypGlow() {
+
+            float emissionIncrement = minIntensity / (VoidcridDef.ScepterEntropyOverrideFireSpeed.Value);
+
+		            if (entropyGlow)
+            {
+				entropyGlow.EnableKeyword("_EMISSION");
+                entropyGlow.SetColor("_EmColor", VoidcridDef.ScepterGlow.Value * emissionIntensity);
+                emissionIntensity -= emissionIncrement;
+            } 
+                
+
+            
+            if (hasFinishedFiring) {
+            entropyGlow.DisableKeyword("_EMISSION");
+            entropyGlow.SetColor("_EmColor", Color.black);
+
+            }
+
+}
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
