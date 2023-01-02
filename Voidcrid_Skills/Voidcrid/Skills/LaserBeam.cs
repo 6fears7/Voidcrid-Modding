@@ -1,11 +1,10 @@
 using EntityStates;
 using RoR2;
 using UnityEngine;
-using EntityStates.Mage.Weapon;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using EntityStates.VoidSurvivor.Weapon;
-using RoR2.Items;
+using System.Collections;
+
 
 namespace Voidcrid {
 
@@ -65,10 +64,19 @@ public class NullBeam : BaseSkillState
 	private DamageType voidAttack;
 
 
+	private Material backGlow;
+
+
+	private float maxIntensity = 4.0f;
+
+	private float duration = VoidcridDef.NullBeamOverrideDuration.Value;
+
+
 	public override void OnEnter()
 	{
 
 		base.OnEnter();
+		
 		crocoDamageTypeController =  GetComponent<CrocoDamageTypeController>();
 
 		minimumDuration = baseDuration / attackSpeedStat;
@@ -78,16 +86,28 @@ public class NullBeam : BaseSkillState
 			base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 			base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
 		 }
-		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", VoidcridDef.NullBeamOverrideDuration.Value);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
-		
+		PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", duration);		// Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
+		backGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+
+
 	}
 
 	public override void FixedUpdate()
 	{
 		base.FixedUpdate();
 		FireBullet();
+		float charge = CalcCharge();
 		Ray aimRay = GetAimRay();
 		base.characterBody.SetAimTimer(3f);
+
+
+		            if (backGlow)
+            {
+				backGlow.EnableKeyword("_EMISSION");
+				backGlow.SetColor("_EmColor", VoidcridDef.VoidGlow.Value * maxIntensity);
+				maxIntensity -= maxIntensity * Time.fixedDeltaTime / (VoidcridDef.NullBeamOverrideDuration.Value - 1f);
+			}
+
 
 			Vector3 point = GetAimRay().GetPoint(maxDistance + attackSpeedStat);
 			if (Util.CharacterRaycast(base.gameObject, GetAimRay(), out var hitInfo, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.UseGlobal))
@@ -95,7 +115,7 @@ public class NullBeam : BaseSkillState
 				point = hitInfo.point;
 			}
 			
-			if(base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
+			if (base.isAuthority && ( fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || ( fixedAge >= baseDuration && !IsKeyDownAuthority() ) ) )		{
 			outer.SetNextStateToMain();
 		}
 	}
@@ -109,7 +129,21 @@ public class NullBeam : BaseSkillState
 			base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
 		}
 		base.OnExit();
+		if (backGlow)
+		{
+		    	backGlow.DisableKeyword("_EMISSION");
+				backGlow.SetColor("_EmColor", Color.black);
+
+		}
+
+
 	}
+	   protected float CalcCharge()
+        {
+            return Mathf.Clamp01(fixedAge / baseDuration);
+        }
+
+
 
 	private void FireBullet()
 	{
