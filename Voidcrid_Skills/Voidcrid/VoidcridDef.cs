@@ -55,6 +55,12 @@ namespace Voidcrid
         public static ConfigEntry<float> EntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<float> EntropyOverrideRadius {get; set;}
+
+        public static ConfigEntry<Color> VoidGlow {get; set;}
+
+        public static ConfigEntry<Color> ScepterGlow {get; set;}
+
+
         public static ConfigEntry<float> ScepterEntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
@@ -220,6 +226,21 @@ namespace Voidcrid
 					12f,
 					"Scepter's Entropy radius"
 				);
+                    
+                    VoidGlow = Config.Bind<Color>(
+					"Voicrid Glow",
+					"Color",
+					Color.magenta,
+					"Voidcrid's Color Glow"
+				);
+
+                    ScepterGlow = Config.Bind<Color>(
+					"Voicrid Glow",
+					"Scepter Color",
+					Color.red,
+					"Voidcrid's Scepter Color Glow"
+				);
+
 
                 
                     VoidcridPassiveShow = Config.Bind<bool>(
