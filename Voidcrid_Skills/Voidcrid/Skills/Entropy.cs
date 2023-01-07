@@ -73,6 +73,11 @@ public class Entropy : BaseSkillState
 
         private BlastAttack obj;
 
+        private Material entropyGlow;
+
+        float emissionIntensity = 4f;
+		float minIntensity = 0.3f;
+
         private  void FireSmash()
 	{
         
@@ -124,6 +129,13 @@ public class Entropy : BaseSkillState
             base.OnEnter();
             
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
+
+            CharacterModel characterModel = GetModelTransform().GetComponent<CharacterModel>();
+
+
+            entropyGlow =  GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+                
+                
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
                 if (NetworkServer.active){
@@ -187,13 +199,37 @@ public class Entropy : BaseSkillState
                 
         }
         }
+
+                    ManageEntroypGlow();
+
         }
 
+private void ManageEntroypGlow() {
+
+            float emissionIncrement = minIntensity / (VoidcridDef.EntropyOverrideFireSpeed.Value);
+
+		            if (entropyGlow)
+            {
+				entropyGlow.EnableKeyword("_EMISSION");
+                entropyGlow.SetColor("_EmColor", VoidcridDef.VoidGlow.Value * emissionIntensity);
+                emissionIntensity -= emissionIncrement;
+            } 
+                
+
+            
+            if (hasFinishedFiring) {
+            entropyGlow.DisableKeyword("_EMISSION");
+            entropyGlow.SetColor("_EmColor", Color.black);
+
+            }
+
+}
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
             this.moveSpeedStat = 0f;
+
 
             this.hitPauseTimer -= Time.fixedDeltaTime;
 
@@ -217,6 +253,8 @@ public class Entropy : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFired1 = true;
+                ManageEntroypGlow();
+
                 
             }
 
@@ -225,6 +263,8 @@ public class Entropy : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFired2 = true;
+                ManageEntroypGlow();
+
                 
             }
 
@@ -233,7 +273,8 @@ public class Entropy : BaseSkillState
             {
                 this.FireSmash();
                 this.hasFinishedFiring = true;
-                
+                ManageEntroypGlow();
+
             }
 
               if (IsKeyDownAuthority() && hasFinishedFiring) {
