@@ -23,7 +23,8 @@
           "UnityEngine.Modules": "2019.4.26",
           "GrooveSaladSpikestripContent": "1.0.0.0",
           "NoopSpikestrip": "1.0.0.0",
-          "PlasmaCoreSpikestripContent": "0.0.0.0"
+          "PlasmaCoreSpikestripContent": "0.0.0.0",
+          "Skills": "1.0.0.0"
         },
         "runtime": {
           "Voidcrid.dll": {}
@@ -823,6 +824,14 @@
             "fileVersion": "0.0.0.0"
           }
         }
+      },
+      "Skills/1.0.0.0": {
+        "runtime": {
+          "Skills.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -1165,6 +1174,11 @@
       "sha512": ""
     },
     "PlasmaCoreSpikestripContent/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Skills/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

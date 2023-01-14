@@ -37,7 +37,7 @@ public class Entropy : BaseSkillState
         [SerializeField]
         private float blastAttackForce = 1000f;
 
-		// private GameObject groundImpact = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/LaserImpactEffect.prefab").WaitForCompletion();
+		private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 
         private  float hitPauseTimer;
         [SerializeField]
@@ -132,10 +132,7 @@ public class Entropy : BaseSkillState
 
             CharacterModel characterModel = GetModelTransform().GetComponent<CharacterModel>();
 
-
             entropyGlow =  GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
-                
-                
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
                 if (NetworkServer.active){
@@ -143,7 +140,6 @@ public class Entropy : BaseSkillState
                 }
 
             poisonAttack = crocoDamageTypeController.GetDamageType();
-            aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosion.prefab").WaitForCompletion();	
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
 
             leftFistEffectInstance = UnityEngine.Object.Instantiate(leftfistEffectPrefab, FindModelChild("MuzzleHandL"));
@@ -179,13 +175,13 @@ public class Entropy : BaseSkillState
 
             if (entropyDamage == poisonAttack)
 			{
-				base.healthComponent.HealFraction(.25f, procChainMask);
+				base.healthComponent.HealFraction(VoidcridDef.EntropySelfHeal.Value, procChainMask);
 			}
 			else
 			{
 
 				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (.25f * base.healthComponent.fullCombinedHealth);
+				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
 				damageInfo.force = Vector3.zero;
 				damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -204,7 +200,7 @@ public class Entropy : BaseSkillState
 
         }
 
-private void ManageEntroypGlow() {
+            private void ManageEntroypGlow() {
 
             float emissionIncrement = minIntensity / (VoidcridDef.EntropyOverrideFireSpeed.Value);
 
@@ -302,7 +298,6 @@ private void ManageEntroypGlow() {
             this.animator.SetBool("attacking", false);
                 if (NetworkServer.active){
             base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-            base.characterBody.RemoveBuff(RoR2Content.Buffs.AffixWhite);
                 }
 		    EntityState.Destroy(leftFistEffectInstance);
 		    EntityState.Destroy(rightFistEffectInstance);
@@ -320,7 +315,7 @@ private void ManageEntroypGlow() {
 		{
 
 				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (.15f * base.healthComponent.fullCombinedHealth);
+				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
 				damageInfo.force = Vector3.zero;
 				damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -331,7 +326,6 @@ private void ManageEntroypGlow() {
 				damageInfo.procCoefficient = 0f;
 				base.healthComponent.TakeDamage(damageInfo);
         }
-				GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 			
 				float damage = 1f;
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
@@ -355,6 +349,5 @@ private void ManageEntroypGlow() {
     }
     
 }
-
 
 

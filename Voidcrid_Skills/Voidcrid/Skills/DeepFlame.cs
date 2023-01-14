@@ -2,15 +2,8 @@ using EntityStates;
 using RoR2;
 using UnityEngine;
 using EntityStates.LemurianBruiserMonster;
-using R2API.Networking;
-using RoR2.Items;
-using UnityEngine.Networking;
-using EntityStates.Croco;
 
 
-
-//Since we are using effects from Commando's Barrage skill, we will also be using the associated namespace
-//You can also use Addressables or LegacyResourcesAPI to load whichever effects you like
 
 namespace Voidcrid
 {
@@ -60,12 +53,6 @@ namespace Voidcrid
 	PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", flamethrowerDuration);
 	Ray aimRay = GetAimRay();
 
-
-	// if (flamethrowerEffectPrefab)
-    //         {
-    //             EffectManager.SimpleMuzzleFlash(tracerEffectPrefab, base.gameObject, "MouthMuzzle", true);
-    //          }
-	// if (NetworkServer.active  &&
 	if  (muzzleTransform)
 	{
 		BulletAttack bulletAttack = new BulletAttack();
@@ -123,11 +110,7 @@ namespace Voidcrid
 			flamethrowerEffectInstance = Object.Instantiate(flamethrowerEffectPrefab, muzzleTransform).transform;
 			flamethrowerEffectInstance.transform.localPosition = Vector3.zero;
 			flamethrowerEffectInstance.GetComponent<ScaleParticleSystemDuration>().newDuration = flamethrowerDuration;
-		// 	EffectManager.SpawnEffect(flamethrowerEffectPrefab, new EffectData
-		// {
-		// 	origin = flamethrowerEffectInstance.transform.localPosition,
-		// 	scale = radius
-		// }, transmit: true);
+
 		}
 
 		
