@@ -17,16 +17,11 @@ public class NullBeam : BaseSkillState
 
 	private float baseDuration = 1f;
 
-	// private GameObject ice = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Mage/MageIcewallPillarProjectile.prefab").WaitForCompletion();
 
 	private float maxDistance = 100f;
 
 	private float minDistance = 1f;
 
-	// private float voidJailChance = 0.3f;
-
-	// private string attackSound;
-	// private string endAttackSoundString = Voidcridbreath.endAttackSoundString;
 
 	private float recoilAmplitude = 1f;
 
@@ -38,7 +33,6 @@ public class NullBeam : BaseSkillState
 	private GameObject tracerEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerCaptureTracer.prefab").WaitForCompletion();
 	private float spreadBloomValue = 0.3f;
 
-	// private float maximumDuration = 2.5f;
 
 	private float procCoefficientPerSecond = 0.1f;
 
@@ -46,7 +40,7 @@ public class NullBeam : BaseSkillState
 
 	public ItemIndex index;
 
-
+	public static float nullBeamDamage = VoidcridDef.NullBeamOverrideDamage.Value;
 
 	private float minimumDuration;
 
@@ -179,7 +173,7 @@ public class NullBeam : BaseSkillState
 			bulletAttack.smartCollision = false;
 			bulletAttack.falloffModel = BulletAttack.FalloffModel.DefaultBullet;
 			bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
-			bulletAttack.damage = VoidcridDef.NullBeamOverrideDamage.Value * damageStat;
+			bulletAttack.damage = nullBeamDamage * damageStat;
 			bulletAttack.procCoefficient = procCoefficientPerSecond;
 			bulletAttack.force = forcePerSecond;
 			bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidAttack);
