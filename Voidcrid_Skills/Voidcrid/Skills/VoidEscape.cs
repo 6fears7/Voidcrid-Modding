@@ -33,14 +33,7 @@ public class VoidEscape : StealthMode
 	private CrocoDamageTypeController crocoDamageTypeController;
 
 	private DamageType baseAttack;
-	private bool hasBuff = false;
 
-	[Command]
-void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
-{
-    // Add the buff to the character body
-    characterBody.GetComponent<CharacterBody>().AddBuff(buffDef);
-}
 	public override void OnEnter()
 	{
 		base.OnEnter();
@@ -69,17 +62,14 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 					base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
 					base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
 					base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
+					base.characterBody.AddBuff(RoR2Content.Buffs.HiddenInvincibility);
 
-    				// Send the command to the client to give the buff
-					// CmdGiveBuffToClient(RoR2Content.Buffs.Cloak, base.characterBody.gameObject);
-					// CmdGiveBuffToClient(RoR2Content.Buffs.CloakSpeed, base.characterBody.gameObject);
-					// CmdGiveBuffToClient(RoR2Content.Buffs.VoidFogStrong, base.characterBody.gameObject);
+
 				}
 
 
 	
 
-			hasBuff = true;	
 			base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
 			}
 	
@@ -87,11 +77,11 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 		FireSmokebomb();
 
 		Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
-		
+				
+				// Hack to pull the visual state without actually updating the effect
 		base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius,true);
 
 
-		// Hack to pull the visual state without actually updating the effect
 	
 	}
 
@@ -120,15 +110,15 @@ void CmdGiveBuffToClient(BuffDef buffDef, GameObject characterBody)
 
 			if (base.characterBody)
 			{
-		if (NetworkServer.active && hasBuff)
+		if (NetworkServer.active)
 		{
 				characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
 				characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
+				characterBody.RemoveBuff(RoR2Content.Buffs.HiddenInvincibility);
 				characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
 				
 			 
 		}
-			hasBuff = false;
 			base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
 			}
 

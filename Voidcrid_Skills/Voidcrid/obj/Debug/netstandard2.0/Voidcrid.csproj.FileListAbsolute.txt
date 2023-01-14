@@ -22,3 +22,4 @@ C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bi
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\NoopSpikestrip.dll
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\PlasmaCoreSpikestripContent.dll
 C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\obj\Debug\netstandard2.0\Voidcrid.csproj.CopyComplete
+C:\Users\lol\Desktop\GitHubVoidcrid\Voidcrid-Modding\Voidcrid_Skills\Voidcrid\bin\Debug\netstandard2.0\Skills.dll

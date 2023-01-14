@@ -9,7 +9,7 @@ using UnityEngine.AddressableAssets;
 using System.Reflection;
 using BepInEx.Configuration;
 using System.Runtime.CompilerServices;
-using Voidcrid.Achievements;
+using System.Linq;
 
 
 
@@ -25,6 +25,8 @@ namespace Voidcrid
     [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.heyimnoob.NoopSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.plasmacore.PlasmaCoreSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.cwmlolzlz.skills", BepInDependency.DependencyFlags.SoftDependency)]
+
     public class VoidcridDef : BaseUnityPlugin
     {
         
@@ -55,6 +57,8 @@ namespace Voidcrid
         public static ConfigEntry<float> EntropyOverrideRecharge {get; set;}
 
         public static ConfigEntry<float> EntropyOverrideRadius {get; set;}
+        public static ConfigEntry<float> EntropySelfDamage {get; set;}
+        public static ConfigEntry<float> EntropySelfHeal {get; set;}
 
         public static ConfigEntry<Color> VoidGlow {get; set;}
 
@@ -67,7 +71,7 @@ namespace Voidcrid
 
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
-
+        public static bool skillsPlusInstalled = false;
 
         internal static AssetBundle mainAssetBundle;
         GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
@@ -206,6 +210,20 @@ namespace Voidcrid
 					"Blast Attack radius"
 				);
 
+                    EntropySelfDamage = Config.Bind<float>(
+					"Entropy",
+					"Self-Damage",
+					.15f,
+					"Damage taken to self from Entropy"
+				);
+
+                    EntropySelfHeal = Config.Bind<float>(
+					"Entropy",
+					"Heal",
+					.25f,
+					"Healing amount from Entropy"
+				);
+
                     ScepterEntropyOverrideDamage = Config.Bind<float>(
 					"Deeprotted Entropy (Scepter)",
 					"Damage",
@@ -258,19 +276,14 @@ namespace Voidcrid
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
-            {
-                ancientScepterInstalled = true;
-                Debug.Log("ANCIENT SCEPTER REGISTERED");
-                ScepterSkillSetup();
-                ScepterSetup();
-            }
+
+
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
             
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
-	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected character, an unfortunate end.");
+	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected amphibian, an unfortunate end.");
 
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right To Jail");
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_DESCRIPTION", "As Acrid, jail a Jailer.");
@@ -280,12 +293,13 @@ namespace Voidcrid
 
 
 
+
             if (VoidcridPassiveShow.Value == true) {
 
             skillLocator.passiveSkill.enabled = true;
             skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
             skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon2.png");
+            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
 
             LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
             LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
@@ -294,7 +308,6 @@ namespace Voidcrid
 
                 skillLocator.passiveSkill.enabled = false;
             }
-
 
 
        }
@@ -310,6 +323,7 @@ namespace Voidcrid
   
 
         }
+ 
 
             private void FlamebreathSetup(SkillLocator skillLocator) {
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
@@ -402,12 +416,20 @@ namespace Voidcrid
 
         private void VoidEscapeSetup(SkillLocator skillLocator) {
 
+            EntityStateMachine esm = voidcridBodyPrefab.AddComponent<EntityStateMachine>();
+            esm.customName = "Drift";
+            esm.initialStateType = new SerializableEntityStateType(typeof(Idle));
+            esm.mainStateType = new SerializableEntityStateType(typeof(Idle));
+
+            NetworkStateMachine networkStateMachine = voidcridBodyPrefab.GetComponent<NetworkStateMachine>();
+            networkStateMachine.stateMachines = networkStateMachine.stateMachines.Append(esm).ToArray();
+
+
             LanguageAPI.Add("VOIDCRID_VOIDDRIFT", $"<style=cArtifact>「Ethereal Dr?ft』</style>");
             LanguageAPI.Add("VOIDCRID_VOIDRIFT_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Stunning.</style> Slip into the <style=cArtifact>Void</style> dealing <style=cIsDamage>400% total</style> damage, with a chance to take enemies with you.");
             SkillDef voidEscape = ScriptableObject.CreateInstance<SkillDef>();
-
             voidEscape.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidEscape));
-            voidEscape.activationStateMachineName = "Weapon";
+            voidEscape.activationStateMachineName = "Drift";
             voidEscape.baseMaxStock = 1;
             voidEscape.baseRechargeInterval = EtherealDriftOverrideRecharge.Value;
             voidEscape.baseRechargeInterval = EtherealDriftOverrideRecharge.Value;
@@ -447,7 +469,7 @@ namespace Voidcrid
 
          private void EntropySetup(SkillLocator skillLocator) {
         LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>25%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 15% </style> of your health and applies your Passive");
+        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for {EntropySelfHeal.Value * 100}% and <style=cDeath>harming</style> yourself for <style=cIsDamage>{EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> {EntropySelfDamage.Value * 100}% </style> of your health and applies your Passive");
          SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
             Entropy.activationState = new SerializableEntityStateType(typeof(Voidcrid.Entropy));
             Entropy.activationStateMachineName = "Weapon";
@@ -574,6 +596,27 @@ namespace Voidcrid
             {
                 Debug.Log("Failed to load assetbundle. Make sure your assetbundle name is setup correctly\n" + e );
                 return;
+            }
+
+        }
+
+        private void Start() {
+
+           if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.cwmlolzlz.skills")) 
+            {
+                skillsPlusInstalled = true;
+
+                SkillsPlusCompat.init();
+                Debug.Log("Init for SkillsCompat");
+
+
+            }
+
+          if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            {
+                ancientScepterInstalled = true;
+                ScepterSkillSetup();
+                ScepterSetup();
             }
 
         }

@@ -91,6 +91,9 @@
     <Reference Include="NoopSpikestrip">
       <HintPath>libs\NoopSpikestrip.dll</HintPath>
     </Reference>
+      <Reference Include="Skills">
+      <HintPath>libs\Skills.dll</HintPath>
+    </Reference>
     <Reference Include="PlasmaCoreSpikestripContent">
       <HintPath>libs\PlasmaCoreSpikestripContent.dll</HintPath>
     </Reference>

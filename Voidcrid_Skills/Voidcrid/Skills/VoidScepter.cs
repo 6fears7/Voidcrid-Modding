@@ -46,8 +46,7 @@ public class VoidScepter : BaseSkillState
         [SerializeField]
 
         private GameObject aoePrefab;
-        // Addressables.LoadAssetAsync<GameObject>("RoR2/Base/EliteIce/AffixWhiteExplosion.prefab").WaitForCompletion();
-        // Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();	
+       
         private GameObject aoe2 = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidRaidCrab/VoidRaidCrabTripleBeamExplosion.prefab").WaitForCompletion();	
 
         private float blastAttackProcCoefficient = 1;
@@ -75,7 +74,8 @@ public class VoidScepter : BaseSkillState
     [SerializeField]
     public GameObject leftfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
     public GameObject rightfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
-    
+    private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
+
     private float stopwatch;
         private  Animator animator;
         private Transform modelBaseTransform;
@@ -182,13 +182,13 @@ public class VoidScepter : BaseSkillState
 
             if (entropyDamage == poisonAttack)
 			{
-				base.healthComponent.HealFraction(.25f, procChainMask);
+				base.healthComponent.HealFraction(VoidcridDef.EntropySelfHeal.Value, procChainMask);
 			}
 			else
 			{
 
 				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (.25f * base.healthComponent.fullCombinedHealth);
+				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
 				damageInfo.force = Vector3.zero;
 				damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -318,7 +318,7 @@ public class VoidScepter : BaseSkillState
 		{
 
 				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (.10f * base.healthComponent.fullCombinedHealth);
+				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
 				damageInfo.position = base.characterBody.corePosition;
 				damageInfo.force = Vector3.zero;
 				damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -329,7 +329,6 @@ public class VoidScepter : BaseSkillState
 				damageInfo.procCoefficient = 0f;
 				base.healthComponent.TakeDamage(damageInfo);
         }
-				GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 			
 				float damage = 1f;
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
