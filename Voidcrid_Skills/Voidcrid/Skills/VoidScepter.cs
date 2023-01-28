@@ -76,6 +76,7 @@ public class VoidScepter : BaseSkillState
     public GameObject rightfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
     private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 
+    private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
     private float stopwatch;
         private  Animator animator;
         private Transform modelBaseTransform;
@@ -313,23 +314,7 @@ public class VoidScepter : BaseSkillState
         }
 
           private void Bombardment() {
-
-            if (NetworkServer.active)
-		{
-
-				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
-				damageInfo.position = base.characterBody.corePosition;
-				damageInfo.force = Vector3.zero;
-				damageInfo.damageColorIndex = DamageColorIndex.Void;
-				damageInfo.crit = false;
-				damageInfo.attacker = null;
-				damageInfo.inflictor = null;
-				damageInfo.damageType = DamageType.NonLethal;
-				damageInfo.procCoefficient = 0f;
-				base.healthComponent.TakeDamage(damageInfo);
-        }
-			
+		
 				float damage = 1f;
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
 				{
@@ -346,6 +331,18 @@ public class VoidScepter : BaseSkillState
 					target = null
                     
 				});
+              FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
+ 
+             fog.healthFractionPerSecond = 0.02f;
+             fog.dangerBuffDuration = 0.6f;
+             fog.tickPeriodSeconds = .5f;
+             fog.healthFractionRampCoefficientPerSecond = .015f;
+             fog.dangerBuffDef = fogNotify;
+             var zone = projectilePrefab.AddComponent<SphereZone>();
+             zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
+             fog.initialSafeZones = new BaseZoneBehavior[]{zone};
+
+             zone.isInverted = true;
 
 
 	        }
