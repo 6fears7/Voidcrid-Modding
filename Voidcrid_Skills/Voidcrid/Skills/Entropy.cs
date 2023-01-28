@@ -24,6 +24,7 @@ public class Entropy : BaseSkillState
         public int currentAttack;
         private float earlyExitTime = 0.90f;
 
+
         private  float duration;
 
         private float switchAttacks = 50f;
@@ -57,9 +58,10 @@ public class Entropy : BaseSkillState
  
 	private GameObject rightFistEffectInstance;
 
-    private bool firedBombardment;
+    private bool firedBombardment = false;
 
     private DamageType entropyDamage;
+
 
     // private float baseEntropyDamage = 3f;
 
@@ -77,6 +79,8 @@ public class Entropy : BaseSkillState
 
         float emissionIntensity = 4f;
 		float minIntensity = 0.3f;
+
+        private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
 
         private  void FireSmash()
 	{
@@ -310,23 +314,7 @@ public class Entropy : BaseSkillState
         }
 
          private void Bombardment() {
-
-            if (NetworkServer.active)
-		{
-
-				DamageInfo damageInfo = new DamageInfo();
-				damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
-				damageInfo.position = base.characterBody.corePosition;
-				damageInfo.force = Vector3.zero;
-				damageInfo.damageColorIndex = DamageColorIndex.Void;
-				damageInfo.crit = false;
-				damageInfo.attacker = null;
-				damageInfo.inflictor = null;
-				damageInfo.damageType = DamageType.NonLethal;
-				damageInfo.procCoefficient = 0f;
-				base.healthComponent.TakeDamage(damageInfo);
-        }
-			
+	
 				float damage = 1f;
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
 				{
@@ -343,7 +331,18 @@ public class Entropy : BaseSkillState
 					target = null
                     
 				});
+             FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
+ 
+             fog.healthFractionPerSecond = 0.02f;
+             fog.dangerBuffDuration = 0.6f;
+             fog.tickPeriodSeconds = .5f;
+             fog.healthFractionRampCoefficientPerSecond = .015f;
+             fog.dangerBuffDef = fogNotify;
+             var zone = projectilePrefab.AddComponent<SphereZone>();
+             zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
+             fog.initialSafeZones = new BaseZoneBehavior[]{zone};
 
+             zone.isInverted = true;
 	}
 
     }
