@@ -371,7 +371,6 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
             SkillDef voidBeam = ScriptableObject.CreateInstance<SkillDef>();
 
-
             voidBeam.activationState = new SerializableEntityStateType(typeof(Voidcrid.NullBeam));
             voidBeam.activationStateMachineName = "Weapon";
             voidBeam.baseMaxStock = 1;
@@ -387,13 +386,12 @@ namespace Voidcrid
             voidBeam.stockToConsume = 1;
             voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("nullbeam2.png");        
             voidBeam.skillDescriptionToken = "VOIDCRID_NULLBEAM_DESC";
-            voidBeam.skillName = "VOIDCRID_NULLBEAM";
+            voidBeam.skillName = "nullifier";
             voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
             voidBeam.mustKeyPress = true;
             voidBeam.mustKeyPress = true;
 
             ContentAddition.AddSkillDef(voidBeam);
-
             VoidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             VoidcridUnlock.cachedName = "Skills.Croco.Nullbeam";
             VoidcridUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDUNLOCK_NAME";
@@ -605,7 +603,7 @@ namespace Voidcrid
 
                 SkillsPlusCompat.init();
                 Debug.Log("Init for SkillsCompat");
-
+               
 
             }
 
