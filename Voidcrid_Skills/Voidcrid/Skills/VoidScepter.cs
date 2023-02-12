@@ -331,6 +331,8 @@ public class VoidScepter : BaseSkillState
 					target = null
                     
 				});
+            if (NetworkServer.active) {
+
               FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
  
              fog.healthFractionPerSecond = 0.02f;
@@ -343,7 +345,7 @@ public class VoidScepter : BaseSkillState
              fog.initialSafeZones = new BaseZoneBehavior[]{zone};
 
              zone.isInverted = true;
-
+             }
 
 	        }
 

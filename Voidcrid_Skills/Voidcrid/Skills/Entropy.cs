@@ -50,7 +50,8 @@ public class Entropy : BaseSkillState
         private DamageType voidAttack;
         private DamageType poisonAttack;
 
-       
+        private static GameObject prefab;
+
 
         private CrocoDamageTypeController crocoDamageTypeController;
 
@@ -314,6 +315,7 @@ public class Entropy : BaseSkillState
         }
 
          private void Bombardment() {
+
 	
 				float damage = 1f;
 				ProjectileManager.instance.FireProjectile(new FireProjectileInfo
@@ -331,6 +333,7 @@ public class Entropy : BaseSkillState
 					target = null
                     
 				});
+                if (NetworkServer.active) {
              FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
  
              fog.healthFractionPerSecond = 0.02f;
@@ -341,8 +344,9 @@ public class Entropy : BaseSkillState
              var zone = projectilePrefab.AddComponent<SphereZone>();
              zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
              fog.initialSafeZones = new BaseZoneBehavior[]{zone};
-
              zone.isInverted = true;
+                }
+
 	}
 
     }
