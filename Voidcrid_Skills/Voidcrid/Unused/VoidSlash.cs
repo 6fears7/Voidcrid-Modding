@@ -67,7 +67,7 @@
 // 		}
 // 		duration = baseDuration / attackSpeedStat;
 // 		PlayAnimation("Body", "SleepLoop");		
-		
+
 // 		if (!modelTransform)
 // 		{
 // 			return;
