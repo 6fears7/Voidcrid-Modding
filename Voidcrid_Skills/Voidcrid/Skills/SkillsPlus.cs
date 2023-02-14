@@ -9,9 +9,11 @@ using UnityEngine;
 namespace Voidcrid
 {
 
-    public class SkillsPlusCompat {
+    public class SkillsPlusCompat
+    {
         public static float nullBeamDmg;
-         public static void init() {
+        public static void init()
+        {
 
             nullBeamDmg = NullBeam.nullBeamDamage;
 
@@ -20,18 +22,21 @@ namespace Voidcrid
             SkillModifierManager.LoadSkillModifiers();
             Debug.Log("Added skill modifiers");
         }
-        private static void doLanguage() {
+        private static void doLanguage()
+        {
             LanguageAPI.Add("VOIDCRID_NULLBEAM_UPGRADE_DESCRIPTION", "<style=cIsUtility>+5%</style> damage, <style=cIsUtility>+10%</style> bullet thickness, and <style=cIsUtility>+0.1</style> bullet spread");
         }
     }
     [SkillLevelModifier("nullifier", typeof(NullBeam))]
-    public class NullbeamModifier : SimpleSkillModifier<NullBeam> {
+    public class NullbeamModifier : SimpleSkillModifier<NullBeam>
+    {
 
-        public override void OnSkillLeveledUp(int level, CharacterBody characterBody, SkillDef skillDef) {
+        public override void OnSkillLeveledUp(int level, CharacterBody characterBody, SkillDef skillDef)
+        {
             base.OnSkillLeveledUp(level, characterBody, skillDef);
 
             NullBeam.nullBeamDamage = MultScaling(SkillsPlusCompat.nullBeamDmg, .05f, level);
-    
+
         }
     }
 }

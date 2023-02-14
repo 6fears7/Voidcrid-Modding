@@ -20,7 +20,7 @@ namespace Voidcrid
         "com.sixfears7.Voidcrid",
         "Voidcrid",
         "1.0.0")]
-        
+
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.heyimnoob.NoopSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
@@ -29,45 +29,45 @@ namespace Voidcrid
 
     public class VoidcridDef : BaseUnityPlugin
     {
-        
+
 
         public static ConfigEntry<float> NullBeamOverrideJailChance { get; set; }
         public static ConfigEntry<float> EntropyOverrideJailChance { get; set; }
         public static ConfigEntry<float> EtherealDriftOverrideJailChance { get; set; }
-        public static ConfigEntry<float> NullBeamOverrideDamage{ get; set; }
+        public static ConfigEntry<float> NullBeamOverrideDamage { get; set; }
         public static ConfigEntry<float> NullBeamOverrideDuration { get; set; }
         public static ConfigEntry<float> FlamebreathOverrideDuration { get; set; }
         public static ConfigEntry<float> EntropyOverrideDamage { get; set; }
         public static ConfigEntry<float> EntropyOverrideFireSpeed { get; set; }
-        public static ConfigEntry<float> EtherealDriftOverrideDamage {get; set;}
-        public static ConfigEntry<float> ScepterEntropyOverrideDamage {get; set;}
+        public static ConfigEntry<float> EtherealDriftOverrideDamage { get; set; }
+        public static ConfigEntry<float> ScepterEntropyOverrideDamage { get; set; }
 
-        public static ConfigEntry<float> FlamebreathOverrideDamage {get; set;}
-        public static ConfigEntry<float> ScepterEntropyOverrideFireSpeed {get; set;}
-        public static ConfigEntry<float> ScepterEntropyOverrideVoidJailChance {get; set;}
+        public static ConfigEntry<float> FlamebreathOverrideDamage { get; set; }
+        public static ConfigEntry<float> ScepterEntropyOverrideFireSpeed { get; set; }
+        public static ConfigEntry<float> ScepterEntropyOverrideVoidJailChance { get; set; }
 
-        public static ConfigEntry<float> ScepterEntropyOverrideRadius {get; set;}
+        public static ConfigEntry<float> ScepterEntropyOverrideRadius { get; set; }
 
-        public static ConfigEntry<float> FlamebreathOverrideRecharge {get; set;}
+        public static ConfigEntry<float> FlamebreathOverrideRecharge { get; set; }
 
-        public static ConfigEntry<float> FlamebreathOverrideTickFreq {get; set;}
+        public static ConfigEntry<float> FlamebreathOverrideTickFreq { get; set; }
 
-        public static ConfigEntry<float> NullBeamOverrideRecharge {get; set;}
-        public static ConfigEntry<float> EtherealDriftOverrideRecharge {get; set;}
-        public static ConfigEntry<float> EntropyOverrideRecharge {get; set;}
+        public static ConfigEntry<float> NullBeamOverrideRecharge { get; set; }
+        public static ConfigEntry<float> EtherealDriftOverrideRecharge { get; set; }
+        public static ConfigEntry<float> EntropyOverrideRecharge { get; set; }
 
-        public static ConfigEntry<float> EntropyOverrideRadius {get; set;}
-        public static ConfigEntry<float> EntropySelfDamage {get; set;}
-        public static ConfigEntry<float> EntropySelfHeal {get; set;}
+        public static ConfigEntry<float> EntropyOverrideRadius { get; set; }
+        public static ConfigEntry<float> EntropySelfDamage { get; set; }
+        public static ConfigEntry<float> EntropySelfHeal { get; set; }
 
-        public static ConfigEntry<Color> VoidGlow {get; set;}
+        public static ConfigEntry<Color> VoidGlow { get; set; }
 
-        public static ConfigEntry<Color> ScepterGlow {get; set;}
+        public static ConfigEntry<Color> ScepterGlow { get; set; }
 
 
-        public static ConfigEntry<float> ScepterEntropyOverrideRecharge {get; set;}
+        public static ConfigEntry<float> ScepterEntropyOverrideRecharge { get; set; }
 
-        public static ConfigEntry<bool> VoidcridPassiveShow {get; set;}
+        public static ConfigEntry<bool> VoidcridPassiveShow { get; set; }
 
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
@@ -89,184 +89,187 @@ namespace Voidcrid
 
         public void Awake()
 
-        
+
         {
 
-            //  gameEnding = SurvivorCatalog.GetSurvivorDef(SurvivorCatalog.FindSurvivorIndex("Croco"));
+
+            On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
+            //  var gameEnding = SurvivorCatalog.GetSurvivorDef(SurvivorCatalog.FindSurvivorIndex("Croco"));
             //  gameEnding.outroFlavorToken = "VOIDCRID_OUTRO_FLAVOR";
             //  gameEnding.cachedName = "Pain";
             //  gameEnding.displayNameToken = "VOIDCRID_OUTRO_FLAVOR";
 
-                    FlamebreathOverrideRecharge = Config.Bind<float>(
-					"Recharge Interval",
-					"Flamebreath Recharge",
-					0.5f,
-					"Measured in seconds"
-				);
 
-                    NullBeamOverrideRecharge = Config.Bind<float>(
-					"Recharge Interval",
-					"Null Beam Recharge",
-					7f,
-					"Measured in seconds"
-				);
+            FlamebreathOverrideRecharge = Config.Bind<float>(
+            "Recharge Interval",
+            "Flamebreath Recharge",
+            0.5f,
+            "Measured in seconds"
+        );
 
-                    EtherealDriftOverrideRecharge = Config.Bind<float>(
-					"Recharge Interval",
-					"Ethereal Drift Recharge",
-					8f,
-					"Measured in seconds"
-				);
+            NullBeamOverrideRecharge = Config.Bind<float>(
+            "Recharge Interval",
+            "Null Beam Recharge",
+            7f,
+            "Measured in seconds"
+        );
 
-                    EntropyOverrideRecharge = Config.Bind<float>(
-					"Recharge Interval",
-					"Entropy Recharge",
-					12f,
-					"Measured in seconds"
-				);
+            EtherealDriftOverrideRecharge = Config.Bind<float>(
+            "Recharge Interval",
+            "Ethereal Drift Recharge",
+            8f,
+            "Measured in seconds"
+        );
 
-                
-                    ScepterEntropyOverrideRecharge = Config.Bind<float>(
-					"Recharge Interval",
-					"Deeprotted Entropy Recharge",
-					8f,
-					"Measured in seconds"
-				);
-                
-               		NullBeamOverrideJailChance = Config.Bind<float>(
-					"JailChance",
-					"NullBeamJailChance",
-					.1f,
-					"Null Beam jail chance, measured in percentage."
-				);
-                
-                    EtherealDriftOverrideJailChance = Config.Bind<float>(
-					"JailChance",
-					"EtherealDriftJailChance",
-					5f,
-					"Ethereal Drift jail chance, measured in percentage."
-				);
-
-                    EntropyOverrideJailChance = Config.Bind<float>(
-					"JailChance",
-					"EntropyJailChance",
-					3f,
-					"Entropy jail chance, measured in percentage"
-				);
-
-                    NullBeamOverrideDamage = Config.Bind<float>(
-					"NullBeam",
-					"Damage",
-					0.3f,
-					"NullBeam damageCoefficientPerSecond damage"
-				);
-
-                    NullBeamOverrideDuration = Config.Bind<float>(
-					"NullBeam",
-					"Duration",
-					2.5f,
-					"NullBeam maximumDuration, measured in seconds"
-				);
-
-                    EntropyOverrideDamage = Config.Bind<float>(
-					"Entropy",
-					"Damage",
-					4f,
-					"Entropy damage multiplier"
-				);
-
-                     EntropyOverrideFireSpeed = Config.Bind<float>(
-					"Entropy",
-					"Firing Speed",
-					0.3f,
-					"Entropy successive attack speed, measured in seconds"
-				);
-
-                FlamebreathOverrideDuration = Config.Bind<float>(
-					"Flamebreath",
-					"Duration",
-					2f,
-					"Flamebreath's duration, measured in seconds. Total duration: (Flamebreath duration + Attack Speed stat)"
-				);
-
-                FlamebreathOverrideDamage = Config.Bind<float>(
-					"Flamebreath",
-					"Damage",
-					10f,
-					"Flamebreath's totalDamageCoefficient, is divided over Flamebreath duration * tickFrequency: (totalDamageCoef / [Flamebreath duration * tickFrequency])"
-				);
-
-                    EtherealDriftOverrideDamage = Config.Bind<float>(
-					"Ethereal Drift",
-					"Damage",
-					1f,
-					"Blast Attack base damage"
-				);
-
-                    EntropyOverrideRadius = Config.Bind<float>(
-					"Entropy",
-					"Radius",
-					12f,
-					"Blast Attack radius"
-				);
-
-                    EntropySelfDamage = Config.Bind<float>(
-					"Entropy",
-					"Self-Damage",
-					.15f,
-					"Damage taken to self from Entropy"
-				);
-
-                    EntropySelfHeal = Config.Bind<float>(
-					"Entropy",
-					"Heal",
-					.25f,
-					"Healing amount from Entropy"
-				);
-
-                    ScepterEntropyOverrideDamage = Config.Bind<float>(
-					"Deeprotted Entropy (Scepter)",
-					"Damage",
-					5f,
-					"Scepter's Entropy Blast Attack base damage"
-				);
-
-                    ScepterEntropyOverrideFireSpeed = Config.Bind<float>(
-					"Deeprotted Entropy (Scepter)",
-					"Firing Speed",
-					0.3f,
-					"Scepter's Entropy successive attack speed, measured in seconds"
-				);
-
-                    ScepterEntropyOverrideRadius = Config.Bind<float>(
-					"Deeprotted Entropy (Scepter)",
-					"Radius",
-					12f,
-					"Scepter's Entropy radius"
-				);
-                    
-                    VoidGlow = Config.Bind<Color>(
-					"Voicrid Glow",
-					"Color",
-					Color.magenta,
-					"Voidcrid's Color Glow"
-				);
-
-                    ScepterGlow = Config.Bind<Color>(
-					"Voicrid Glow",
-					"Scepter Color",
-					Color.red,
-					"Voidcrid's Scepter Color Glow"
-				);
+            EntropyOverrideRecharge = Config.Bind<float>(
+            "Recharge Interval",
+            "Entropy Recharge",
+            12f,
+            "Measured in seconds"
+        );
 
 
-                
-                    VoidcridPassiveShow = Config.Bind<bool>(
-					"Voidcrid",
-					"Display",
-					true,
-					"Shows the Voidcrid fake Passive description"
-				);
+            ScepterEntropyOverrideRecharge = Config.Bind<float>(
+            "Recharge Interval",
+            "Deeprotted Entropy Recharge",
+            8f,
+            "Measured in seconds"
+        );
+
+            NullBeamOverrideJailChance = Config.Bind<float>(
+         "JailChance",
+         "NullBeamJailChance",
+         .1f,
+         "Null Beam jail chance, measured in percentage."
+     );
+
+            EtherealDriftOverrideJailChance = Config.Bind<float>(
+            "JailChance",
+            "EtherealDriftJailChance",
+            5f,
+            "Ethereal Drift jail chance, measured in percentage."
+        );
+
+            EntropyOverrideJailChance = Config.Bind<float>(
+            "JailChance",
+            "EntropyJailChance",
+            3f,
+            "Entropy jail chance, measured in percentage"
+        );
+
+            NullBeamOverrideDamage = Config.Bind<float>(
+            "NullBeam",
+            "Damage",
+            0.3f,
+            "NullBeam damageCoefficientPerSecond damage"
+        );
+
+            NullBeamOverrideDuration = Config.Bind<float>(
+            "NullBeam",
+            "Duration",
+            2.5f,
+            "NullBeam maximumDuration, measured in seconds"
+        );
+
+            EntropyOverrideDamage = Config.Bind<float>(
+            "Entropy",
+            "Damage",
+            4f,
+            "Entropy damage multiplier"
+        );
+
+            EntropyOverrideFireSpeed = Config.Bind<float>(
+           "Entropy",
+           "Firing Speed",
+           0.3f,
+           "Entropy successive attack speed, measured in seconds"
+       );
+
+            FlamebreathOverrideDuration = Config.Bind<float>(
+                "Flamebreath",
+                "Duration",
+                2f,
+                "Flamebreath's duration, measured in seconds. Total duration: (Flamebreath duration + Attack Speed stat)"
+            );
+
+            FlamebreathOverrideDamage = Config.Bind<float>(
+                "Flamebreath",
+                "Damage",
+                10f,
+                "Flamebreath's totalDamageCoefficient, is divided over Flamebreath duration * tickFrequency: (totalDamageCoef / [Flamebreath duration * tickFrequency])"
+            );
+
+            EtherealDriftOverrideDamage = Config.Bind<float>(
+            "Ethereal Drift",
+            "Damage",
+            1f,
+            "Blast Attack base damage"
+        );
+
+            EntropyOverrideRadius = Config.Bind<float>(
+            "Entropy",
+            "Radius",
+            12f,
+            "Blast Attack radius"
+        );
+
+            EntropySelfDamage = Config.Bind<float>(
+            "Entropy",
+            "Self-Damage",
+            .15f,
+            "Damage taken to self from Entropy"
+        );
+
+            EntropySelfHeal = Config.Bind<float>(
+            "Entropy",
+            "Heal",
+            .25f,
+            "Healing amount from Entropy"
+        );
+
+            ScepterEntropyOverrideDamage = Config.Bind<float>(
+            "Deeprotted Entropy (Scepter)",
+            "Damage",
+            5f,
+            "Scepter's Entropy Blast Attack base damage"
+        );
+
+            ScepterEntropyOverrideFireSpeed = Config.Bind<float>(
+            "Deeprotted Entropy (Scepter)",
+            "Firing Speed",
+            0.3f,
+            "Scepter's Entropy successive attack speed, measured in seconds"
+        );
+
+            ScepterEntropyOverrideRadius = Config.Bind<float>(
+            "Deeprotted Entropy (Scepter)",
+            "Radius",
+            12f,
+            "Scepter's Entropy radius"
+        );
+
+            VoidGlow = Config.Bind<Color>(
+            "Voicrid Glow",
+            "Color",
+            Color.magenta,
+            "Voidcrid's Color Glow"
+        );
+
+            ScepterGlow = Config.Bind<Color>(
+            "Voicrid Glow",
+            "Scepter Color",
+            Color.red,
+            "Voidcrid's Scepter Color Glow"
+        );
+
+
+
+            VoidcridPassiveShow = Config.Bind<bool>(
+            "Voidcrid",
+            "Display",
+            true,
+            "Shows the Voidcrid fake Passive description"
+        );
 
             LoadAssetBundle();
             SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
@@ -281,9 +284,9 @@ namespace Voidcrid
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
-            
-            LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME" , "Acrid: Grandfather Paradox");
-	        LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected amphibian, an unfortunate end.");
+
+            LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME", "Acrid: Grandfather Paradox");
+            LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected amphibian, an unfortunate end.");
 
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_NAME", "Acrid: Right To Jail");
             LanguageAPI.Add("ACHIEVEMENT_RIGHTTOJAIL_DESCRIPTION", "As Acrid, jail a Jailer.");
@@ -294,43 +297,46 @@ namespace Voidcrid
 
 
 
-            if (VoidcridPassiveShow.Value == true) {
+            if (VoidcridPassiveShow.Value == true)
+            {
 
-            skillLocator.passiveSkill.enabled = true;
-            skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
-            skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
-            skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
+                skillLocator.passiveSkill.enabled = true;
+                skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
+                skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
+                skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
 
-            LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
-            LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
+                LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
+                LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
             }
-            else {
+            else
+            {
 
                 skillLocator.passiveSkill.enabled = false;
             }
 
 
-       }
+        }
 
 
 
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-            private void ScepterSetup()
+        private void ScepterSetup()
         {
 
             AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
-  
+
 
         }
- 
 
-            private void FlamebreathSetup(SkillLocator skillLocator) {
+
+        private void FlamebreathSetup(SkillLocator skillLocator)
+        {
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a burst of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>250%</style> damage.");
-             
-             SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
-           
+
+            SkillDef voidBreath = ScriptableObject.CreateInstance<SkillDef>();
+
             voidBreath.activationState = new SerializableEntityStateType(typeof(Voidcrid.Voidcridbreath));
             voidBreath.activationStateMachineName = "Weapon";
             voidBreath.baseMaxStock = 1;
@@ -346,7 +352,7 @@ namespace Voidcrid
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
-            voidBreath.icon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");    
+            voidBreath.icon = mainAssetBundle.LoadAsset<Sprite>("deepflame2.png");
             voidBreath.skillDescriptionToken = "VOIDCRID_FLAMEBREATH_DESC";
             voidBreath.skillName = "VOIDCRID_FLAMEBREATH";
             voidBreath.skillNameToken = "VOIDCRID_FLAMEBREATH";
@@ -365,7 +371,8 @@ namespace Voidcrid
 
         }
 
-        private void NullBeamSetup(SkillLocator skillLocator) {
+        private void NullBeamSetup(SkillLocator skillLocator)
+        {
 
             LanguageAPI.Add("VOIDCRID_NULLBEAM", $"<style=cArtifact>「N?ll Beam』</style>");
             LanguageAPI.Add("VOIDCRID_NULLBEAM_DESC", $"<style=cArtifact>Void.</style> Draw deep from the <style=cArtifact>Void</style>, battering enemies with a swath of <style=cDeath>tentacles</style> for <style=cIsDamage>900%</style> damage.");
@@ -384,7 +391,7 @@ namespace Voidcrid
             voidBeam.rechargeStock = 1;
             voidBeam.requiredStock = 1;
             voidBeam.stockToConsume = 1;
-            voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("nullbeam2.png");        
+            voidBeam.icon = mainAssetBundle.LoadAsset<Sprite>("nullbeam2.png");
             voidBeam.skillDescriptionToken = "VOIDCRID_NULLBEAM_DESC";
             voidBeam.skillName = "nullifier";
             voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
@@ -410,7 +417,8 @@ namespace Voidcrid
         }
 
 
-        private void VoidEscapeSetup(SkillLocator skillLocator) {
+        private void VoidEscapeSetup(SkillLocator skillLocator)
+        {
 
             EntityStateMachine esm = voidcridBodyPrefab.AddComponent<EntityStateMachine>();
             esm.customName = "Drift";
@@ -438,7 +446,7 @@ namespace Voidcrid
             voidEscape.requiredStock = 1;
             voidEscape.stockToConsume = 1;
             voidEscape.mustKeyPress = true;
-            voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");    
+            voidEscape.icon = mainAssetBundle.LoadAsset<Sprite>("voiddrift.png");
             voidEscape.skillDescriptionToken = "VOIDCRID_VOIDRIFT_DESC";
             voidEscape.skillName = "VOIDCRID_VOIDDRIFT";
             voidEscape.skillNameToken = "VOIDCRID_VOIDDRIFT";
@@ -462,26 +470,27 @@ namespace Voidcrid
 
         }
 
-         private void EntropySetup(SkillLocator skillLocator) {
-        LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-        LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for {EntropySelfHeal.Value * 100}% or <style=cDeath>harming</style> yourself for <style=cIsDamage>{EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, summons a temporary black hole, <style=cArtifact>choking</style> everyone inside and applies your <style=cIsHealing>Passive</style> on exiting.");
-         SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
+        private void EntropySetup(SkillLocator skillLocator)
+        {
+            LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for {EntropySelfHeal.Value * 100}% or <style=cDeath>harming</style> yourself for <style=cIsDamage>{EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, summons a temporary black hole, <style=cArtifact>choking</style> everyone inside and applies your <style=cIsHealing>Passive</style> on exiting.");
+            SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
             Entropy.activationState = new SerializableEntityStateType(typeof(Voidcrid.Entropy));
             Entropy.activationStateMachineName = "Weapon";
-  		    Entropy.baseMaxStock = 1;
-		    Entropy.baseRechargeInterval = EntropyOverrideRecharge.Value;
-		    Entropy.beginSkillCooldownOnSkillEnd = true;
-		    Entropy.canceledFromSprinting = false;
-		    Entropy.fullRestockOnAssign = true;
-		    Entropy.interruptPriority = InterruptPriority.PrioritySkill;
-		    Entropy.resetCooldownTimerOnUse = false;
-		    Entropy.isCombatSkill = true;
-		    Entropy.mustKeyPress = false;
-		    Entropy.cancelSprintingOnActivation = true;
-		    Entropy.rechargeStock = 1;
-		    Entropy.requiredStock = 1;
-		    Entropy.stockToConsume = 1;
-            Entropy.mustKeyPress = true;   
+            Entropy.baseMaxStock = 1;
+            Entropy.baseRechargeInterval = EntropyOverrideRecharge.Value;
+            Entropy.beginSkillCooldownOnSkillEnd = true;
+            Entropy.canceledFromSprinting = false;
+            Entropy.fullRestockOnAssign = true;
+            Entropy.interruptPriority = InterruptPriority.PrioritySkill;
+            Entropy.resetCooldownTimerOnUse = false;
+            Entropy.isCombatSkill = true;
+            Entropy.mustKeyPress = false;
+            Entropy.cancelSprintingOnActivation = true;
+            Entropy.rechargeStock = 1;
+            Entropy.requiredStock = 1;
+            Entropy.stockToConsume = 1;
+            Entropy.mustKeyPress = true;
             Entropy.icon = mainAssetBundle.LoadAsset<Sprite>("entropy2.png");
             Entropy.skillDescriptionToken = "VOIDCRID_ENTROPY_DESC";
             Entropy.skillName = "VOIDCRID_ENTROPY";
@@ -505,11 +514,11 @@ namespace Voidcrid
                 viewableNode = new ViewablesCatalog.Node(Entropy.skillNameToken, false, null)
             };
 
-         
-         }
+
+        }
 
 
-            private void ScepterSkillSetup()
+        private void ScepterSkillSetup()
         {
 
 
@@ -521,19 +530,19 @@ namespace Voidcrid
 
             voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.VoidScepter));
             voidScepter.activationStateMachineName = "Weapon";
-  		    voidScepter.baseMaxStock = 1;
-		    voidScepter.baseRechargeInterval = ScepterEntropyOverrideRecharge.Value;
-		    voidScepter.beginSkillCooldownOnSkillEnd = true;
-		    voidScepter.canceledFromSprinting = false;
-		    voidScepter.fullRestockOnAssign = true;
-		    voidScepter.interruptPriority = InterruptPriority.PrioritySkill;
-		    voidScepter.resetCooldownTimerOnUse = false;
-		    voidScepter.isCombatSkill = true;
-		    voidScepter.mustKeyPress = false;
-		    voidScepter.cancelSprintingOnActivation = true;
-		    voidScepter.rechargeStock = 1;
-		    voidScepter.requiredStock = 1;
-		    voidScepter.stockToConsume = 1;
+            voidScepter.baseMaxStock = 1;
+            voidScepter.baseRechargeInterval = ScepterEntropyOverrideRecharge.Value;
+            voidScepter.beginSkillCooldownOnSkillEnd = true;
+            voidScepter.canceledFromSprinting = false;
+            voidScepter.fullRestockOnAssign = true;
+            voidScepter.interruptPriority = InterruptPriority.PrioritySkill;
+            voidScepter.resetCooldownTimerOnUse = false;
+            voidScepter.isCombatSkill = true;
+            voidScepter.mustKeyPress = false;
+            voidScepter.cancelSprintingOnActivation = true;
+            voidScepter.rechargeStock = 1;
+            voidScepter.requiredStock = 1;
+            voidScepter.stockToConsume = 1;
             voidScepter.icon = mainAssetBundle.LoadAsset<Sprite>("deeprotentropy.png");
             voidScepter.mustKeyPress = true;
             voidScepter.skillDescriptionToken = "VOIDCRID__SCEPTER_ENTROPY_DESC";
@@ -560,7 +569,7 @@ namespace Voidcrid
             bool deeprotEquipped = false;
             if (PlasmaCoreSpikestripContent.Content.Skills.DeepRot.scriptableObject != null)
             {
-                foreach(GenericSkill gs in sk.allSkills)
+                foreach (GenericSkill gs in sk.allSkills)
                 {
                     if (gs.skillDef == PlasmaCoreSpikestripContent.Content.Skills.DeepRot.scriptableObject.SkillDefinition)
                     {
@@ -570,44 +579,45 @@ namespace Voidcrid
                 }
             }
             return deeprotEquipped;
-    }
+        }
 
 
 
         internal static void LoadAssetBundle()
         {
 
-            
+
             try
             {
-                    
+
                 mainAssetBundle = AssetBundle.LoadFromFile(Assembly.GetExecutingAssembly().Location.Replace("Voidcrid.dll", "acrid3"));
-                    
-                Debug.Log("Loaded assetbundle" );
+
+                Debug.Log("Loaded assetbundle");
 
 
             }
             catch (Exception e)
             {
-                Debug.Log("Failed to load assetbundle. Make sure your assetbundle name is setup correctly\n" + e );
+                Debug.Log("Failed to load assetbundle. Make sure your assetbundle name is setup correctly\n" + e);
                 return;
             }
 
         }
 
-        private void Start() {
+        private void Start()
+        {
 
-           if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.cwmlolzlz.skills")) 
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.cwmlolzlz.skills"))
             {
                 skillsPlusInstalled = true;
 
                 SkillsPlusCompat.init();
                 Debug.Log("Init for SkillsCompat");
-               
+
 
             }
 
-          if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
                 ancientScepterInstalled = true;
                 ScepterSkillSetup();
@@ -620,6 +630,6 @@ namespace Voidcrid
 
 }
 
-        
+
 
 

@@ -265,6 +265,27 @@
           }
         }
       },
+      "R2API.Prefab/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "BepInEx.Core": "5.4.19",
+          "MMHOOK.RoR2": "2022.4.19",
+          "R2API.ContentManagement": "1.0.0",
+          "R2API.Core": "1.0.0",
+          "RiskOfRain2.GameLibs": "1.2.4-r.0",
+          "UnityEngine.Modules": "2019.4.26"
+        },
+        "compile": {
+          "lib/netstandard2.0/R2API.Prefab.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/R2API.Prefab.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "R2API.Unlockable/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1234,6 +1255,19 @@
         "lib/netstandard2.0/R2API.Networking.xml",
         "r2api.networking.1.0.2.nupkg.sha512",
         "r2api.networking.nuspec"
+      ]
+    },
+    "R2API.Prefab/1.0.0": {
+      "sha512": "LN37Xc12RHx787AljAzAND5EfYG9vTDZh0ffPon0fgYrFtoHGdb7TOyRw4r9NLmhY4ZV6HPwuZIpwFjQwdC6oA==",
+      "type": "package",
+      "path": "r2api.prefab/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/R2API.Prefab.dll",
+        "lib/netstandard2.0/R2API.Prefab.xml",
+        "r2api.prefab.1.0.0.nupkg.sha512",
+        "r2api.prefab.nuspec"
       ]
     },
     "R2API.Unlockable/1.0.0": {
@@ -3148,6 +3182,7 @@
       "R2API.Language >= 1.0.0",
       "R2API.Loadout >= 1.0.0",
       "R2API.Networking >= 1.0.2",
+      "R2API.Prefab >= 1.0.0",
       "R2API.Unlockable >= 1.0.0",
       "RiskOfRain2.GameLibs >= 1.2.4-r.0",
       "UnityEngine.Modules >= 2019.4.26"
@@ -3241,6 +3276,10 @@
           "R2API.Networking": {
             "target": "Package",
             "version": "[1.0.2, )"
+          },
+          "R2API.Prefab": {
+            "target": "Package",
+            "version": "[1.0.0, )"
           },
           "R2API.Unlockable": {
             "target": "Package",

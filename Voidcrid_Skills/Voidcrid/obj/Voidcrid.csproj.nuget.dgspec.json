@@ -89,6 +89,10 @@
               "target": "Package",
               "version": "[1.0.2, )"
             },
+            "R2API.Prefab": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
             "R2API.Unlockable": {
               "target": "Package",
               "version": "[1.0.0, )"
