@@ -64,14 +64,12 @@ namespace Voidcrid
             {
                 if (NetworkServer.active)
                 {   
-                base.characterBody.AddTimedBuff(RoR2Content.Buffs.Cloak, 5);
-                base.characterBody.ApplyBuff(RoR2Content.Buffs.CloakSpeed.buffIndex, 1);
-                base.characterBody.ApplyBuff(RoR2Content.Buffs.VoidFogStrong.buffIndex, 1);
-                base.characterBody.ApplyBuff(RoR2Content.Buffs.HiddenInvincibility.buffIndex, 1);
+                base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
+                base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
+                base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
+                base.characterBody.AddBuff(RoR2Content.Buffs.HiddenInvincibility);
 
                 }
-
-
 
 
                 base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
@@ -114,14 +112,14 @@ namespace Voidcrid
 
             if (base.characterBody)
             {
-                // if (NetworkServer.active)
-                // {
-                // characterBody.ApplyBuff(RoR2Content.Buffs.CloakSpeed.buffIndex, 0, 0);
-                characterBody.ApplyBuff(RoR2Content.Buffs.Cloak.buffIndex, 0);
-                characterBody.ApplyBuff(RoR2Content.Buffs.HiddenInvincibility.buffIndex, 0);
-                characterBody.ApplyBuff(RoR2Content.Buffs.VoidFogStrong.buffIndex, 0);
+                if (NetworkServer.active)
+                {
+                characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
+                characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
+                characterBody.RemoveBuff(RoR2Content.Buffs.HiddenInvincibility);
+                characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
 
-                //  }
+                 }
 
                 base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
             }

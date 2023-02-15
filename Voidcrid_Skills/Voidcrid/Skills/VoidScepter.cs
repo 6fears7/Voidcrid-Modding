@@ -77,7 +77,6 @@ namespace Voidcrid
         public GameObject rightfistEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
         private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 
-        private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
         private float stopwatch;
         private Animator animator;
         private Transform modelBaseTransform;
@@ -332,27 +331,10 @@ namespace Voidcrid
                 procChainMask = default(ProcChainMask),
                 force = 6000f,
                 owner = base.gameObject,
-                projectilePrefab = projectilePrefab,
+                projectilePrefab = VoidcridDef.voidFogProjectile,
                 rotation = Quaternion.identity,
-                target = null
-
-
+                target = base.gameObject
             });
-            if (NetworkServer.active)
-            {
-                FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
-
-                fog.healthFractionPerSecond = 0.02f;
-                fog.dangerBuffDuration = 0.6f;
-                fog.tickPeriodSeconds = .5f;
-                fog.healthFractionRampCoefficientPerSecond = .015f;
-                fog.dangerBuffDef = fogNotify;
-                var zone = projectilePrefab.AddComponent<SphereZone>();
-                zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
-                fog.initialSafeZones = new BaseZoneBehavior[] { zone };
-                zone.isInverted = true;
-            }
-            projectilePrefab.AddComponent<DestroyOnDestroy>();
         }
 
 

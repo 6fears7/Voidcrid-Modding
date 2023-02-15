@@ -35,8 +35,6 @@ namespace Voidcrid
         private float spreadBloomValue = 0.3f;
 
 
-        private float procCoefficientPerSecond = 0.1f;
-
         private float forcePerSecond = 2f;
 
         public ItemIndex index;
@@ -179,7 +177,7 @@ namespace Voidcrid
                 bulletAttack.falloffModel = BulletAttack.FalloffModel.DefaultBullet;
                 bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
                 bulletAttack.damage = nullBeamDamage * damageStat;
-                bulletAttack.procCoefficient = procCoefficientPerSecond;
+                bulletAttack.procCoefficient = VoidcridDef.NullBeamOverrideProc.Value;
                 bulletAttack.force = forcePerSecond;
                 bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidAttack);
                 bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);

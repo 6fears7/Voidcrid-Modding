@@ -36,6 +36,8 @@ namespace Voidcrid
         public static ConfigEntry<float> EtherealDriftOverrideJailChance { get; set; }
         public static ConfigEntry<float> NullBeamOverrideDamage { get; set; }
         public static ConfigEntry<float> NullBeamOverrideDuration { get; set; }
+
+        public static ConfigEntry<float> NullBeamOverrideProc { get; set; }
         public static ConfigEntry<float> FlamebreathOverrideDuration { get; set; }
         public static ConfigEntry<float> EntropyOverrideDamage { get; set; }
         public static ConfigEntry<float> EntropyOverrideFireSpeed { get; set; }
@@ -95,11 +97,7 @@ namespace Voidcrid
         {
 
 
-            On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => { };
-            //  var gameEnding = SurvivorCatalog.GetSurvivorDef(SurvivorCatalog.FindSurvivorIndex("Croco"));
-            //  gameEnding.outroFlavorToken = "VOIDCRID_OUTRO_FLAVOR";
-            //  gameEnding.cachedName = "Pain";
-            //  gameEnding.displayNameToken = "VOIDCRID_OUTRO_FLAVOR";
+      
             
 
             FlamebreathOverrideRecharge = Config.Bind<float>(
@@ -172,6 +170,14 @@ namespace Voidcrid
             2.5f,
             "NullBeam maximumDuration, measured in seconds"
         );
+
+            NullBeamOverrideProc = Config.Bind<float>(
+            "NullBeam",
+            "Proc",
+            0.1f,
+            "NullBeam proc, measured as a percentage"
+        );
+
 
             EntropyOverrideDamage = Config.Bind<float>(
             "Entropy",
@@ -307,8 +313,15 @@ namespace Voidcrid
                 skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
                 skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
 
-                LanguageAPI.Add("VOIDCRID_OUTRO_FLAVOR", characterOutro);
-                LanguageAPI.Add("VOIDCRID_OUTRO_FAILURE", characterOutroFailure);
+                // LanguageAPI.Add("OUTRO_FLAVOR", characterOutro);
+                // LanguageAPI.Add("OUTRO_FAILURE", characterOutroFailure);
+
+                // survivorDef.outroFlavorToken = characterOutro;
+                // survivorDef.mainEndingEscapeFailureFlavorToken = characterOutroFailure;
+
+
+
+                
             }
             else
             {
