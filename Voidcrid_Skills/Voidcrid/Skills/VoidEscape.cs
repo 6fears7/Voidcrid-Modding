@@ -62,14 +62,14 @@ namespace Voidcrid
 
             if (base.characterBody)
             {
-                // if (NetworkServer.active)
-                // {   
-                base.characterBody.ApplyBuff(RoR2Content.Buffs.Cloak.buffIndex, 1, 5);
+                if (NetworkServer.active)
+                {   
+                base.characterBody.AddTimedBuff(RoR2Content.Buffs.Cloak, 5);
                 base.characterBody.ApplyBuff(RoR2Content.Buffs.CloakSpeed.buffIndex, 1);
                 base.characterBody.ApplyBuff(RoR2Content.Buffs.VoidFogStrong.buffIndex, 1);
                 base.characterBody.ApplyBuff(RoR2Content.Buffs.HiddenInvincibility.buffIndex, 1);
 
-                // }
+                }
 
 
 
@@ -116,7 +116,7 @@ namespace Voidcrid
             {
                 // if (NetworkServer.active)
                 // {
-                characterBody.ApplyBuff(RoR2Content.Buffs.CloakSpeed.buffIndex, 0, 0);
+                // characterBody.ApplyBuff(RoR2Content.Buffs.CloakSpeed.buffIndex, 0, 0);
                 characterBody.ApplyBuff(RoR2Content.Buffs.Cloak.buffIndex, 0);
                 characterBody.ApplyBuff(RoR2Content.Buffs.HiddenInvincibility.buffIndex, 0);
                 characterBody.ApplyBuff(RoR2Content.Buffs.VoidFogStrong.buffIndex, 0);

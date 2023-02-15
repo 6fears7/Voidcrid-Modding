@@ -78,7 +78,7 @@ namespace Voidcrid
         private const string assetbundleName = "acrid3";
         private const string csProjName = "Voidcrid";
 
-
+        internal static GameObject voidFogProjectile;
         private static UnlockableDef entropyUnlock;
 
         private static UnlockableDef ethUnlock;
@@ -87,6 +87,8 @@ namespace Voidcrid
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
 
+
+          
         public void Awake()
 
 
@@ -98,7 +100,7 @@ namespace Voidcrid
             //  gameEnding.outroFlavorToken = "VOIDCRID_OUTRO_FLAVOR";
             //  gameEnding.cachedName = "Pain";
             //  gameEnding.displayNameToken = "VOIDCRID_OUTRO_FLAVOR";
-
+            
 
             FlamebreathOverrideRecharge = Config.Bind<float>(
             "Recharge Interval",
@@ -273,7 +275,7 @@ namespace Voidcrid
 
             LoadAssetBundle();
             SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
-
+            CreateFogProjectile();
             FlamebreathSetup(skillLocator);
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
@@ -582,6 +584,33 @@ namespace Voidcrid
         }
 
 
+        internal static void CreateFogProjectile()
+        {
+
+            Debug.Log("Creating Fog projectile");
+            GameObject projectile = R2API.PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole"), "fogPain");
+            FogDamageController fog = projectile.AddComponent<FogDamageController>();
+            BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
+                
+                fog.healthFractionPerSecond = 0.02f;
+                fog.dangerBuffDuration = 0.6f;
+                fog.tickPeriodSeconds = .5f;
+                fog.healthFractionRampCoefficientPerSecond = .015f;
+                Debug.Log("Trying fog notify");
+                fog.dangerBuffDef = fogNotify;
+                Debug.Log("succeeded fog notify");
+                var zone = projectile.AddComponent<SphereZone>();
+                zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
+                fog.initialSafeZones = new BaseZoneBehavior[] { zone };
+                zone.isInverted = true;
+                projectile.AddComponent<DestroyOnTimer>().duration = 5f;
+                Debug.Log("Trying static assign");
+                voidFogProjectile = projectile; 
+                Debug.Log("Done");
+
+                ContentAddition.AddProjectile(voidFogProjectile);
+                Debug.Log("Finished creating voidFog projectile");
+        }
 
         internal static void LoadAssetBundle()
         {
