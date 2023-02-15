@@ -335,16 +335,9 @@ namespace Voidcrid
                 owner = base.gameObject,
                 projectilePrefab = VoidcridDef.voidFogProjectile,
                 rotation = Quaternion.identity,
-                target = null
+                target = base.gameObject
             });
 
-
-                // instance = GameObject.Instantiate(prefab, base.characterBody.footPosition, base.transform.rotation);
-
-                // if (NetworkServer.active) {
-
-                //     NetworkServer.Spawn(instance);
-                // }
                 
         }
 
