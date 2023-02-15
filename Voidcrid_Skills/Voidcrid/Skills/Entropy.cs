@@ -38,7 +38,7 @@ namespace Voidcrid
         [SerializeField]
         private float blastAttackForce = 1000f;
 
-        private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
+        // private GameObject projectilePrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/ElementalRingVoidBlackHole");
 
         private float hitPauseTimer;
         [SerializeField]
@@ -50,10 +50,7 @@ namespace Voidcrid
         private DamageType voidAttack;
         private DamageType poisonAttack;
 
-        private static GameObject prefab;
-
-
-        private CrocoDamageTypeController crocoDamageTypeController;
+         private CrocoDamageTypeController crocoDamageTypeController;
 
         private GameObject leftFistEffectInstance;
 
@@ -81,8 +78,9 @@ namespace Voidcrid
         float emissionIntensity = 4f;
         float minIntensity = 0.3f;
 
-        private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
+        // private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
 
+        private GameObject instance;
         private void FireSmash()
         {
 
@@ -323,9 +321,8 @@ namespace Voidcrid
         private void Bombardment()
         {
 
-
             float damage = 1f;
-
+                
             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
             {
                 damage = damage,
@@ -336,29 +333,19 @@ namespace Voidcrid
                 procChainMask = default(ProcChainMask),
                 force = 6000f,
                 owner = base.gameObject,
-                projectilePrefab = projectilePrefab,
+                projectilePrefab = VoidcridDef.voidFogProjectile,
                 rotation = Quaternion.identity,
                 target = null
-
-
             });
-            if (NetworkServer.active)
-            {
-                FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
-
-                fog.healthFractionPerSecond = 0.02f;
-                fog.dangerBuffDuration = 0.6f;
-                fog.tickPeriodSeconds = .5f;
-                fog.healthFractionRampCoefficientPerSecond = .015f;
-                fog.dangerBuffDef = fogNotify;
-                var zone = projectilePrefab.AddComponent<SphereZone>();
-                zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
-                fog.initialSafeZones = new BaseZoneBehavior[] { zone };
-                zone.isInverted = true;
-            }
-            projectilePrefab.AddComponent<DestroyOnDestroy>();
 
 
+                // instance = GameObject.Instantiate(prefab, base.characterBody.footPosition, base.transform.rotation);
+
+                // if (NetworkServer.active) {
+
+                //     NetworkServer.Spawn(instance);
+                // }
+                
         }
 
     }

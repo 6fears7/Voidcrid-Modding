@@ -320,8 +320,8 @@ namespace Voidcrid
 
         private void Bombardment()
         {
+              float damage = 1f;
 
-            float damage = 1f;
             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
             {
                 damage = damage,
@@ -336,11 +336,10 @@ namespace Voidcrid
                 rotation = Quaternion.identity,
                 target = null
 
-            });
 
+            });
             if (NetworkServer.active)
             {
-
                 FogDamageController fog = projectilePrefab.AddComponent<FogDamageController>();
 
                 fog.healthFractionPerSecond = 0.02f;
@@ -351,14 +350,15 @@ namespace Voidcrid
                 var zone = projectilePrefab.AddComponent<SphereZone>();
                 zone.radius = VoidcridDef.EntropyOverrideRadius.Value + 1;
                 fog.initialSafeZones = new BaseZoneBehavior[] { zone };
-
                 zone.isInverted = true;
             }
             projectilePrefab.AddComponent<DestroyOnDestroy>();
+        }
+
+
 
         }
 
-    }
 
 
 }
