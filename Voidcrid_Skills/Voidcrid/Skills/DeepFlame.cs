@@ -2,6 +2,8 @@ using EntityStates;
 using RoR2;
 using UnityEngine;
 using EntityStates.LemurianBruiserMonster;
+using R2API.Networking;
+using UnityEngine.Networking;
 
 
 
@@ -10,7 +12,7 @@ namespace Voidcrid
     public class Voidcridbreath : Flamebreath
     {
 
-        private static new float maxDistance = 20f;
+        private new float maxDistance = 12f;
 
         private new float baseFlamethrowerDuration = VoidcridDef.FlamebreathOverrideDuration.Value;
 
@@ -45,7 +47,7 @@ namespace Voidcrid
             if ((bool)modelTransform)
             {
                 childLocator = modelTransform.GetComponent<ChildLocator>();
-                modelTransform.GetComponent<AimAnimator>().enabled = true;
+                // modelTransform.GetComponent<AimAnimator>().enabled = true;
             }
             float num = flamethrowerDuration * tickFrequency;
             tickDamageCoefficient = totalDamageCoefficient / num;
@@ -129,7 +131,7 @@ namespace Voidcrid
                     FireFlame("MouthMuzzle");
                 }
 
-
+                UpdateFlamethrowerEffect();
             }
             else if ((bool)flamethrowerEffectInstance)
             {
@@ -144,5 +146,16 @@ namespace Voidcrid
         {
             return InterruptPriority.Skill;
         }
+
+        	private void UpdateFlamethrowerEffect()
+	{
+		Ray aimRay = GetAimRay();
+		Vector3 direction = aimRay.direction;
+		if ((bool)muzzleTransform)
+		{
+			muzzleTransform.forward = direction;
+		}
+
+ 	}
     }
 }

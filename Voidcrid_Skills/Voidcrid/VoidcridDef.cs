@@ -71,6 +71,8 @@ namespace Voidcrid
 
         public static ConfigEntry<bool> VoidcridPassiveShow { get; set; }
 
+         public static ConfigEntry<float> VoidcridFogDamageOverride { get; set; }
+
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
         public static bool skillsPlusInstalled = false;
@@ -268,6 +270,13 @@ namespace Voidcrid
             "Scepter Color",
             Color.red,
             "Voidcrid's Scepter Color Glow"
+        );
+
+        VoidcridFogDamageOverride = Config.Bind<float>(
+            "Entropy",
+            "Fog Damage",
+            0.08f,
+            "Fog health fraction damage per second"
         );
 
 
@@ -488,7 +497,7 @@ namespace Voidcrid
         private void EntropySetup(SkillLocator skillLocator)
         {
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for {EntropySelfHeal.Value * 100}% or <style=cDeath>harming</style> yourself for <style=cIsDamage>{EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, summons a temporary black hole, <style=cArtifact>choking</style> everyone inside and applies your <style=cIsHealing>Passive</style> on exiting.");
+            LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for <style=cIsDamage>{EntropySelfHeal.Value * 100}%</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>{EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, creates a temporary <style=cArtifact>black hole</style>, <style=cDeath>choking</style> everyone inside and applies your <style=cIsHealing>Passive</style> on exiting.");
             SkillDef Entropy = ScriptableObject.CreateInstance<SkillDef>();
             Entropy.activationState = new SerializableEntityStateType(typeof(Voidcrid.Entropy));
             Entropy.activationStateMachineName = "Weapon";
@@ -605,7 +614,7 @@ namespace Voidcrid
             FogDamageController fog = projectile.AddComponent<FogDamageController>();
             BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
                 
-                fog.healthFractionPerSecond = 0.02f;
+                fog.healthFractionPerSecond = VoidcridDef.VoidcridFogDamageOverride.Value;
                 fog.dangerBuffDuration = 0.6f;
                 fog.tickPeriodSeconds = .5f;
                 fog.healthFractionRampCoefficientPerSecond = .015f;
