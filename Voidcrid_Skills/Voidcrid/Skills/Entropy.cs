@@ -4,6 +4,7 @@ using RoR2;
 using UnityEngine;
 using RoR2.Projectile;
 using UnityEngine.AddressableAssets;
+using R2API.Networking;
 
 using EntityStates.VoidSurvivor;
 using UnityEngine.Networking;
@@ -251,7 +252,7 @@ namespace Voidcrid
                 if (this.animator) this.animator.SetFloat("Slash3.playbackRate", 3f);
             }
 
-            if (this.stopwatch >= this.duration * VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false && base.isAuthority)
             // && this.stopwatch <= this.duration * .6f
             {
                 this.FireSmash();
@@ -261,7 +262,7 @@ namespace Voidcrid
 
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false && base.isAuthority)
 
             {
                 this.FireSmash();
@@ -271,7 +272,7 @@ namespace Voidcrid
 
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false && base.isAuthority)
 
             {
                 this.FireSmash();
@@ -280,7 +281,7 @@ namespace Voidcrid
 
             }
 
-            if (IsKeyDownAuthority() && hasFinishedFiring)
+            if (IsKeyDownAuthority() && hasFinishedFiring && base.isAuthority)
             {
 
                 Bombardment();

@@ -11,19 +11,29 @@ using EntityStates.VoidRaidCrab.Weapon;
 
 namespace Voidcrid
 {
-    public class VoidEscape : StealthMode
+    public class VoidEscape : BaseState
     {
 
         private TemporaryVisualEffect voidFog;
+
+        private float duration = StealthMode.duration;
         //  Addressables.LoadAssetAsync<GameObject>("Prefabs/TemporaryVisualEffects/voidFogMildEffect").WaitForCompletion();
         public static DamageReport onCharacterDeathGlobal;
+
+        private float blastAttackRadius = StealthMode.blastAttackRadius;
+
+        private float blastAttackForce = StealthMode.blastAttackForce;
+
+        private float shortHopVelocity = StealthMode.shortHopVelocity;
+
+        private float blastAttackProcCoefficient = StealthMode.blastAttackProcCoefficient;
 
         public CharacterBody body;
 
         [SerializeField]
 
-        private new GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathPreExplosion.prefab").WaitForCompletion();
-        private new string smokeBombMuzzleString = "MuzzleCenter";
+        private GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathPreExplosion.prefab").WaitForCompletion();
+        private string smokeBombMuzzleString = "MuzzleCenter";
         [SerializeField]
         private GameObject explosionPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
 
@@ -57,8 +67,8 @@ namespace Voidcrid
                 baseAttack = DamageType.Stun1s;
 
             }
-            animator = GetModelAnimator();
-            _ = (bool)animator;
+            // animator = GetModelAnimator();
+            // _ = (bool)animator;
 
             if (base.characterBody)
             {
@@ -82,8 +92,6 @@ namespace Voidcrid
 
             // Hack to pull the visual state without actually updating the effect
             base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius, true);
-
-
 
         }
 
@@ -124,15 +132,15 @@ namespace Voidcrid
                 base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
             }
 
-            if ((bool)animator)
-            {
-                animator.SetLayerWeight(animator.GetLayerIndex("Body, StealthWeapon"), 0f);
-            }
+            // if ((bool)animator)
+            // {
+            //     animator.SetLayerWeight(animator.GetLayerIndex("Body, StealthWeapon"), 0f);
+            // }
             base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius, false);
             base.OnExit();
         }
 
-        private new void OnSkillActivatedAuthority(GenericSkill skill)
+        private void OnSkillActivatedAuthority(GenericSkill skill)
         {
 
             if (skill.isCombatSkill)
@@ -141,7 +149,7 @@ namespace Voidcrid
             }
         }
 
-        private new void FireSmokebomb()
+        private void FireSmokebomb()
         {
             if (base.isAuthority)
             {
