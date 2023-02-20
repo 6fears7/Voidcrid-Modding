@@ -98,10 +98,6 @@ namespace Voidcrid
 
         {
 
-
-      On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => {};
-            
-
             FlamebreathOverrideRecharge = Config.Bind<float>(
             "Recharge Interval",
             "Flamebreath Recharge",

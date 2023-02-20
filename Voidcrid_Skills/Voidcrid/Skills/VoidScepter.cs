@@ -141,7 +141,6 @@ namespace Voidcrid
             entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
-            base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
 
@@ -237,29 +236,34 @@ namespace Voidcrid
             if (this.stopwatch >= this.duration * VoidcridDef.ScepterEntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
             // && this.stopwatch <= this.duration * .6f
             {
+                if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFired1 = true;
+                }
                 ManageEntroypGlow();
             }
 
             if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
 
-            {
+            {   if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFired2 = true;
+            }
                 ManageEntroypGlow();
             }
 
             if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
 
             {
+                if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFinishedFiring = true;
+                }
                 ManageEntroypGlow();
 
             }
 
-            if (IsKeyDownAuthority() && hasFinishedFiring)
+            if (IsKeyDownAuthority() && hasFinishedFiring && base.isAuthority)
             {
 
                 Bombardment();
@@ -283,7 +287,6 @@ namespace Voidcrid
         {
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
-            base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
             EntityState.Destroy(leftFistEffectInstance);
             EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();
