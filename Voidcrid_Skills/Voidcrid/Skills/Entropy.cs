@@ -140,10 +140,6 @@ namespace Voidcrid
             entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
-            if (NetworkServer.active)
-            {
-                base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
-            }
 
             poisonAttack = crocoDamageTypeController.GetDamageType();
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);
@@ -252,31 +248,37 @@ namespace Voidcrid
                 if (this.animator) this.animator.SetFloat("Slash3.playbackRate", 3f);
             }
 
-            if (this.stopwatch >= this.duration * VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false && base.isAuthority)
+            if (this.stopwatch >= this.duration * VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
             // && this.stopwatch <= this.duration * .6f
             {
+                 if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFired1 = true;
+                 }
                 ManageEntroypGlow();
 
 
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false && base.isAuthority)
+            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
 
             {
+                if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFired2 = true;
+                }
                 ManageEntroypGlow();
 
 
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false && base.isAuthority)
+            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
 
             {
+                 if (base.isAuthority) {
                 this.FireSmash();
                 this.hasFinishedFiring = true;
+                 }
                 ManageEntroypGlow();
 
             }
@@ -305,10 +307,7 @@ namespace Voidcrid
         {
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
-            if (NetworkServer.active)
-            {
-                base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
-            }
+
             EntityState.Destroy(leftFistEffectInstance);
             EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();

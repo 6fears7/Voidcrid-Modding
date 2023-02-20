@@ -11,29 +11,29 @@ using EntityStates.VoidRaidCrab.Weapon;
 
 namespace Voidcrid
 {
-    public class VoidEscape : BaseState
+    public class VoidEscape : StealthMode
     {
 
         private TemporaryVisualEffect voidFog;
 
-        private float duration = StealthMode.duration;
+        // private float duration = StealthMode.duration;
         //  Addressables.LoadAssetAsync<GameObject>("Prefabs/TemporaryVisualEffects/voidFogMildEffect").WaitForCompletion();
         public static DamageReport onCharacterDeathGlobal;
 
-        private float blastAttackRadius = StealthMode.blastAttackRadius;
+        // private float blastAttackRadius = StealthMode.blastAttackRadius;
 
-        private float blastAttackForce = StealthMode.blastAttackForce;
+        // private float blastAttackForce = StealthMode.blastAttackForce;
 
-        private float shortHopVelocity = StealthMode.shortHopVelocity;
+        // private float shortHopVelocity = StealthMode.shortHopVelocity;
 
-        private float blastAttackProcCoefficient = StealthMode.blastAttackProcCoefficient;
+        // private float blastAttackProcCoefficient = StealthMode.blastAttackProcCoefficient;
 
         public CharacterBody body;
 
         [SerializeField]
 
-        private GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathPreExplosion.prefab").WaitForCompletion();
-        private string smokeBombMuzzleString = "MuzzleCenter";
+        private new GameObject smokeBombEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathPreExplosion.prefab").WaitForCompletion();
+        private new string smokeBombMuzzleString = "MuzzleCenter";
         [SerializeField]
         private GameObject explosionPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
 
@@ -85,8 +85,9 @@ namespace Voidcrid
                 base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
             }
 
-
+            if (base.isAuthority) {
             FireSmokebomb();
+            }
 
             Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
 
@@ -107,7 +108,7 @@ namespace Voidcrid
 
         public override void OnExit()
         {
-            if (!outer.destroying)
+            if (!outer.destroying && base.isAuthority)
 
             {
                 FireSmokebomb();
@@ -140,7 +141,7 @@ namespace Voidcrid
             base.OnExit();
         }
 
-        private void OnSkillActivatedAuthority(GenericSkill skill)
+        private new void OnSkillActivatedAuthority(GenericSkill skill)
         {
 
             if (skill.isCombatSkill)
@@ -149,7 +150,7 @@ namespace Voidcrid
             }
         }
 
-        private void FireSmokebomb()
+        private new void FireSmokebomb()
         {
             if (base.isAuthority)
             {
