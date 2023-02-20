@@ -99,7 +99,7 @@ namespace Voidcrid
         {
 
 
-      
+      On.RoR2.Networking.NetworkManagerSystemSteam.OnClientConnect += (s, u, t) => {};
             
 
             FlamebreathOverrideRecharge = Config.Bind<float>(
@@ -372,7 +372,6 @@ namespace Voidcrid
             voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
             voidBreath.mustKeyPress = true; //test this with Backpack
-            voidBreath.mustKeyPress = true; //test this with Backpack
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
@@ -382,6 +381,7 @@ namespace Voidcrid
             voidBreath.skillNameToken = "VOIDCRID_FLAMEBREATH";
 
             ContentAddition.AddSkillDef(voidBreath);
+            ContentAddition.AddEntityState(typeof(Voidcrid.Voidcridbreath), out _);
 
             SkillFamily skillPrimary = skillLocator.primary.skillFamily;
 
@@ -420,9 +420,10 @@ namespace Voidcrid
             voidBeam.skillName = "nullifier";
             voidBeam.skillNameToken = "VOIDCRID_NULLBEAM";
             voidBeam.mustKeyPress = true;
-            voidBeam.mustKeyPress = true;
 
             ContentAddition.AddSkillDef(voidBeam);
+            ContentAddition.AddEntityState(typeof(Voidcrid.NullBeam), out _);
+
             VoidcridUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             VoidcridUnlock.cachedName = "Skills.Croco.Nullbeam";
             VoidcridUnlock.nameToken = "ACHIEVEMENT_VOIDCRIDUNLOCK_NAME";
@@ -476,6 +477,7 @@ namespace Voidcrid
             voidEscape.skillNameToken = "VOIDCRID_VOIDDRIFT";
 
             ContentAddition.AddSkillDef(voidEscape);
+            ContentAddition.AddEntityState(typeof(Voidcrid.VoidEscape), out _);
             SkillFamily skillUtility = skillLocator.utility.skillFamily;
 
             ethUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
@@ -521,6 +523,7 @@ namespace Voidcrid
             Entropy.skillNameToken = "VOIDCRID_ENTROPY";
 
             ContentAddition.AddSkillDef(Entropy);
+            ContentAddition.AddEntityState(typeof(Voidcrid.Entropy), out _);
 
             entropyUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             entropyUnlock.cachedName = "Skins.Croco.Voidcrid";
@@ -574,6 +577,7 @@ namespace Voidcrid
             voidScepter.skillNameToken = "VOIDCRID_SCEPTER_ENTROPY";
 
             ContentAddition.AddSkillDef(voidScepter);
+            ContentAddition.AddEntityState(typeof(Voidcrid.VoidScepter), out _);
 
         }
 
