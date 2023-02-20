@@ -129,7 +129,7 @@
 //  }   
 
 //   public class AssignableSkillDef : SkillDef { 
-        
+
 //         public System.Func<GenericSkill,SkillDef.BaseSkillInstanceData> onAssign;
 //         public System.Action<GenericSkill> onUnassign;
 
