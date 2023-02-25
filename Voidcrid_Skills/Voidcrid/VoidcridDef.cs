@@ -10,8 +10,9 @@ using System.Reflection;
 using BepInEx.Configuration;
 using System.Runtime.CompilerServices;
 using System.Linq;
-
-
+using static R2API.DamageAPI;
+using Voidcrid.Modules;
+using UnityEngine.Networking;
 
 namespace Voidcrid
 {
@@ -90,8 +91,6 @@ namespace Voidcrid
         private static UnlockableDef VoidcridUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
-
-
           
         public void Awake()
 
@@ -137,7 +136,7 @@ namespace Voidcrid
             NullBeamOverrideJailChance = Config.Bind<float>(
          "JailChance",
          "NullBeamJailChance",
-         .1f,
+         .4f,
          "Null Beam jail chance, measured in percentage."
      );
 
@@ -172,7 +171,7 @@ namespace Voidcrid
             NullBeamOverrideProc = Config.Bind<float>(
             "NullBeam",
             "Proc",
-            0.1f,
+            0.4f,
             "NullBeam proc, measured as a percentage"
         );
 
@@ -291,8 +290,12 @@ namespace Voidcrid
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
+            Hook();
+            
+            // Debug.Log("Trying to hook");
+			// On.RoR2.GlobalEventManager.OnHitEnemy += JailJailJail;
 
-
+            // Debug.Log("Probably the issue");
 
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
@@ -308,25 +311,21 @@ namespace Voidcrid
             LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, corrupt yourself 7 times to break containment.");
 
 
-
-
             if (VoidcridPassiveShow.Value == true)
             {
+                SurvivorDef voidcridOutro = voidcridBodyPrefab.GetComponent<SurvivorDef>();
 
                 skillLocator.passiveSkill.enabled = true;
                 skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
                 skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
                 skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
 
-                // LanguageAPI.Add("OUTRO_FLAVOR", characterOutro);
-                // LanguageAPI.Add("OUTRO_FAILURE", characterOutroFailure);
+                LanguageAPI.Add("CROCO_OUTRO_FLAVOR", characterOutro);
+                LanguageAPI.Add("CROCO_MAIN_ENDING_ESCAPE_FAILURE_FLAVOR", characterOutroFailure);
 
-                // survivorDef.outroFlavorToken = characterOutro;
-                // survivorDef.mainEndingEscapeFailureFlavorToken = characterOutroFailure;
-
-
-
-                
+                voidcridOutro.outroFlavorToken = characterOutro;
+                voidcridOutro.mainEndingEscapeFailureFlavorToken = characterOutroFailure;
+                               
             }
             else
             {
@@ -334,6 +333,7 @@ namespace Voidcrid
                 skillLocator.passiveSkill.enabled = false;
             }
 
+            Debug.Log("Is it outside the awake?");
 
         }
 
@@ -367,7 +367,7 @@ namespace Voidcrid
             voidBreath.fullRestockOnAssign = true;
             voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
-            voidBreath.mustKeyPress = true; //test this with Backpack
+            voidBreath.mustKeyPress = false; //test this with Backpack
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
@@ -577,6 +577,8 @@ namespace Voidcrid
 
         }
 
+        
+
         public static bool HasDeeprot(SkillLocator sk)
         {
             bool hasDeeprot = false;
@@ -604,7 +606,6 @@ namespace Voidcrid
             }
             return deeprotEquipped;
         }
-
 
         internal static void CreateFogProjectile()
         {
@@ -634,6 +635,30 @@ namespace Voidcrid
                 Debug.Log("Finished creating voidFog projectile");
         }
 
+
+            private static void JailJailJail(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info) {
+            
+                
+                if (info.HasModdedDamageType(DamageTypes.nullBeamJail) || info.HasModdedDamageType(DamageTypes.ethJail) || info.HasModdedDamageType(DamageTypes.entropyJail))
+            {
+                if (NetworkServer.active) {
+                self.body.AddTimedBuff(RoR2Content.Buffs.Nullified, 3f);
+                }
+            }
+
+            orig(self, info);
+
+		}
+
+               private void Hook()
+        {
+        
+                      On.RoR2.HealthComponent.TakeDamage += JailJailJail;
+
+        }
+
+
+
         internal static void LoadAssetBundle()
         {
 
@@ -654,6 +679,8 @@ namespace Voidcrid
             }
 
         }
+
+
 
         private void Start()
         {
@@ -676,6 +703,7 @@ namespace Voidcrid
             }
 
         }
+
 
     }
 

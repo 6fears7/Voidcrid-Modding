@@ -39,6 +39,7 @@
     <PackageReference Include="R2API.Unlockable" Version="1.0.0" />
     <PackageReference Include="R2API.Loadout" Version="1.0.0" />
     <PackageReference Include="R2API.Prefab" Version="1.0.0" />
+    <PackageReference Include="R2API.DamageType" Version="1.0.0" />
 
   </ItemGroup>
 

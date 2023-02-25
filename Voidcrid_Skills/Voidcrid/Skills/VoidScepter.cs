@@ -3,11 +3,7 @@ using EntityStates.Croco;
 using RoR2;
 using UnityEngine;
 using RoR2.Projectile;
-using System;
 using UnityEngine.AddressableAssets;
-using System.Collections.Generic;
-using System.Linq;
-using RoR2.Orbs;
 using UnityEngine.Networking;
 
 
@@ -112,7 +108,9 @@ namespace Voidcrid
             obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
             obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
 
-
+                if (entropyDamage == DamageType.Nullify) {
+                R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
+                }
 
             obj.Fire();
 
@@ -142,7 +140,7 @@ namespace Voidcrid
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 
-            voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
             poisonAttack = crocoDamageTypeController.GetDamageType();
             aoePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidSurvivor/VoidSurvivorMegaBlasterExplosionCorrupted.prefab").WaitForCompletion();
