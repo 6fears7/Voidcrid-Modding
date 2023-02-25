@@ -12,8 +12,10 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using static R2API.DamageAPI;
 using Voidcrid.Modules;
+using Voidcrid.Effects;
 using UnityEngine.Networking;
-
+using CharacterBody = RoR2.CharacterBody;
+using System.Collections.Generic;
 namespace Voidcrid
 {
     [BepInDependency("com.bepis.r2api")]
@@ -91,7 +93,7 @@ namespace Voidcrid
         private static UnlockableDef VoidcridUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
-          
+        public string familyName = "Death States";
         public void Awake()
 
 
@@ -290,8 +292,12 @@ namespace Voidcrid
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
+            //InitializeRecolorSkills();
+            // Voidcrid.Modules.VoidcridDeathProjectile.Init();
+            // Voidcrid.Effects.EffectProvider.Init();
+            // DeathBehavior();
             Hook();
-            
+          
             // Debug.Log("Trying to hook");
 			// On.RoR2.GlobalEventManager.OnHitEnemy += JailJailJail;
 
@@ -378,7 +384,7 @@ namespace Voidcrid
 
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddEntityState(typeof(Voidcrid.Voidcridbreath), out _);
-
+            
             SkillFamily skillPrimary = skillLocator.primary.skillFamily;
 
             Array.Resize(ref skillPrimary.variants, skillPrimary.variants.Length + 1);
@@ -390,6 +396,43 @@ namespace Voidcrid
             };
 
         }
+
+    //  private void InitializeRecolorSkills() {
+    //         SkillFamily recolorFamily = Voidcrid.VoidcridSkillSetup.CreateGenericSkillWithSkillFamily(voidcridBodyPrefab, "Death_States", true).skillFamily;
+    //         List<SkillDef> skilldefs = new List<SkillDef> {
+    //             createRecolorSkillDef("Default"),
+    //             createRecolorSkillDef("Void"),
+    //         };
+
+    //         for (int i = 0; i < skilldefs.Count; i++) {
+
+    //             Voidcrid.VoidcridSkillSetup.AddSkillToFamily(recolorFamily, skilldefs[i], i == 0? null : null);
+
+    //         }
+
+    //  }
+    //           private SkillDef createRecolorSkillDef(string name) {
+
+    //         Color color1 = Color.white;
+
+    //         return Voidcrid.VoidcridSkillSetup.CreateSkillDef(new SkillDefInfo {
+    //             skillName = name,
+    //             skillNameToken = $"{name.ToUpper()}",
+    //             skillDescriptionToken = "",
+    //             skillIcon = null,
+    //         });
+     //   }
+        
+        // public static void AddSkillToFamily(SkillFamily skillFamily, SkillDef skillDef, UnlockableDef unlockableDef = null) {
+
+        //     Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
+
+        //     skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant {
+        //         skillDef = skillDef,
+        //         unlockableDef = unlockableDef,
+        //         viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
+        //     };
+        // }
 
         private void NullBeamSetup(SkillLocator skillLocator)
         {
@@ -437,7 +480,13 @@ namespace Voidcrid
             };
         }
 
+        private void DeathBehavior() {
+        
+         Debug.Log("Setting up death animation...");
+			CharacterDeathBehavior deathBehavior = voidcridBodyPrefab.GetComponent<CharacterDeathBehavior>();
+			deathBehavior.deathState = UtilCreateSerializableAndNetRegister<Voidcrid.Modules.DeathState>();
 
+        }
         private void VoidEscapeSetup(SkillLocator skillLocator)
         {
 
@@ -650,12 +699,53 @@ namespace Voidcrid
 
 		}
 
+        	private static void VoidcridDeathBombFake(On.RoR2.HealthComponent.orig_TakeDamage originalMethod, HealthComponent @this, DamageInfo damageInfo) {
+			if (damageInfo.rejected) {
+				originalMethod(@this, damageInfo);
+				return;
+			}
+
+			originalMethod(@this, damageInfo);
+			if (damageInfo.HasModdedDamageType(DamageTypes.voidcridDeath)) {
+				if (!@this.alive && @this.wasAlive && @this.body) {
+					Vector3 pos = @this.body.corePosition;
+					float radius = @this.body.bestFitRadius;
+
+					if (damageInfo.attacker) {
+						CharacterBody attacker = damageInfo.attacker.GetComponent<CharacterBody>();
+						if (attacker != null) {
+							EffectManager.SpawnEffect(
+								EffectProvider.VoidcridSilentKill,
+								new EffectData {
+									origin = pos,
+									scale = radius
+								},
+								true
+							);
+						}
+					}
+				}
+			}
+		}
+
                private void Hook()
         {
         
                       On.RoR2.HealthComponent.TakeDamage += JailJailJail;
+                      On.RoR2.HealthComponent.TakeDamage += VoidcridDeathBombFake;
+
 
         }
+
+        		private static SerializableEntityStateType UtilCreateSerializableAndNetRegister<T>() where T : EntityState {
+			// java when the typeof(T)
+			// when
+			//  the when the t
+			// t
+			Debug.Log($"Registering EntityState {typeof(T).FullName} and returning a new instance of {nameof(SerializableEntityStateType)} of that type...");
+			ContentAddition.AddEntityState<T>(out _);
+			return new SerializableEntityStateType(typeof(T));
+		}
 
 
 

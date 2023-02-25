@@ -17,6 +17,7 @@ namespace Voidcrid.Modules
         public static DamageAPI.ModdedDamageType nullBeamJail = DamageAPI.ReserveDamageType();
         public static DamageAPI.ModdedDamageType ethJail = DamageAPI.ReserveDamageType();
         public static DamageAPI.ModdedDamageType entropyJail = DamageAPI.ReserveDamageType();
+		public static DamageAPI.ModdedDamageType voidcridDeath = DamageAPI.ReserveDamageType();
 
       
 
