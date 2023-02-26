@@ -1,5 +1,7 @@
 using RoR2;
 using RoR2.Achievements;
+using static R2API.DamageAPI;
+using Voidcrid.Modules;
 
 namespace Voidcrid.Achievements
 {
@@ -15,32 +17,34 @@ namespace Voidcrid.Achievements
             public override void OnInstall()
             {
                 base.OnInstall();
-                GlobalEventManager.onCharacterDeathGlobal += onCharacterDeathGlobal;
+                On.RoR2.HealthComponent.TakeDamage += onJailDamage;
 
             }
 
             public override void OnUninstall()
             {
                 base.OnUninstall();
-                GlobalEventManager.onCharacterDeathGlobal -= onCharacterDeathGlobal;
+                On.RoR2.HealthComponent.TakeDamage -= onJailDamage;
             }
 
-            private void onCharacterDeathGlobal(DamageReport damageReport)
+            private void onJailDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
             {
 
-                bool newt = damageReport.victimBody && damageReport.victim._killingDamageType == 65536 && damageReport.victimBodyIndex == jailBodyIndex;
+                bool jailerBody = self.body.bodyIndex == jailBodyIndex && info.HasModdedDamageType(DamageTypes.nullBeamJail) || info.HasModdedDamageType(DamageTypes.ethJail) || info.HasModdedDamageType(DamageTypes.entropyJail);
 
 
-                if (newt)
+                if (jailerBody)
                 {
                     this._jailAchievement++;
 
                     if (this._jailAchievement >= jailRequirement)
                     {
                         base.Grant();
+    
 
                     }
                 }
+                        orig(self, info);
             }
 
 

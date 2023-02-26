@@ -3,8 +3,7 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using System.Collections;
-
+using static R2API.DamageAPI;
 
 namespace Voidcrid
 {
@@ -34,7 +33,7 @@ namespace Voidcrid
         private GameObject tracerEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerCaptureTracer.prefab").WaitForCompletion();
         private float spreadBloomValue = 0.3f;
 
-
+    
         private float forcePerSecond = 2f;
 
         public ItemIndex index;
@@ -43,7 +42,7 @@ namespace Voidcrid
 
         private float minimumDuration;
 
-
+        private BuffDef nullifier = RoR2Content.Buffs.Nullified;
         private float maxSpread = 2f;
 
         private DamageType deeprotDamage;
@@ -54,7 +53,7 @@ namespace Voidcrid
 
         private float switchAttacks = 50f;
 
-        private DamageType voidAttack;
+        public static DamageType voidcridLaserAttack;
 
 
         private Material backGlow;
@@ -64,11 +63,12 @@ namespace Voidcrid
 
         private float duration = VoidcridDef.NullBeamOverrideDuration.Value;
 
-
         public override void OnEnter()
         {
 
             base.OnEnter();
+
+
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 
@@ -132,6 +132,7 @@ namespace Voidcrid
 
 
         }
+
         protected float CalcCharge()
         {
             return Mathf.Clamp01(fixedAge / baseDuration);
@@ -145,6 +146,7 @@ namespace Voidcrid
             AddRecoil(-1f * recoilAmplitude, -2f * recoilAmplitude, -0.5f * recoilAmplitude, 0.5f * recoilAmplitude);
             bool hasDeeprot = VoidcridDef.HasDeeprot(base.skillLocator);
 
+
             if (hasDeeprot)
             {
                 passiveAttack = (Util.CheckRoll(rotAttack, base.characterBody.master) ? crocoDamageTypeController.GetDamageType() : DamageType.Generic);
@@ -156,10 +158,11 @@ namespace Voidcrid
                 passiveAttack = DamageType.Generic;
             }
 
-            voidAttack = (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            
+           
+            voidcridLaserAttack = (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
             deeprotDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? passiveAttack : DamageType.Generic);
-
 
             if (base.isAuthority)
             {
@@ -169,22 +172,29 @@ namespace Voidcrid
                 bulletAttack.origin = aimRay.origin;
                 bulletAttack.aimVector = aimRay.direction;
                 bulletAttack.muzzleName = muzzle;
-                bulletAttack.maxDistance = Mathf.Lerp(minDistance, maxDistance, Random.value);
+                bulletAttack.maxDistance = Mathf.Lerp(minDistance, maxDistance, UnityEngine.Random.value);
                 bulletAttack.minSpread = 1f;
                 bulletAttack.maxSpread = maxSpread;
                 bulletAttack.radius = bulletRadius;
                 bulletAttack.smartCollision = false;
                 bulletAttack.falloffModel = BulletAttack.FalloffModel.DefaultBullet;
                 bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
-                bulletAttack.damage = nullBeamDamage * damageStat;
+                bulletAttack.damage = nullBeamDamage * damageStat;   
                 bulletAttack.procCoefficient = VoidcridDef.NullBeamOverrideProc.Value;
                 bulletAttack.force = forcePerSecond;
-                bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidAttack);
                 bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);
                 bulletAttack.hitEffectPrefab = hitEffectPrefab;
                 bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
+                bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidcridLaserAttack);
+                if (voidcridLaserAttack == DamageType.Nullify) {
+                R2API.DamageAPI.AddModdedDamageType(bulletAttack, Voidcrid.Modules.DamageTypes.nullBeamJail);
+                }
                 bulletAttack.Fire();
+
             }
+
+
+           
             base.characterBody.AddSpreadBloom(spreadBloomValue);
         }
 
@@ -192,5 +202,11 @@ namespace Voidcrid
         {
             return InterruptPriority.Skill;
         }
+
+        
+
+
     }
+
+    
 }

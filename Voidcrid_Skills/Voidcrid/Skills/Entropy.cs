@@ -111,7 +111,9 @@ namespace Voidcrid
             obj.bonusForce = Vector3.back * blastAttackForce;
             obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
             obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
-
+                if (entropyDamage == DamageType.Nullify) {
+                R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
+                }
 
             obj.Fire();
 
@@ -139,7 +141,7 @@ namespace Voidcrid
 
             entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
 
-            voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : DamageType.Generic);
+            voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
             poisonAttack = crocoDamageTypeController.GetDamageType();
             entropyDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? voidAttack : poisonAttack);

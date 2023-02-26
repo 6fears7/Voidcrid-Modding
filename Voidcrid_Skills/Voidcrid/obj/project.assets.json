@@ -204,6 +204,26 @@
           }
         }
       },
+      "R2API.DamageType/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "BepInEx.Core": "5.4.19",
+          "MMHOOK.RoR2": "2022.4.19",
+          "R2API.Core": "1.0.0",
+          "RiskOfRain2.GameLibs": "1.2.4-r.0",
+          "UnityEngine.Modules": "2019.4.26"
+        },
+        "compile": {
+          "lib/netstandard2.0/R2API.DamageType.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/R2API.DamageType.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "R2API.Language/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1216,6 +1236,19 @@
         "lib/netstandard2.0/R2API.Core.xml",
         "r2api.core.5.0.3.nupkg.sha512",
         "r2api.core.nuspec"
+      ]
+    },
+    "R2API.DamageType/1.0.0": {
+      "sha512": "AZYx99qKjfMzp/63RY35xKTe9WBSVESepWbP1gzCC6VKe+gcjTYGMg/0SI2pXrdzwiAFU/FjdG4uWeaeZ6Xg+g==",
+      "type": "package",
+      "path": "r2api.damagetype/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/R2API.DamageType.dll",
+        "lib/netstandard2.0/R2API.DamageType.xml",
+        "r2api.damagetype.1.0.0.nupkg.sha512",
+        "r2api.damagetype.nuspec"
       ]
     },
     "R2API.Language/1.0.0": {
@@ -3179,6 +3212,7 @@
       "NETStandard.Library >= 2.0.3",
       "R2API.ContentManagement >= 1.0.1",
       "R2API.Core >= 5.0.3",
+      "R2API.DamageType >= 1.0.0",
       "R2API.Language >= 1.0.0",
       "R2API.Loadout >= 1.0.0",
       "R2API.Networking >= 1.0.2",
@@ -3264,6 +3298,10 @@
           "R2API.Core": {
             "target": "Package",
             "version": "[5.0.3, )"
+          },
+          "R2API.DamageType": {
+            "target": "Package",
+            "version": "[1.0.0, )"
           },
           "R2API.Language": {
             "target": "Package",

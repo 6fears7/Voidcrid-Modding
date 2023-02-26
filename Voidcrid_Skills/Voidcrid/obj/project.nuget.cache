@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "gYirR6M0zAJEbm+c6Adr9t3PimMt0MK3jv++d+z5fF6I+7R5JN5cgwU+G1IKT441xBMdL8bX6Rk9p8fjWS9pAw==",
+  "dgSpecHash": "cwxgz5XmpEEvcWj4uh9VRKGfw0jtyDiFN66fEaY7NtkLuoTsjCo0h+oxl8xMsCyJzqFsaBGg4b4+ZtGBJO16KQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
   "expectedPackageFiles": [
@@ -17,6 +17,7 @@
     "C:\\Users\\lol\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.contentmanagement\\1.0.1\\r2api.contentmanagement.1.0.1.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.core\\5.0.3\\r2api.core.5.0.3.nupkg.sha512",
+    "C:\\Users\\lol\\.nuget\\packages\\r2api.damagetype\\1.0.0\\r2api.damagetype.1.0.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.language\\1.0.0\\r2api.language.1.0.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.loadout\\1.0.0\\r2api.loadout.1.0.0.nupkg.sha512",
     "C:\\Users\\lol\\.nuget\\packages\\r2api.networking\\1.0.2\\r2api.networking.1.0.2.nupkg.sha512",

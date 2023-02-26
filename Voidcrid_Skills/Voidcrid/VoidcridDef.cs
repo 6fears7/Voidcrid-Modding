@@ -10,9 +10,12 @@ using System.Reflection;
 using BepInEx.Configuration;
 using System.Runtime.CompilerServices;
 using System.Linq;
-
-
-
+using static R2API.DamageAPI;
+using Voidcrid.Modules;
+using Voidcrid.Effects;
+using UnityEngine.Networking;
+using CharacterBody = RoR2.CharacterBody;
+using System.Collections.Generic;
 namespace Voidcrid
 {
     [BepInDependency("com.bepis.r2api")]
@@ -73,6 +76,9 @@ namespace Voidcrid
 
          public static ConfigEntry<float> VoidcridFogDamageOverride { get; set; }
 
+        public static ConfigEntry<bool> VoidcridBombDeath { get; set; }
+
+
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
         public static bool skillsPlusInstalled = false;
@@ -90,9 +96,7 @@ namespace Voidcrid
         private static UnlockableDef VoidcridUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
-
-
-          
+        
         public void Awake()
 
 
@@ -137,7 +141,7 @@ namespace Voidcrid
             NullBeamOverrideJailChance = Config.Bind<float>(
          "JailChance",
          "NullBeamJailChance",
-         .1f,
+         .4f,
          "Null Beam jail chance, measured in percentage."
      );
 
@@ -172,7 +176,7 @@ namespace Voidcrid
             NullBeamOverrideProc = Config.Bind<float>(
             "NullBeam",
             "Proc",
-            0.1f,
+            0.4f,
             "NullBeam proc, measured as a percentage"
         );
 
@@ -282,6 +286,13 @@ namespace Voidcrid
             "Display",
             true,
             "Shows the Voidcrid fake Passive description"
+            );
+
+            VoidcridBombDeath = Config.Bind<bool>(
+            "Voidcrid",
+            "Death",
+            true,
+            "Emit a devastating bomb on death"
         );
 
             LoadAssetBundle();
@@ -291,12 +302,23 @@ namespace Voidcrid
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
-
-
+            //InitializeDeathStates();
+            Voidcrid.Modules.VoidcridDeathProjectile.Init();
+            Voidcrid.Effects.EffectProvider.Init();
+            DeathBehavior();
+            Hook();
+          
 
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
+
+            // LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH", "Death");
+            // LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH_DESC", "On death, die a normal death");
+            // LanguageAPI.Add("VOIDCRID_VOID_DEATH", "Void Death");
+
+            // LanguageAPI.Add("VOIDCRID_VOID_DEATH_DESC", "On death, die a Void servant's death");
+
 
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME", "Acrid: Grandfather Paradox");
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected amphibian, an unfortunate end.");
@@ -308,32 +330,27 @@ namespace Voidcrid
             LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, corrupt yourself 7 times to break containment.");
 
 
-
-
             if (VoidcridPassiveShow.Value == true)
             {
+                SurvivorDef voidcridOutro = voidcridBodyPrefab.GetComponent<SurvivorDef>();
 
                 skillLocator.passiveSkill.enabled = true;
                 skillLocator.passiveSkill.skillNameToken = "VOIDCRID_PASSIVE";
                 skillLocator.passiveSkill.skillDescriptionToken = "VOIDCRID_PASSIVE_DESC";
                 skillLocator.passiveSkill.icon = mainAssetBundle.LoadAsset<Sprite>("icon.png");
 
-                // LanguageAPI.Add("OUTRO_FLAVOR", characterOutro);
-                // LanguageAPI.Add("OUTRO_FAILURE", characterOutroFailure);
+                LanguageAPI.Add("CROCO_OUTRO_FLAVOR", characterOutro);
+                LanguageAPI.Add("CROCO_MAIN_ENDING_ESCAPE_FAILURE_FLAVOR", characterOutroFailure);
 
-                // survivorDef.outroFlavorToken = characterOutro;
-                // survivorDef.mainEndingEscapeFailureFlavorToken = characterOutroFailure;
-
-
-
-                
+                voidcridOutro.outroFlavorToken = characterOutro;
+                voidcridOutro.mainEndingEscapeFailureFlavorToken = characterOutroFailure;
+                               
             }
             else
             {
 
                 skillLocator.passiveSkill.enabled = false;
             }
-
 
         }
 
@@ -367,7 +384,7 @@ namespace Voidcrid
             voidBreath.fullRestockOnAssign = true;
             voidBreath.interruptPriority = InterruptPriority.PrioritySkill;
             voidBreath.isCombatSkill = true;
-            voidBreath.mustKeyPress = true; //test this with Backpack
+            voidBreath.mustKeyPress = false; //test this with Backpack
             voidBreath.rechargeStock = 1;
             voidBreath.requiredStock = 1;
             voidBreath.stockToConsume = 1;
@@ -378,7 +395,7 @@ namespace Voidcrid
 
             ContentAddition.AddSkillDef(voidBreath);
             ContentAddition.AddEntityState(typeof(Voidcrid.Voidcridbreath), out _);
-
+            
             SkillFamily skillPrimary = skillLocator.primary.skillFamily;
 
             Array.Resize(ref skillPrimary.variants, skillPrimary.variants.Length + 1);
@@ -391,6 +408,40 @@ namespace Voidcrid
 
         }
 
+    //  private void InitializeDeathStates() {
+    //         SkillFamily recolorFamily = Voidcrid.VoidcridSkillSetup.CreateGenericSkillWithSkillFamily(voidcridBodyPrefab, "Death_States", true).skillFamily;
+    //         List<SkillDef> skilldefs = new List<SkillDef> {
+    //             createDefaultDeathState("Default Death"),
+    //             createVoidDeathState("Void Death"),
+    //         };
+
+    //         for (int i = 0; i < skilldefs.Count; i++) {
+
+    //             Voidcrid.VoidcridSkillSetup.AddSkillToFamily(recolorFamily, skilldefs[i], i == 0? null : null);
+    //         }
+
+    //  }
+    //           private SkillDef createDefaultDeathState(string name) {
+
+
+    //         return Voidcrid.VoidcridSkillSetup.CreateSkillDef(new SkillDefInfo {
+    //             skillName = name,
+    //             skillNameToken ="VOIDCRID_DEFAULT_DEATH",
+    //             skillDescriptionToken = "VOIDCRID_DEFAULT_DEATH_DESC",
+    //             skillIcon =  mainAssetBundle.LoadAsset<Sprite>("voiddrift.png"),
+    //         });
+    //    }
+
+    //     private SkillDef createVoidDeathState(string name) {
+
+    //         return Voidcrid.VoidcridSkillSetup.CreateSkillDef(new SkillDefInfo {
+    //             skillName = name,
+    //             skillNameToken = "VOIDCRID_VOID_DEATH",
+    //             skillDescriptionToken = "VOIDCRID_VOID_DEATH_DESC",
+    //             skillIcon =  mainAssetBundle.LoadAsset<Sprite>("voiddrift.png"),
+    //         });
+    //    }
+        
         private void NullBeamSetup(SkillLocator skillLocator)
         {
 
@@ -437,7 +488,13 @@ namespace Voidcrid
             };
         }
 
+        private void DeathBehavior() {
+        
+         Debug.Log("Setting up death animation...");
+			CharacterDeathBehavior deathBehavior = voidcridBodyPrefab.GetComponent<CharacterDeathBehavior>();
+			deathBehavior.deathState = UtilCreateSerializableAndNetRegister<Voidcrid.Modules.DeathState>();
 
+        }
         private void VoidEscapeSetup(SkillLocator skillLocator)
         {
 
@@ -577,6 +634,8 @@ namespace Voidcrid
 
         }
 
+        
+
         public static bool HasDeeprot(SkillLocator sk)
         {
             bool hasDeeprot = false;
@@ -586,6 +645,7 @@ namespace Voidcrid
             }
             return hasDeeprot;
         }
+
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static bool HasDeeprotInternal(SkillLocator sk)
@@ -605,6 +665,23 @@ namespace Voidcrid
             return deeprotEquipped;
         }
 
+        // public static bool HasVoidDeath(SkillLocator sk)
+        // {
+           
+        //         foreach (GenericSkill gs in sk.allSkills)
+        //         {
+        //             if (gs.skillDef.skillNameToken == "VOIDCRID_VOID_DEATH")
+        //             {   
+        //                 Debug.Log("Selected Void death");
+        //                 hasVoidDeathEquipped = true;
+        //                 break;
+        //             }
+        //             Debug.Log("Didn't select voiddeath");
+        //         }
+        //     return hasVoidDeathEquipped;
+        // }
+
+        
 
         internal static void CreateFogProjectile()
         {
@@ -634,6 +711,68 @@ namespace Voidcrid
                 Debug.Log("Finished creating voidFog projectile");
         }
 
+
+            private static void JailJailJail(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info) {
+            
+                
+                if (info.HasModdedDamageType(DamageTypes.nullBeamJail) || info.HasModdedDamageType(DamageTypes.ethJail) || info.HasModdedDamageType(DamageTypes.entropyJail))
+            {
+                if (NetworkServer.active) {
+                self.body.AddTimedBuff(RoR2Content.Buffs.Nullified, 3f);
+                }
+            }
+
+            orig(self, info);
+
+		}
+
+        	private static void VoidcridDeathBombFake(On.RoR2.HealthComponent.orig_TakeDamage originalMethod, HealthComponent @this, DamageInfo damageInfo) {
+			if (damageInfo.rejected || VoidcridBombDeath.Value == false) {
+				originalMethod(@this, damageInfo);
+				return;
+			}
+
+			originalMethod(@this, damageInfo);
+			if (damageInfo.HasModdedDamageType(DamageTypes.voidcridDeath)) {
+				if (!@this.alive && @this.wasAlive && @this.body) {
+					Vector3 pos = @this.body.corePosition;
+					float radius =  @this.body.bestFitRadius;
+
+					if (damageInfo.attacker) {
+						CharacterBody attacker = damageInfo.attacker.GetComponent<CharacterBody>();
+						if (attacker != null) {
+							EffectManager.SpawnEffect(
+								EffectProvider.VoidcridSilentKill,
+								new EffectData {
+									origin = pos,
+									scale = radius
+								},
+								true
+							);
+						}
+					}
+				}
+			}
+		}
+
+               private void Hook()
+        {
+        
+                      On.RoR2.HealthComponent.TakeDamage += JailJailJail;
+
+                      On.RoR2.HealthComponent.TakeDamage += VoidcridDeathBombFake;
+
+        }
+
+        		private static SerializableEntityStateType UtilCreateSerializableAndNetRegister<T>() where T : EntityState {
+
+			Debug.Log($"Registering EntityState {typeof(T).FullName} and returning a new instance of {nameof(SerializableEntityStateType)} of that type...");
+			ContentAddition.AddEntityState<T>(out _);
+			return new SerializableEntityStateType(typeof(T));
+		}
+
+
+
         internal static void LoadAssetBundle()
         {
 
@@ -654,6 +793,8 @@ namespace Voidcrid
             }
 
         }
+
+
 
         private void Start()
         {
@@ -676,6 +817,7 @@ namespace Voidcrid
             }
 
         }
+
 
     }
 
