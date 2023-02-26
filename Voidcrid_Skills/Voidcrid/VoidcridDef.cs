@@ -76,6 +76,9 @@ namespace Voidcrid
 
          public static ConfigEntry<float> VoidcridFogDamageOverride { get; set; }
 
+        public static ConfigEntry<bool> VoidcridBombDeath { get; set; }
+
+
         public static SkillDef voidScepter;
         public static bool ancientScepterInstalled = false;
         public static bool skillsPlusInstalled = false;
@@ -94,6 +97,7 @@ namespace Voidcrid
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
         public string familyName = "Death States";
+        
         public void Awake()
 
 
@@ -283,6 +287,13 @@ namespace Voidcrid
             "Display",
             true,
             "Shows the Voidcrid fake Passive description"
+            );
+
+            VoidcridBombDeath = Config.Bind<bool>(
+            "Voidcrid",
+            "Death",
+            true,
+            "Emit a devastating bomb on death"
         );
 
             LoadAssetBundle();
@@ -292,20 +303,23 @@ namespace Voidcrid
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
-            //InitializeRecolorSkills();
-            // Voidcrid.Modules.VoidcridDeathProjectile.Init();
-            // Voidcrid.Effects.EffectProvider.Init();
-            // DeathBehavior();
+            //InitializeDeathStates();
+            Voidcrid.Modules.VoidcridDeathProjectile.Init();
+            Voidcrid.Effects.EffectProvider.Init();
+            DeathBehavior();
             Hook();
           
-            // Debug.Log("Trying to hook");
-			// On.RoR2.GlobalEventManager.OnHitEnemy += JailJailJail;
-
-            // Debug.Log("Probably the issue");
 
 
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
+
+            LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH", "Death");
+            LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH_DESC", "On death, die a normal death");
+            LanguageAPI.Add("VOIDCRID_VOID_DEATH", "Void Death");
+
+            LanguageAPI.Add("VOIDCRID_VOID_DEATH_DESC", "On death, die a Void servant's death");
+
 
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME", "Acrid: Grandfather Paradox");
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_DESCRIPTION", "An unexpected amphibian, an unfortunate end.");
@@ -338,8 +352,6 @@ namespace Voidcrid
 
                 skillLocator.passiveSkill.enabled = false;
             }
-
-            Debug.Log("Is it outside the awake?");
 
         }
 
@@ -397,43 +409,40 @@ namespace Voidcrid
 
         }
 
-    //  private void InitializeRecolorSkills() {
+    //  private void InitializeDeathStates() {
     //         SkillFamily recolorFamily = Voidcrid.VoidcridSkillSetup.CreateGenericSkillWithSkillFamily(voidcridBodyPrefab, "Death_States", true).skillFamily;
     //         List<SkillDef> skilldefs = new List<SkillDef> {
-    //             createRecolorSkillDef("Default"),
-    //             createRecolorSkillDef("Void"),
+    //             createDefaultDeathState("Default Death"),
+    //             createVoidDeathState("Void Death"),
     //         };
 
     //         for (int i = 0; i < skilldefs.Count; i++) {
 
     //             Voidcrid.VoidcridSkillSetup.AddSkillToFamily(recolorFamily, skilldefs[i], i == 0? null : null);
-
     //         }
 
     //  }
-    //           private SkillDef createRecolorSkillDef(string name) {
+    //           private SkillDef createDefaultDeathState(string name) {
 
-    //         Color color1 = Color.white;
 
     //         return Voidcrid.VoidcridSkillSetup.CreateSkillDef(new SkillDefInfo {
     //             skillName = name,
-    //             skillNameToken = $"{name.ToUpper()}",
-    //             skillDescriptionToken = "",
-    //             skillIcon = null,
+    //             skillNameToken ="VOIDCRID_DEFAULT_DEATH",
+    //             skillDescriptionToken = "VOIDCRID_DEFAULT_DEATH_DESC",
+    //             skillIcon =  mainAssetBundle.LoadAsset<Sprite>("voiddrift.png"),
     //         });
-     //   }
+    //    }
+
+    //     private SkillDef createVoidDeathState(string name) {
+
+    //         return Voidcrid.VoidcridSkillSetup.CreateSkillDef(new SkillDefInfo {
+    //             skillName = name,
+    //             skillNameToken = "VOIDCRID_VOID_DEATH",
+    //             skillDescriptionToken = "VOIDCRID_VOID_DEATH_DESC",
+    //             skillIcon =  mainAssetBundle.LoadAsset<Sprite>("voiddrift.png"),
+    //         });
+    //    }
         
-        // public static void AddSkillToFamily(SkillFamily skillFamily, SkillDef skillDef, UnlockableDef unlockableDef = null) {
-
-        //     Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
-
-        //     skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant {
-        //         skillDef = skillDef,
-        //         unlockableDef = unlockableDef,
-        //         viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
-        //     };
-        // }
-
         private void NullBeamSetup(SkillLocator skillLocator)
         {
 
@@ -638,6 +647,7 @@ namespace Voidcrid
             return hasDeeprot;
         }
 
+
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static bool HasDeeprotInternal(SkillLocator sk)
         {
@@ -655,6 +665,24 @@ namespace Voidcrid
             }
             return deeprotEquipped;
         }
+
+        // public static bool HasVoidDeath(SkillLocator sk)
+        // {
+           
+        //         foreach (GenericSkill gs in sk.allSkills)
+        //         {
+        //             if (gs.skillDef.skillNameToken == "VOIDCRID_VOID_DEATH")
+        //             {   
+        //                 Debug.Log("Selected Void death");
+        //                 hasVoidDeathEquipped = true;
+        //                 break;
+        //             }
+        //             Debug.Log("Didn't select voiddeath");
+        //         }
+        //     return hasVoidDeathEquipped;
+        // }
+
+        
 
         internal static void CreateFogProjectile()
         {
@@ -700,7 +728,7 @@ namespace Voidcrid
 		}
 
         	private static void VoidcridDeathBombFake(On.RoR2.HealthComponent.orig_TakeDamage originalMethod, HealthComponent @this, DamageInfo damageInfo) {
-			if (damageInfo.rejected) {
+			if (damageInfo.rejected || VoidcridBombDeath.Value == false) {
 				originalMethod(@this, damageInfo);
 				return;
 			}
@@ -732,16 +760,13 @@ namespace Voidcrid
         {
         
                       On.RoR2.HealthComponent.TakeDamage += JailJailJail;
-                      On.RoR2.HealthComponent.TakeDamage += VoidcridDeathBombFake;
 
+                      On.RoR2.HealthComponent.TakeDamage += VoidcridDeathBombFake;
 
         }
 
         		private static SerializableEntityStateType UtilCreateSerializableAndNetRegister<T>() where T : EntityState {
-			// java when the typeof(T)
-			// when
-			//  the when the t
-			// t
+
 			Debug.Log($"Registering EntityState {typeof(T).FullName} and returning a new instance of {nameof(SerializableEntityStateType)} of that type...");
 			ContentAddition.AddEntityState<T>(out _);
 			return new SerializableEntityStateType(typeof(T));
