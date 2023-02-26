@@ -164,12 +164,14 @@ namespace Voidcrid
                     crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
                     baseDamage = VoidcridDef.EtherealDriftOverrideDamage.Value,
                     falloffModel = BlastAttack.FalloffModel.None,
-                    damageType = (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.VoidDeath : baseAttack),
+                    damageType = (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : baseAttack),
                     baseForce = blastAttackForce
-
                 };
                 obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
                 obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
+                                if (obj.damageType == DamageType.Nullify) {
+                R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
+                }
 
                 obj.Fire();
 
