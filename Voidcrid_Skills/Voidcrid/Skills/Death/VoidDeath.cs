@@ -3,7 +3,6 @@ using UnityEngine.Networking;
 using UnityEngine;
 using EntityStates;
 using RoR2;
-
 namespace Voidcrid.Modules {
     
 	public class DeathState : GenericCharacterDeath {
@@ -12,7 +11,6 @@ namespace Voidcrid.Modules {
 
         private string MuzzleName = "MouthMuzzle";
 		private Transform muzzleTransform;
-
 
 		public override void OnEnter() {
 			base.OnEnter();
