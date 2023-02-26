@@ -24,7 +24,7 @@ namespace Voidcrid.Effects {
 			EffectComponent fx = VoidcridSilentKill.GetComponentInChildren<EffectComponent>();
 			fx.soundName = null;
 			ContentAddition.AddEffect(VoidcridSilentKill);
-			On.RoR2.HealthComponent.AssetReferences.Resolve -= InterceptHealthCmpAssetReferences; // Clean up!
+			On.RoR2.HealthComponent.AssetReferences.Resolve -= InterceptHealthCmpAssetReferences;
 		}
 
 	}

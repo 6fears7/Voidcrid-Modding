@@ -96,7 +96,6 @@ namespace Voidcrid
         private static UnlockableDef VoidcridUnlock;
         public const string characterOutro = "..and so it left, a shell of its former self.";
         public const string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
-        public string familyName = "Death States";
         
         public void Awake()
 
@@ -314,11 +313,11 @@ namespace Voidcrid
             LanguageAPI.Add("VOIDCRID_PASSIVE", "<style=cArtifact>Void</style>crid");
             LanguageAPI.Add("VOIDCRID_PASSIVE_DESC", "All <style=cArtifact>Void</style> attacks have a chance to <style=cArtifact>jail</style> enemies (and apply <style=cWorldEvent>Deeprot</style>, if selected).");
 
-            LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH", "Death");
-            LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH_DESC", "On death, die a normal death");
-            LanguageAPI.Add("VOIDCRID_VOID_DEATH", "Void Death");
+            // LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH", "Death");
+            // LanguageAPI.Add("VOIDCRID_DEFAULT_DEATH_DESC", "On death, die a normal death");
+            // LanguageAPI.Add("VOIDCRID_VOID_DEATH", "Void Death");
 
-            LanguageAPI.Add("VOIDCRID_VOID_DEATH_DESC", "On death, die a Void servant's death");
+            // LanguageAPI.Add("VOIDCRID_VOID_DEATH_DESC", "On death, die a Void servant's death");
 
 
             LanguageAPI.Add("ACHIEVEMENT_GRANDFATHERPARADOX_NAME", "Acrid: Grandfather Paradox");
@@ -737,7 +736,7 @@ namespace Voidcrid
 			if (damageInfo.HasModdedDamageType(DamageTypes.voidcridDeath)) {
 				if (!@this.alive && @this.wasAlive && @this.body) {
 					Vector3 pos = @this.body.corePosition;
-					float radius = @this.body.bestFitRadius;
+					float radius =  @this.body.bestFitRadius;
 
 					if (damageInfo.attacker) {
 						CharacterBody attacker = damageInfo.attacker.GetComponent<CharacterBody>();
