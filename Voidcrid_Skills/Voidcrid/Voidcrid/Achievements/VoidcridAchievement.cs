@@ -30,7 +30,7 @@ namespace Voidcrid.Achievements
                 {
                     int count = getVoidItemCount(self.inventory);
 
-                    if (count >= 4)
+                    if (count >= 7)
                     {
                         Chat.AddMessage(Util.GenerateColoredString("WARN?NG: C??NTA?NMENT BRE?CH", Color.magenta));
                         base.Grant();

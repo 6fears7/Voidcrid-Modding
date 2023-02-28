@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using static R2API.DamageAPI;
 
-namespace Voidcrid
+namespace Voidcrid.Skills
 {
 
 
@@ -33,12 +33,12 @@ namespace Voidcrid
         private GameObject tracerEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidJailer/VoidJailerCaptureTracer.prefab").WaitForCompletion();
         private float spreadBloomValue = 0.3f;
 
-    
+
         private float forcePerSecond = 2f;
 
         public ItemIndex index;
 
-        public static float nullBeamDamage = VoidcridDef.NullBeamOverrideDamage.Value;
+        public static float nullBeamDamage = Voidcrid.VoidcridDef.NullBeamOverrideDamage.Value;
 
         private float minimumDuration;
 
@@ -61,7 +61,7 @@ namespace Voidcrid
 
         private float maxIntensity = 4.0f;
 
-        private float duration = VoidcridDef.NullBeamOverrideDuration.Value;
+        private float duration = Voidcrid.VoidcridDef.NullBeamOverrideDuration.Value;
 
         public override void OnEnter()
         {
@@ -97,8 +97,8 @@ namespace Voidcrid
             if (backGlow)
             {
                 backGlow.EnableKeyword("_EMISSION");
-                backGlow.SetColor("_EmColor", VoidcridDef.VoidGlow.Value * maxIntensity);
-                maxIntensity -= maxIntensity * Time.fixedDeltaTime / (VoidcridDef.NullBeamOverrideDuration.Value - 1f);
+                backGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.VoidGlow.Value * maxIntensity);
+                maxIntensity -= maxIntensity * Time.fixedDeltaTime / (Voidcrid.VoidcridDef.NullBeamOverrideDuration.Value - 1f);
             }
 
 
@@ -108,7 +108,7 @@ namespace Voidcrid
                 point = hitInfo.point;
             }
 
-            if (base.isAuthority && (fixedAge >= VoidcridDef.NullBeamOverrideDuration.Value || (fixedAge >= baseDuration && !IsKeyDownAuthority())))
+            if (base.isAuthority && (fixedAge >= Voidcrid.VoidcridDef.NullBeamOverrideDuration.Value || (fixedAge >= baseDuration && !IsKeyDownAuthority())))
             {
                 outer.SetNextStateToMain();
             }
@@ -158,9 +158,9 @@ namespace Voidcrid
                 passiveAttack = DamageType.Generic;
             }
 
-            
-           
-            voidcridLaserAttack = (Util.CheckRoll(VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
+
+
+            voidcridLaserAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.NullBeamOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
             deeprotDamage = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? passiveAttack : DamageType.Generic);
 
@@ -179,22 +179,23 @@ namespace Voidcrid
                 bulletAttack.smartCollision = false;
                 bulletAttack.falloffModel = BulletAttack.FalloffModel.DefaultBullet;
                 bulletAttack.hitMask = LayerIndex.entityPrecise.mask;
-                bulletAttack.damage = nullBeamDamage * damageStat;   
-                bulletAttack.procCoefficient = VoidcridDef.NullBeamOverrideProc.Value;
+                bulletAttack.damage = nullBeamDamage * damageStat;
+                bulletAttack.procCoefficient = Voidcrid.VoidcridDef.NullBeamOverrideProc.Value;
                 bulletAttack.force = forcePerSecond;
                 bulletAttack.isCrit = Util.CheckRoll(critStat, base.characterBody.master);
                 bulletAttack.hitEffectPrefab = hitEffectPrefab;
                 bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
                 bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidcridLaserAttack);
-                if (voidcridLaserAttack == DamageType.Nullify) {
-                R2API.DamageAPI.AddModdedDamageType(bulletAttack, Voidcrid.Modules.DamageTypes.nullBeamJail);
+                if (voidcridLaserAttack == DamageType.Nullify)
+                {
+                    R2API.DamageAPI.AddModdedDamageType(bulletAttack, Voidcrid.Modules.DamageTypes.nullBeamJail);
                 }
                 bulletAttack.Fire();
 
             }
 
 
-           
+
             base.characterBody.AddSpreadBloom(spreadBloomValue);
         }
 
@@ -203,10 +204,10 @@ namespace Voidcrid
             return InterruptPriority.Skill;
         }
 
-        
+
 
 
     }
 
-    
+
 }

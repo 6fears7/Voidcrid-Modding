@@ -6,7 +6,7 @@ using R2API;
 using UnityEngine;
 
 
-namespace Voidcrid
+namespace Voidcrid.Skills
 {
 
     public class SkillsPlusCompat
