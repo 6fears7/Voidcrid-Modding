@@ -7,26 +7,17 @@ using EntityStates.Bandit2;
 using UnityEngine.AddressableAssets;
 using EntityStates.VoidRaidCrab.Weapon;
 
+using Voidcrid;
 
-
-namespace Voidcrid
+namespace Voidcrid.Skills
 {
     public class VoidEscape : StealthMode
     {
 
         private TemporaryVisualEffect voidFog;
 
-        // private float duration = StealthMode.duration;
-        //  Addressables.LoadAssetAsync<GameObject>("Prefabs/TemporaryVisualEffects/voidFogMildEffect").WaitForCompletion();
         public static DamageReport onCharacterDeathGlobal;
 
-        // private float blastAttackRadius = StealthMode.blastAttackRadius;
-
-        // private float blastAttackForce = StealthMode.blastAttackForce;
-
-        // private float shortHopVelocity = StealthMode.shortHopVelocity;
-
-        // private float blastAttackProcCoefficient = StealthMode.blastAttackProcCoefficient;
 
         public CharacterBody body;
 
@@ -73,11 +64,11 @@ namespace Voidcrid
             if (base.characterBody)
             {
                 if (NetworkServer.active)
-                {   
-                base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
-                base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
-                base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
-                base.characterBody.AddBuff(RoR2Content.Buffs.HiddenInvincibility);
+                {
+                    base.characterBody.AddBuff(RoR2Content.Buffs.Cloak);
+                    base.characterBody.AddBuff(RoR2Content.Buffs.CloakSpeed);
+                    base.characterBody.AddBuff(RoR2Content.Buffs.VoidFogStrong);
+                    base.characterBody.AddBuff(RoR2Content.Buffs.HiddenInvincibility);
 
                 }
 
@@ -85,8 +76,9 @@ namespace Voidcrid
                 base.characterBody.onSkillActivatedAuthority += OnSkillActivatedAuthority;
             }
 
-            if (base.isAuthority) {
-            FireSmokebomb();
+            if (base.isAuthority)
+            {
+                FireSmokebomb();
             }
 
             Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
@@ -123,12 +115,12 @@ namespace Voidcrid
             {
                 if (NetworkServer.active)
                 {
-                characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
-                characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
-                characterBody.RemoveBuff(RoR2Content.Buffs.HiddenInvincibility);
-                characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
+                    characterBody.RemoveBuff(RoR2Content.Buffs.CloakSpeed);
+                    characterBody.RemoveBuff(RoR2Content.Buffs.Cloak);
+                    characterBody.RemoveBuff(RoR2Content.Buffs.HiddenInvincibility);
+                    characterBody.RemoveBuff(RoR2Content.Buffs.VoidFogStrong);
 
-                 }
+                }
 
                 base.characterBody.onSkillActivatedAuthority -= OnSkillActivatedAuthority;
             }
@@ -162,15 +154,16 @@ namespace Voidcrid
                     position = base.transform.position,
                     attacker = base.gameObject,
                     crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-                    baseDamage = VoidcridDef.EtherealDriftOverrideDamage.Value,
+                    baseDamage = Voidcrid.VoidcridDef.EtherealDriftOverrideDamage.Value,
                     falloffModel = BlastAttack.FalloffModel.None,
-                    damageType = (Util.CheckRoll(VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : baseAttack),
+                    damageType = (Util.CheckRoll(Voidcrid.VoidcridDef.EtherealDriftOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : baseAttack),
                     baseForce = blastAttackForce
                 };
                 obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
                 obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
-                                if (obj.damageType == DamageType.Nullify) {
-                R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
+                if (obj.damageType == DamageType.Nullify)
+                {
+                    R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
                 }
 
                 obj.Fire();

@@ -7,7 +7,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 
-namespace Voidcrid
+namespace Voidcrid.Skills
 {
     public class VoidScepter : BaseSkillState
     {
@@ -27,7 +27,7 @@ namespace Voidcrid
 
         private float switchAttacks = 50f;
 
-        private float blastAttackRadius = VoidcridDef.ScepterEntropyOverrideRadius.Value;
+        private float blastAttackRadius = Voidcrid.VoidcridDef.ScepterEntropyOverrideRadius.Value;
         private float earlyExitDuration;
         private ChildLocator childLocator;
         private bool hasFired1;
@@ -94,7 +94,7 @@ namespace Voidcrid
                 position = base.transform.position,
                 attacker = base.gameObject,
                 crit = Util.CheckRoll(base.characterBody.crit, base.characterBody.master),
-                baseDamage = base.damageStat * VoidcridDef.ScepterEntropyOverrideDamage.Value
+                baseDamage = base.damageStat * Voidcrid.VoidcridDef.ScepterEntropyOverrideDamage.Value
 ,
                 falloffModel = BlastAttack.FalloffModel.None,
                 damageType = entropyDamage,
@@ -108,9 +108,10 @@ namespace Voidcrid
             obj.teamIndex = TeamComponent.GetObjectTeam(obj.attacker);
             obj.attackerFiltering = AttackerFiltering.NeverHitSelf;
 
-                if (entropyDamage == DamageType.Nullify) {
+            if (entropyDamage == DamageType.Nullify)
+            {
                 R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
-                }
+            }
 
             obj.Fire();
 
@@ -181,13 +182,13 @@ namespace Voidcrid
 
                 if (entropyDamage == poisonAttack)
                 {
-                    base.healthComponent.HealFraction(VoidcridDef.EntropySelfHeal.Value, procChainMask);
+                    base.healthComponent.HealFraction(Voidcrid.VoidcridDef.EntropySelfHeal.Value, procChainMask);
                 }
                 else
                 {
 
                     DamageInfo damageInfo = new DamageInfo();
-                    damageInfo.damage = (VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
+                    damageInfo.damage = (Voidcrid.VoidcridDef.EntropySelfDamage.Value * base.healthComponent.fullCombinedHealth);
                     damageInfo.position = base.characterBody.corePosition;
                     damageInfo.force = Vector3.zero;
                     damageInfo.damageColorIndex = DamageColorIndex.Void;
@@ -231,31 +232,35 @@ namespace Voidcrid
 
 
 
-            if (this.stopwatch >= this.duration * VoidcridDef.ScepterEntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * Voidcrid.VoidcridDef.ScepterEntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
             // && this.stopwatch <= this.duration * .6f
             {
-                if (base.isAuthority) {
-                this.FireSmash();
-                this.hasFired1 = true;
+                if (base.isAuthority)
+                {
+                    this.FireSmash();
+                    this.hasFired1 = true;
                 }
                 ManageEntroypGlow();
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
 
-            {   if (base.isAuthority) {
-                this.FireSmash();
-                this.hasFired2 = true;
-            }
+            {
+                if (base.isAuthority)
+                {
+                    this.FireSmash();
+                    this.hasFired2 = true;
+                }
                 ManageEntroypGlow();
             }
 
-            if (this.stopwatch >= this.duration * (VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
+            if (this.stopwatch >= this.duration * (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
 
             {
-                if (base.isAuthority) {
-                this.FireSmash();
-                this.hasFinishedFiring = true;
+                if (base.isAuthority)
+                {
+                    this.FireSmash();
+                    this.hasFinishedFiring = true;
                 }
                 ManageEntroypGlow();
 
@@ -293,12 +298,12 @@ namespace Voidcrid
         private void ManageEntroypGlow()
         {
 
-            float emissionIncrement = minIntensity / (VoidcridDef.ScepterEntropyOverrideFireSpeed.Value);
+            float emissionIncrement = minIntensity / (Voidcrid.VoidcridDef.ScepterEntropyOverrideFireSpeed.Value);
 
             if (entropyGlow)
             {
                 entropyGlow.EnableKeyword("_EMISSION");
-                entropyGlow.SetColor("_EmColor", VoidcridDef.ScepterGlow.Value * emissionIntensity);
+                entropyGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.ScepterGlow.Value * emissionIntensity);
                 emissionIntensity -= emissionIncrement;
             }
 
@@ -320,7 +325,7 @@ namespace Voidcrid
 
         private void Bombardment()
         {
-              float damage = 1f;
+            float damage = 1f;
 
             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
             {
@@ -332,7 +337,7 @@ namespace Voidcrid
                 procChainMask = default(ProcChainMask),
                 force = 6000f,
                 owner = base.gameObject,
-                projectilePrefab = VoidcridDef.voidFogProjectile,
+                projectilePrefab = SkillSetup.voidFrogProjectile,
                 rotation = Quaternion.identity,
                 target = base.gameObject
             });
@@ -340,7 +345,7 @@ namespace Voidcrid
 
 
 
-        }
+    }
 
 
 
