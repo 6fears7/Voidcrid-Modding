@@ -40,11 +40,11 @@ namespace Voidcrid.Achievements
                     if (this._jailAchievement >= jailRequirement)
                     {
                         base.Grant();
-    
+
 
                     }
                 }
-                        orig(self, info);
+                orig(self, info);
             }
 
 
