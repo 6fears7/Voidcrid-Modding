@@ -2,21 +2,19 @@ using EntityStates;
 using RoR2;
 using UnityEngine;
 using EntityStates.LemurianBruiserMonster;
-using R2API.Networking;
-using UnityEngine.Networking;
+using Voidcrid;
 
 
-
-namespace Voidcrid
+namespace Voidcrid.Skills
 {
     public class Voidcridbreath : Flamebreath
     {
 
         private new float maxDistance = 12f;
 
-        private new float baseFlamethrowerDuration = VoidcridDef.FlamebreathOverrideDuration.Value;
+        private new float baseFlamethrowerDuration = Voidcrid.VoidcridDef.FlamebreathOverrideDuration.Value;
 
-        private new float totalDamageCoefficient = VoidcridDef.FlamebreathOverrideDamage.Value;
+        private new float totalDamageCoefficient = Voidcrid.VoidcridDef.FlamebreathOverrideDamage.Value;
 
         [SerializeField]
         private new GameObject flamethrowerEffectPrefab = Flamebreath.flamethrowerEffectPrefab;
@@ -34,7 +32,10 @@ namespace Voidcrid
 
 
             base.OnEnter();
-
+            // GameObject colorizer = R2API.PrefabAPI.InstantiateClone(flamePrefab, "voidcridFirePurple");
+            // Material blarg;
+            Material blarg = flamethrowerEffectPrefab.GetComponent<Material>();
+            blarg.SetColor("_COLOR", Color.magenta);
             stopwatch = 0f;
             entryDuration = baseEntryDuration;
             exitDuration = baseExitDuration;
@@ -147,15 +148,15 @@ namespace Voidcrid
             return InterruptPriority.Skill;
         }
 
-        	private void UpdateFlamethrowerEffect()
-	{
-		Ray aimRay = GetAimRay();
-		Vector3 direction = aimRay.direction;
-		if ((bool)muzzleTransform)
-		{
-			muzzleTransform.forward = direction;
-		}
+        private void UpdateFlamethrowerEffect()
+        {
+            Ray aimRay = GetAimRay();
+            Vector3 direction = aimRay.direction;
+            if ((bool)muzzleTransform)
+            {
+                muzzleTransform.forward = direction;
+            }
 
- 	}
+        }
     }
 }
