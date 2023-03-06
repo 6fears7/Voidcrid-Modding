@@ -79,6 +79,7 @@ namespace Voidcrid.Skills
 
         private BlastAttack obj;
 
+        private bool doVoidGlow = false;
         private void FireSmash()
         {
 
@@ -137,8 +138,15 @@ namespace Voidcrid.Skills
         public override void OnEnter()
         {
             base.OnEnter();
+
+            int spineIndexCheck = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos.Length;
+            
+            if (spineIndexCheck > 1) 
+        {
+            doVoidGlow = true;
             entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
 
+        }
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
@@ -298,6 +306,8 @@ namespace Voidcrid.Skills
         private void ManageEntroypGlow()
         {
 
+           if (doVoidGlow == true) {
+
             float emissionIncrement = minIntensity / (Voidcrid.VoidcridDef.ScepterEntropyOverrideFireSpeed.Value);
 
             if (entropyGlow)
@@ -315,6 +325,7 @@ namespace Voidcrid.Skills
                 entropyGlow.SetColor("_EmColor", Color.black);
 
             }
+        }
 
         }
 

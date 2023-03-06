@@ -56,8 +56,9 @@ namespace Voidcrid.Skills
         public static DamageType voidcridLaserAttack;
 
 
-        private Material backGlow;
+        private Material voidGlow;
 
+        private bool doVoidGlow = false;
 
         private float maxIntensity = 4.0f;
 
@@ -68,6 +69,7 @@ namespace Voidcrid.Skills
 
             base.OnEnter();
 
+            int spineIndexCheck = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos.Length;
 
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
@@ -80,7 +82,13 @@ namespace Voidcrid.Skills
                 base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
             PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", duration);     // Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
-            backGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+            
+            if (spineIndexCheck > 1) 
+        {
+            doVoidGlow = true;
+            voidGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+
+        }
 
 
         }
@@ -93,15 +101,11 @@ namespace Voidcrid.Skills
             Ray aimRay = GetAimRay();
             base.characterBody.SetAimTimer(3f);
 
-
-            if (backGlow)
-            {
-                backGlow.EnableKeyword("_EMISSION");
-                backGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.VoidGlow.Value * maxIntensity);
+            if (doVoidGlow == true) {
+                voidGlow.EnableKeyword("_EMISSION");
+                voidGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.VoidGlow.Value * maxIntensity);
                 maxIntensity -= maxIntensity * Time.fixedDeltaTime / (Voidcrid.VoidcridDef.NullBeamOverrideDuration.Value - 1f);
-            }
-
-
+                }
             Vector3 point = GetAimRay().GetPoint(maxDistance + attackSpeedStat);
             if (Util.CharacterRaycast(base.gameObject, GetAimRay(), out var hitInfo, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.UseGlobal))
             {
@@ -116,18 +120,16 @@ namespace Voidcrid.Skills
 
         public override void OnExit()
         {
-
+            base.OnExit();
             if (NetworkServer.active)
             {
                 base.characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
                 base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
-            base.OnExit();
-            if (backGlow)
-            {
-                backGlow.DisableKeyword("_EMISSION");
-                backGlow.SetColor("_EmColor", Color.black);
-
+ 
+            if (doVoidGlow == true) {
+                voidGlow.DisableKeyword("_EMISSION");
+                voidGlow.SetColor("_EmColor", Color.black);
             }
 
 

@@ -78,10 +78,12 @@ namespace Voidcrid.Skills
 
         float emissionIntensity = 4f;
         float minIntensity = 0.3f;
+        private bool doVoidGlow = false;
 
         // private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
 
         private GameObject instance;
+        
         private void FireSmash()
         {
 
@@ -140,8 +142,14 @@ namespace Voidcrid.Skills
 
             CharacterModel characterModel = GetModelTransform().GetComponent<CharacterModel>();
 
+            int spineIndexCheck = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos.Length;
+            
+            if (spineIndexCheck > 1) 
+        {
+            doVoidGlow = true;
             entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
 
+        }
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
             poisonAttack = crocoDamageTypeController.GetDamageType();
@@ -201,13 +209,17 @@ namespace Voidcrid.Skills
                 }
             }
 
+         
             ManageEntroypGlow();
+
 
         }
 
         private void ManageEntroypGlow()
         {
 
+            if (doVoidGlow == true) {
+            
             float emissionIncrement = minIntensity / (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value);
 
             if (entropyGlow)
@@ -225,6 +237,7 @@ namespace Voidcrid.Skills
                 entropyGlow.SetColor("_EmColor", Color.black);
 
             }
+        }
 
         }
 
