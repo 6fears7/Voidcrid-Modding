@@ -45,9 +45,7 @@ namespace Voidcrid.Language
 
             LanguageAPI.Add("VOIDCRID_ENTROPY", $"<style=cArtifact>「Entr<style=cIsHealing>?</style>py』</style>");
             LanguageAPI.Add("VOIDCRID_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Reorganize your cells, <style=cIsHealing>healing</style> for <style=cIsDamage>{Voidcrid.VoidcridDef.EntropySelfHeal.Value * 100}%</style> or <style=cDeath>harming</style> yourself for <style=cIsDamage>{Voidcrid.VoidcridDef.EntropySelfDamage.Value * 100}%</style> health to damage for <style=cIsDamage>{Voidcrid.VoidcridDef.EntropyOverrideDamage.Value}00% x 3</style> damage or <style=cIsHealing>poison</style> enemies. If held, creates a temporary <style=cArtifact>black hole</style>, <style=cDeath>choking</style> everyone inside and applies your <style=cIsHealing>Passive</style> on exiting.");
-
-            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY", $"<style=cArtifact>「Umbral Entr<style=cIsHealing>?</style>py』</style>");
-            LanguageAPI.Add("VOIDCRID__SCEPTER_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Damage is increased to <style=cIsDamage>{Voidcrid.VoidcridDef.ScepterEntropyOverrideDamage.Value}00% x 3</style> and if held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 10% </style> of your health and applies your Passive.</style>");
+            
         }
     }
 

@@ -36,13 +36,13 @@ namespace Voidcrid.Modules
             {
                 FireProjectileInfo fireProjectileInfo = default;
                 //Reward corruption with cool death anims
-                if (getVoidItemCount(characterBody.inventory) > 3)
-                {
-                    fireProjectileInfo.projectilePrefab = VoidcridDeathProjectile.VoidcridDeath2;
-                }
-                else
+                if (getVoidItemCount(characterBody.inventory) >= 3)
                 {
                     fireProjectileInfo.projectilePrefab = VoidcridDeathProjectile.VoidcridDeath;
+                }
+                else if (getVoidItemCount(characterBody.inventory) >= 7)
+                {
+                    fireProjectileInfo.projectilePrefab = VoidcridDeathProjectile.VoidcridDeath2;
                 }
                 fireProjectileInfo.position = characterBody.corePosition;
                 fireProjectileInfo.rotation = Quaternion.LookRotation(characterDirection.forward, Vector3.up);

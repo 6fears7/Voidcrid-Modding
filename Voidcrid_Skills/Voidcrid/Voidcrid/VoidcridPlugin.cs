@@ -3,9 +3,11 @@ using BepInEx;
 using R2API;
 using UnityEngine.AddressableAssets;
 using RoR2;
+using RoR2.Skills;
+using EntityStates;
 using UnityEngine;
-using System.Runtime.CompilerServices;
 using BepInEx.Configuration;
+using System.Runtime.CompilerServices;
 namespace Voidcrid
 {
     [BepInDependency("com.bepis.r2api")]
@@ -26,6 +28,7 @@ namespace Voidcrid
         public static bool ancientScepterInstalled = false;
         public static bool skillsPlusInstalled = false;
 
+        public static SkillDef voidScepter;
 
         internal static GameObject voidcridBodyPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoBody.prefab").WaitForCompletion();
         SkillLocator skillLocator = voidcridBodyPrefab.GetComponent<SkillLocator>();
@@ -279,11 +282,11 @@ namespace Voidcrid
             Voidcrid.SkillSetup.LoadAssetBundle();
             Voidcrid.SkillSetup.CreateFogProjectile();
             Voidcrid.SkillSetup.SetupSkills(skillLocator);
+
             Voidcrid.Modules.VoidcridDeathProjectile.Init();
             Voidcrid.Effects.EffectProvider.Init();
             Voidcrid.SkillSetup.DeathBehavior();
-             Voidcrid.Hooks.HookSetup.Hook();
-
+            Voidcrid.Hooks.HookSetup.Hook();
         }
         public static bool HasDeeprot(SkillLocator sk)
         {
@@ -314,27 +317,79 @@ namespace Voidcrid
             return deeprotEquipped;
         }
 
-        private void Start()
+        private void ScepterSkillSetup()
         {
 
+            Debug.Log("Adding ancient scepter for Voidcrid");
+
+            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY", $"<style=cArtifact>「Umbral Entr<style=cIsHealing>?</style>py』</style>");
+            LanguageAPI.Add("VOIDCRID_SCEPTER_ENTROPY_DESC", $"<style=cArtifact>Void.</style> <style=cIsDamage>Agile.</style> <style=cIsHealing>Poisonous.</style> <style=cIsDamage>Unstable.</style> Damage is increased to <style=cIsDamage>{Voidcrid.VoidcridDef.ScepterEntropyOverrideDamage.Value}00% x 3</style> and if held, <style=cArtifact>ensares</style> enemies for <style=cIsDamage> 10% </style> of your health and applies your Passive.</style>");
+
+            voidScepter = ScriptableObject.CreateInstance<SkillDef>();
+    
+            voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.Skills.VoidScepter));
+            voidScepter.activationStateMachineName = "Weapon";
+            voidScepter.baseMaxStock = 1;
+            voidScepter.baseRechargeInterval = Voidcrid.VoidcridDef.ScepterEntropyOverrideRecharge.Value;
+            voidScepter.beginSkillCooldownOnSkillEnd = true;
+            voidScepter.canceledFromSprinting = false;
+            voidScepter.fullRestockOnAssign = true;
+            voidScepter.interruptPriority = InterruptPriority.PrioritySkill;
+            voidScepter.resetCooldownTimerOnUse = false;
+            voidScepter.isCombatSkill = true;
+            voidScepter.mustKeyPress = false;
+            voidScepter.cancelSprintingOnActivation = true;
+            voidScepter.rechargeStock = 1;
+            voidScepter.requiredStock = 1;
+            voidScepter.stockToConsume = 1;
+            voidScepter.icon = Voidcrid.SkillSetup.mainAssetBundle.LoadAsset<Sprite>("deeprotentropy.png");
+            voidScepter.mustKeyPress = true;
+            voidScepter.skillDescriptionToken = "VOIDCRID_SCEPTER_ENTROPY_DESC";
+            voidScepter.skillName = "VOIDCRID_SCEPTER_ENTROPY";
+            voidScepter.skillNameToken = "VOIDCRID_SCEPTER_ENTROPY";
+           
+            ContentAddition.AddSkillDef(voidScepter);
+            ContentAddition.AddEntityState(typeof(Voidcrid.Skills.VoidScepter), out _);
+            Debug.Log("Finished adding scepter");
+
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static void ScepterSetup()
+        {
+            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
+
+        }
+
+                private void Start()
+        {
 
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.DestroyedClone.AncientScepter"))
             {
                 ancientScepterInstalled = true;
-                Voidcrid.SkillSetup.ScepterSkillSetup();
-                Voidcrid.SkillSetup.ScepterSetup();
+                ScepterSkillSetup();
+                ScepterSetup();
             }
 
-            // if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.cwmlolzlz.skills"))
-            // {
-            //     skillsPlusInstalled = true;
-
-            //     SkillsPlusCompat.init();
-            //     Debug.Log("Init for SkillsCompat");
-
-            // }
-
         }
+
+        // private void ScepterSetup()
+        // {
+
+        //         ancientScepterInstalled = true;
+        //         Voidcrid.SkillSetup.ScepterSkillSetup();
+        //         Voidcrid.SkillSetup.ScepterSetup();
+
+        //     // if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.cwmlolzlz.skills"))
+        //     // {
+        //     //     skillsPlusInstalled = true;
+
+        //     //     SkillsPlusCompat.init();
+        //     //     Debug.Log("Init for SkillsCompat");
+
+        //     // }
+
+        // }
 
 
     }

@@ -32,10 +32,7 @@ namespace Voidcrid.Skills
 
 
             base.OnEnter();
-            // GameObject colorizer = R2API.PrefabAPI.InstantiateClone(flamePrefab, "voidcridFirePurple");
-            // Material blarg;
-            Material blarg = flamethrowerEffectPrefab.GetComponent<Material>();
-            blarg.SetColor("_COLOR", Color.magenta);
+
             stopwatch = 0f;
             entryDuration = baseEntryDuration;
             exitDuration = baseExitDuration;

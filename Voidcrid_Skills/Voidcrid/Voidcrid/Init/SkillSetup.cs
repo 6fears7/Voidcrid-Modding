@@ -29,7 +29,6 @@ namespace Voidcrid
         
         private const string assetbundleName = "acrid3";
         private const string csProjName = "Voidcrid";
-        public static SkillDef voidScepter = ScriptableObject.CreateInstance<SkillDef>();
         // public static string characterOutro = "..and so it left, a shell of its former self.";
         // public static string characterOutroFailure = "..and so it stayed, forever chained to the Abyss.";
         public static void SetupSkills(SkillLocator skillLocator)
@@ -246,44 +245,7 @@ namespace Voidcrid
 
         }
 
-        public static void ScepterSkillSetup()
-        {
-
-
-            // SkillDef voidScepter = ScriptableObject.CreateInstance<SkillDef>();
-
-            voidScepter.activationState = new SerializableEntityStateType(typeof(Voidcrid.Skills.VoidScepter));
-            voidScepter.activationStateMachineName = "Weapon";
-            voidScepter.baseMaxStock = 1;
-            voidScepter.baseRechargeInterval = Voidcrid.VoidcridDef.ScepterEntropyOverrideRecharge.Value;
-            voidScepter.beginSkillCooldownOnSkillEnd = true;
-            voidScepter.canceledFromSprinting = false;
-            voidScepter.fullRestockOnAssign = true;
-            voidScepter.interruptPriority = InterruptPriority.PrioritySkill;
-            voidScepter.resetCooldownTimerOnUse = false;
-            voidScepter.isCombatSkill = true;
-            voidScepter.mustKeyPress = false;
-            voidScepter.cancelSprintingOnActivation = true;
-            voidScepter.rechargeStock = 1;
-            voidScepter.requiredStock = 1;
-            voidScepter.stockToConsume = 1;
-            voidScepter.icon = mainAssetBundle.LoadAsset<Sprite>("deeprotentropy.png");
-            voidScepter.mustKeyPress = true;
-            voidScepter.skillDescriptionToken = "VOIDCRID__SCEPTER_ENTROPY_DESC";
-            voidScepter.skillName = "VOIDCRID_SCEPTER_ENTROPY";
-            voidScepter.skillNameToken = "VOIDCRID_SCEPTER_ENTROPY";
-
-            ContentAddition.AddSkillDef(voidScepter);
-            ContentAddition.AddEntityState(typeof(Voidcrid.Skills.VoidScepter), out _);
-
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public static void ScepterSetup()
-        {
-            AncientScepter.AncientScepterItem.instance.RegisterScepterSkill(voidScepter, "CrocoBody", SkillSlot.Special, 1);
-
-        }
+        
 
         public static void VoidcridPassive(SkillLocator skillLocator)
         {
