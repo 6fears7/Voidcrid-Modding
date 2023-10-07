@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![1](https://cdn.discordapp.com/attachments/663444052418756631/1045026397216850080/Risk_of_Rain_2_11_23_2022_12_19_24_PM.png)
+![1](https://cdn.discordapp.com/attachments/1154989215331917925/1160178940493701140/image.png?ex=6533b7d6&is=652142d6&hm=e5d4a2d4d270dc9548455fe0b878eda5900c3de07a56355a73f8060e24c94f7c&)
 
 
 ## New Abilites:
@@ -26,25 +26,23 @@ Voidcrid
 - Voidcrid
 - Blackrid
 
+## New Death Events:
+- ???
+
 ## New Ways to Play:
 Rethink the way Acrid prowls the battlefield. Tap into the horrors you once suffered to become something stronger, something...*unpredictable.*
 
-![2](https://cdn.discordapp.com/attachments/663444052418756631/1079448663216099348/nullbeamshowoff.png)
+![2](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936167612416/nullbeamshowoff.png?ex=6533b6e7&is=652141e7&hm=5ce5b1f140368a740243dc06cd7ea888744d7fb78098368b7055247b054d8d33&)
 
-![3](https://media.discordapp.net/attachments/663444052418756631/1079448663656513667/driftshowff.png?width=1165&height=656)
+![3](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936658337792/driftshowff.png?ex=6533b6e7&is=652141e7&hm=dfb02cf1792ec0079241a7eb6aac3efc170ed94e67b896c2965bb19ab20090c8&)
 
 
-## Planned Updates:
+## Concept Art:
 
-- New Skins (Concept art by Serpyderpy)
-- Skills++ (Currently WIP)
+- Thanks, @Serpyderpy!
 
 ![4](https://cdn.discordapp.com/attachments/1016725529522606112/1045628643747045477/voidcrid.png)
 
-
-## Skin Contributions:
-
-If you want to tip towards paying a modeler to make the skins listed above, you can do so through Ko-Fi here: https://ko-fi.com/6fears7
 
 ## Credits:
 
