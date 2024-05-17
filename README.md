@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![1](https://cdn.discordapp.com/attachments/1154989215331917925/1160178940493701140/image.png?ex=6533b7d6&is=652142d6&hm=e5d4a2d4d270dc9548455fe0b878eda5900c3de07a56355a73f8060e24c94f7c&)
+![1](https://cdn.discordapp.com/attachments/1154989215331917925/1160178940493701140/image.png?ex=664892d6&is=66474156&hm=a754ea67842d5bd4f38a00670ca2b3831a885a71ffc7d3156118e2c98c7fbca1&)
 
 
 ## New Abilites:
@@ -32,16 +32,16 @@ Voidcrid
 ## New Ways to Play:
 Rethink the way Acrid prowls the battlefield. Tap into the horrors you once suffered to become something stronger, something...*unpredictable.*
 
-![2](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936167612416/nullbeamshowoff.png?ex=6533b6e7&is=652141e7&hm=5ce5b1f140368a740243dc06cd7ea888744d7fb78098368b7055247b054d8d33&)
+![2](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936167612416/nullbeamshowoff.png?ex=664891e7&is=66474067&hm=213fa0e8aa8e3f0b159e7c795176ba5b0cd733ccf97e7340c3741c9f152bedab&)
 
-![3](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936658337792/driftshowff.png?ex=6533b6e7&is=652141e7&hm=dfb02cf1792ec0079241a7eb6aac3efc170ed94e67b896c2965bb19ab20090c8&)
+![3](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936658337792/driftshowff.png?ex=664891e7&is=66474067&hm=5383529161228adce9550f24c637ef444ac8767b47984288f9288c80f8a8860d&)
 
 
 ## Concept Art:
 
 - Thanks, @Serpyderpy!
 
-![4](https://cdn.discordapp.com/attachments/1016725529522606112/1045628643747045477/voidcrid.png)
+![4](https://cdn.discordapp.com/attachments/1016725529522606112/1045628643747045477/voidcrid.png?ex=6648718f&is=6647200f&hm=9ff032b99b0c2d51007ad29a177e5a197d72972f154e333f4a6e63a46879ec9b&)
 
 
 ## Credits:
