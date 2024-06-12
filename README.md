@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![1](https://cdn.discordapp.com/attachments/1154989215331917925/1160178940493701140/image.png?ex=664c8756&is=664b35d6&hm=6fa3e5ae3fc45ccd89c168f169f3d16f86b972fa484ca458cdab1e193b409d41&)
+![1](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_lobby.png)
 
 
 ## New Abilites:
@@ -32,16 +32,16 @@ Voidcrid
 ## New Ways to Play:
 Rethink the way Acrid prowls the battlefield. Tap into the horrors you once suffered to become something stronger, something...*unpredictable.*
 
-![2](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936167612416/nullbeamshowoff.png?ex=664c8667&is=664b34e7&hm=cc4df2a545d88f6abdc3a4ce319cdf82c64dc59bb2cec3dfd1766a0b8973faef&)
+![2](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_laser.png)
 
-![3](https://cdn.discordapp.com/attachments/1154989215331917925/1160177936658337792/driftshowff.png?ex=664c8667&is=664b34e7&hm=d2ed77df81ab2d99d695e00c75c3b1c9a402ab4ac2fad4879ac71d8ac1f0a161&)
+![3](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/vodicrid_escape.png)
 
 
 ## Concept Art:
 
 - Thanks, @Serpyderpy!
 
-![4](https://cdn.discordapp.com/attachments/1154989215331917925/1242098506517319780/voidcrid.png?ex=664c99e1&is=664b4861&hm=310d0a7bcb8ac45d600ea7f691b29c5c781da38ebb7e753aa37b1d9cdc58d531&)
+![4](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_skins.png)
 
 
 ## Credits:
