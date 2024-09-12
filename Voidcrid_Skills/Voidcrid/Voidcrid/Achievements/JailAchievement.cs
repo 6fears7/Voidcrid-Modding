@@ -5,7 +5,7 @@ using Voidcrid.Modules;
 
 namespace Voidcrid.Achievements
 {
-    [RegisterAchievement("RightToJail", "Skins.Croco.Blackrid", null, typeof(VoidcridJailUnlock))]
+    [RegisterAchievement("RightToJail", "Skins.Croco.Blackrid", null, 0, typeof(VoidcridJailUnlock))]
     public class DeepVoidcridAcievement : VoidcridAchievements
     {
         private class VoidcridJailUnlock : BaseServerAchievement
