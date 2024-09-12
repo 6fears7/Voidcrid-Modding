@@ -13,7 +13,7 @@ Voidcrid
 *And this finality brought to him a new thought: to contain the crustaceans and subject them to the horrors of the deep.*
 
 
-![1](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_lobby.png)
+![1](lobby\voidcrid_lobby.png)
 
 
 ## New Abilites:
@@ -27,21 +27,21 @@ Voidcrid
 - Blackrid
 
 ## New Death Events:
-- ???
+- ??? 
 
 ## New Ways to Play:
 Rethink the way Acrid prowls the battlefield. Tap into the horrors you once suffered to become something stronger, something...*unpredictable.*
 
-![2](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_laser.png)
+![2](lobby\voidcrid_laser.png)
 
-![3](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/vodicrid_escape.png)
+![3](lobby\voidcrid_escape.png)
 
 
 ## Concept Art:
 
 - Thanks, @Serpyderpy!
 
-![4](https://github.com/6fears7/Voidcrid-Modding/blob/main/lobby/voidcrid_skins.png)
+![4](lobby\voidcrid_skins.png)
 
 
 ## Credits:
