@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Voidcrid.Achievements
 {
 
-    [RegisterAchievement("VoidcridUnlock", "Skills.Croco.Nullbeam", null, typeof(VoidcridMasterUnlock))]
+    [RegisterAchievement("VoidcridUnlock", "Skills.Croco.Nullbeam", null, 0, typeof(VoidcridMasterUnlock))]
     public class DeepVoidcrid : VoidcridAchievements
     {
         private class VoidcridMasterUnlock : BaseServerAchievement
