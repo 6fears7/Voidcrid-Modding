@@ -1,29 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {}
+    "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {
+    "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
+        "projectUniqueName": "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
         "projectName": "Voidcrid",
-        "projectPath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
-        "packagesPath": "C:\\Users\\lol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\obj\\",
+        "projectPath": "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\Voidcrid.csproj",
+        "packagesPath": "C:\\Users\\6fear\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\Voidcrid\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\lol\\Desktop\\GitHubVoidcrid\\Voidcrid-Modding\\Voidcrid_Skills\\NuGet.Config",
-          "C:\\Users\\lol\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\6fear\\source\\repos\\Voidcrid-Modding\\Voidcrid_Skills\\NuGet.Config",
+          "C:\\Users\\6fear\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netstandard2.0"
+          "netstandard2.1"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -31,8 +27,8 @@
           "https://nuget.bepinex.dev/v3/index.json": {}
         },
         "frameworks": {
-          "netstandard2.0": {
-            "targetAlias": "netstandard2.0",
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
             "projectReferences": {}
           }
         },
@@ -40,11 +36,16 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "netstandard2.0": {
-          "targetAlias": "netstandard2.0",
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
           "dependencies": {
             "BepInEx.Analyzers": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
@@ -54,20 +55,14 @@
             },
             "BepInEx.Core": {
               "target": "Package",
-              "version": "[5.4.19, )"
+              "version": "[5.*, )"
             },
             "MMHOOK.RoR2": {
               "target": "Package",
-              "version": "[2022.9.20, )",
+              "version": "[2024.9.5, )",
               "noWarn": [
                 "NU1701"
               ]
-            },
-            "NETStandard.Library": {
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[2.0.3, )",
-              "autoReferenced": true
             },
             "R2API.ContentManagement": {
               "target": "Package",
@@ -103,11 +98,11 @@
             },
             "RiskOfRain2.GameLibs": {
               "target": "Package",
-              "version": "[1.2.4-r.0, )"
+              "version": "[1.3.2-r.1, )"
             },
             "UnityEngine.Modules": {
               "target": "Package",
-              "version": "[2019.4.26, )"
+              "version": "[2021.3.33, )"
             }
           },
           "imports": [
@@ -121,7 +116,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

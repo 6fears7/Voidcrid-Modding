@@ -279,8 +279,8 @@ namespace Voidcrid
             Voidcrid.SkillSetup.LoadAssetBundle();
             Voidcrid.SkillSetup.CreateFogProjectile();
             Voidcrid.SkillSetup.SetupSkills(skillLocator);
-            Voidcrid.Modules.VoidcridDeathProjectile.Init();
-            Voidcrid.Effects.EffectProvider.Init();
+            // Voidcrid.Modules.VoidcridDeathProjectile.Init();
+            //Voidcrid.Effects.EffectProvider.Init();
             Voidcrid.SkillSetup.DeathBehavior();
              Voidcrid.Hooks.HookSetup.Hook();
 
