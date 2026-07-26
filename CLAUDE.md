@@ -36,16 +36,20 @@ newer packages exist; it has to track the engine the game actually ships.
 
 ## Known state
 
-The project compiles cleanly against current packages (0 errors). What remains is three
-deprecations, all of which are behavior changes rather than renames:
+The project builds clean against current packages — 0 errors, 0 warnings. Keep it that way.
 
-- **`Inventory.GetItemCount(ItemDef)`** → `GetItemCountEffective` / `GetItemCountPermanent`.
-  28 call sites in `Skills/Death/VoidDeath.cs` and `Achievements/VoidcridAchievement.cs`. The
-  split exists because items can now be temporary; picking the wrong one silently changes
-  gameplay, so each call site needs a deliberate choice rather than a blanket replace.
-- **`DamageAPI.ModdedDamageTypeHolderComponent`** → set `ProjectileDamage.damageType` directly.
-  `Modules/DamageTypes/Death.cs`.
-- `Entropy.instance` is an unused field (`Skills/Entropy.cs`), pre-existing.
+Void-item counting goes through `Core/VoidItems.cs`, not `Inventory.GetItemCount` (obsolete, since
+stacks can now be temporary). Live effects call `CountEffective`; anything gating a permanent unlock
+calls `CountPermanent`. Modded damage types are written to `ProjectileDamage.damageType` via
+`TagProjectile` in `Modules/DamageTypes/Death.cs` — the old `ModdedDamageTypeHolderComponent` is
+obsolete, and unlike it the field-based API needs the prefab to actually have a `ProjectileDamage`.
+
+`DamageTypes.voidcridDeath2` and `voidcridPoison` are reserved and attached but never read; only
+`voidcridDeath` is checked (`Init/Helpers.cs`). They are inert markers, not dead code to remove.
+
+Nothing here has been verified in game since the 1.4.1 bump. A clean build only proves signatures
+survived: the four `On.RoR2.*` hooks and the hardcoded `"RoR2/Base/Croco/CrocoBody.prefab"`
+Addressables key can only fail at runtime.
 
 Separately, `unity/` still targets Unity 2019.4.26f1 — three minor versions behind the engine the
 game runs. That only blocks AssetBundle work, not plugin builds, since `assets/acrid3` is
