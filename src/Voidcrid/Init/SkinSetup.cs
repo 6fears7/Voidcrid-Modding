@@ -11,7 +11,7 @@ using UnityEngine.Rendering;
 namespace Voidcrid
 {
     /// <summary>
-    /// Acrid's three custom skins: Voidcrid, Blackrid and Abominacrid.
+    /// Acrid's two custom skins: Voidcrid and Blackrid.
     /// </summary>
     /// <remarks>
     /// Ported from the prebuilt Voidcrid_Skins.dll, which had no source in this repo and stopped
@@ -92,15 +92,6 @@ namespace Voidcrid
                 // skins were assigned to achievements; the name is a save-file key, so renaming
                 // it to match would drop the unlock for everyone who already has it.
                 "Skins.Croco.Blackrid"),
-            new SkinSpec(
-                "Radioacrid",
-                "SIXFEARS7_SKIN_RADIOACRID_NAME",
-                @"Assets\SkinMods\Voidcrid_Skins\Icons\RadioacridIcon.png",
-                "Assets/Resources/Whitecrid.mat",
-                "Assets/Resources/Whitecrid.mat",
-                // Earned by the Right To Jail achievement, registered by JailAchievement under
-                // the name "Skins.Croco.Abominacrid" — same naming caveat as above.
-                "Skins.Croco.Abominacrid"),
         };
 
         internal static void Init()
