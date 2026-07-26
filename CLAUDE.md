@@ -47,10 +47,6 @@ obsolete, and unlike it the field-based API needs the prefab to actually have a 
 `DamageTypes.voidcridDeath2` and `voidcridPoison` are reserved and attached but never read; only
 `voidcridDeath` is checked (`Init/Helpers.cs`). They are inert markers, not dead code to remove.
 
-Nothing here has been verified in game since the 1.4.1 bump. A clean build only proves signatures
-survived: the four `On.RoR2.*` hooks and the hardcoded `"RoR2/Base/Croco/CrocoBody.prefab"`
-Addressables key can only fail at runtime.
-
 Separately, `unity/` still targets Unity 2019.4.26f1 — three minor versions behind the engine the
 game runs. That only blocks AssetBundle work, not plugin builds, since `assets/acrid3` is
 committed prebuilt.
