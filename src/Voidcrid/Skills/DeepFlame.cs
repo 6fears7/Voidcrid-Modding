@@ -19,9 +19,13 @@ namespace Voidcrid.Skills
 
         private float baseFlamethrowerDuration = Voidcrid.VoidcridDef.FlamebreathOverrideDuration.Value;
 
-        private float totalDamageCoefficient = Voidcrid.VoidcridDef.FlamebreathOverrideDamage.Value;
+        private float damagePerSecond = Voidcrid.VoidcridDef.FlamebreathOverrideDamage.Value;
 
         private float tickDamageCoefficient;
+
+        private float tickProcCoefficient;
+
+        private float tickRate;
 
         private float flamethrowerStopwatch;
 
@@ -49,7 +53,7 @@ namespace Voidcrid.Skills
             stopwatch = 0f;
             entryDuration = Flamebreath.baseEntryDuration;
             exitDuration = Flamebreath.baseExitDuration;
-            flamethrowerDuration = baseFlamethrowerDuration + attackSpeedStat;
+            flamethrowerDuration = baseFlamethrowerDuration;
 
             Transform modelTransform = GetModelTransform();
             if ((bool)base.characterBody)
@@ -61,8 +65,34 @@ namespace Voidcrid.Skills
                 childLocator = modelTransform.GetComponent<ChildLocator>();
             }
 
-            float num = flamethrowerDuration * Flamebreath.tickFrequency;
-            tickDamageCoefficient = totalDamageCoefficient / num;
+            // Attack speed buys ticks, not time. The breath is always the same length so it still
+            // reads as a breath, and a faster Voidcrid packs more flame into that window. Damage is
+            // a per-second budget scaled by attack speed and *then* divided by the rate we actually
+            // land on -- the attackSpeedStat term is what makes this scale at all, since ticks per
+            // cast is duration * tickRate and a rate-only budget would cancel straight back out.
+            // Dividing by the real rate is what makes the cap below fatten ticks instead of
+            // flatlining DPS. Proc rides the same structure but does not scale unless asked to.
+            float baseTickRate = Voidcrid.VoidcridDef.FlamebreathOverrideTickFreq.Value;
+            if (baseTickRate <= 0f)
+            {
+                baseTickRate = Flamebreath.tickFrequency;
+            }
+            // tickFrequency is a static that EntityStateCatalog fills in; a zero here would make
+            // the drain loop in FixedUpdate spin forever, so refuse to trust it.
+            if (baseTickRate <= 0f)
+            {
+                baseTickRate = 10f;
+            }
+
+            tickRate = Mathf.Clamp(baseTickRate * attackSpeedStat, 1f, 1f / Time.fixedDeltaTime);
+            tickDamageCoefficient = damagePerSecond * attackSpeedStat / tickRate;
+
+            float procPerSecond = baseTickRate * Flamebreath.procCoefficientPerTick;
+            if (Voidcrid.VoidcridDef.FlamebreathOverrideProcScaling.Value)
+            {
+                procPerSecond *= attackSpeedStat;
+            }
+            tickProcCoefficient = procPerSecond / tickRate;
 
             PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", flamethrowerDuration);
         }
@@ -94,7 +124,13 @@ namespace Voidcrid.Skills
                 {
                     muzzleTransform = childLocator.FindChild(muzzleName);
 
-                    flamethrowerEffectInstance = Object.Instantiate(Flamebreath.flamethrowerEffectPrefab, muzzleTransform).transform;
+                    GameObject effectPrefab = SkillSetup.GetVoidFlameEffectPrefab();
+                    if (!effectPrefab)
+                    {
+                        effectPrefab = Flamebreath.flamethrowerEffectPrefab;
+                    }
+
+                    flamethrowerEffectInstance = Object.Instantiate(effectPrefab, muzzleTransform).transform;
                     flamethrowerEffectInstance.transform.localPosition = Vector3.zero;
                     ScaleParticleSystemDuration scaleParticleSystemDuration = flamethrowerEffectInstance.GetComponent<ScaleParticleSystemDuration>();
                     if ((bool)scaleParticleSystemDuration)
@@ -113,9 +149,12 @@ namespace Voidcrid.Skills
             if (hasBegunFlamethrower)
             {
                 flamethrowerStopwatch += Time.fixedDeltaTime;
-                if (flamethrowerStopwatch > 1f / Flamebreath.tickFrequency)
+                // while, not if: past ~60 ticks/sec more than one tick comes due per physics frame,
+                // and an if would silently cap the rate and let the stopwatch drift upward forever.
+                float tickInterval = 1f / tickRate;
+                while (flamethrowerStopwatch > tickInterval)
                 {
-                    flamethrowerStopwatch -= 1f / Flamebreath.tickFrequency;
+                    flamethrowerStopwatch -= tickInterval;
                     FireFlame(muzzleName);
                 }
 
@@ -160,7 +199,7 @@ namespace Voidcrid.Skills
             bulletAttack.radius = Flamebreath.radius;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             bulletAttack.stopperMask = LayerIndex.world.mask;
-            bulletAttack.procCoefficient = Flamebreath.procCoefficientPerTick;
+            bulletAttack.procCoefficient = tickProcCoefficient;
             bulletAttack.maxDistance = maxDistance;
             bulletAttack.tracerEffectPrefab = Flamebreath.tracerEffectPrefab;
             bulletAttack.smartCollision = true;

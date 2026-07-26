@@ -56,7 +56,7 @@ namespace Voidcrid.Skills
         public static DamageType voidcridLaserAttack;
 
 
-        private Material backGlow;
+        private EmissiveGlow backGlow;
 
 
         private float maxIntensity = 4.0f;
@@ -80,7 +80,7 @@ namespace Voidcrid.Skills
                 base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
             PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", duration);     // Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
-            backGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+            backGlow = EmissiveGlow.Acquire(GetModelTransform());
 
 
         }
@@ -94,10 +94,9 @@ namespace Voidcrid.Skills
             base.characterBody.SetAimTimer(3f);
 
 
-            if (backGlow)
+            if (backGlow != null)
             {
-                backGlow.EnableKeyword("_EMISSION");
-                backGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.VoidGlow.Value * maxIntensity);
+                backGlow.SetEmission(Voidcrid.VoidcridDef.VoidGlow.Value * maxIntensity);
                 maxIntensity -= maxIntensity * Time.fixedDeltaTime / (Voidcrid.VoidcridDef.NullBeamOverrideDuration.Value - 1f);
             }
 
@@ -123,11 +122,9 @@ namespace Voidcrid.Skills
                 base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
             base.OnExit();
-            if (backGlow)
+            if (backGlow != null)
             {
-                backGlow.DisableKeyword("_EMISSION");
-                backGlow.SetColor("_EmColor", Color.black);
-
+                backGlow.Restore();
             }
 
 

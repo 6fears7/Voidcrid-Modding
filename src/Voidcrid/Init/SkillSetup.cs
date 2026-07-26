@@ -18,8 +18,6 @@ namespace Voidcrid
         public static GameObject voidFrogProjectile;
         private static UnlockableDef ethUnlock;
 
-        public static GameObject voidBreath;
-
         private static UnlockableDef VoidcridUnlock;
 
         internal static AssetBundle mainAssetBundle;
@@ -41,7 +39,6 @@ namespace Voidcrid
             NullBeamSetup(skillLocator);
             VoidEscapeSetup(skillLocator);
             EntropySetup(skillLocator);
-            // ManipulateFirebreathColor();
             VoidcridPassive(skillLocator);
 
 
@@ -336,17 +333,62 @@ namespace Voidcrid
         }
 
 
-        internal static void ManipulateFirebreathColor()
+        // Voidcrid-tinted copy of the Lemurian flamethrower particle, built once and reused.
+        private static GameObject voidFlameEffectPrefab;
+
+        private static readonly string[] materialColorProperties = { "_TintColor", "_Color", "_EmissionColor" };
+
+        // Flamebreath.flamethrowerEffectPrefab is a static that EntityStateCatalog fills in during the
+        // game's own load sequence, which runs after the plugin's Awake - so the tinted clone has to be
+        // built lazily on first use rather than during setup. Returns null if the source is somehow
+        // missing; callers fall back to the untinted vanilla prefab.
+        internal static GameObject GetVoidFlameEffectPrefab()
         {
+            if ((bool)voidFlameEffectPrefab)
+            {
+                return voidFlameEffectPrefab;
+            }
+
             GameObject flamePrefab = EntityStates.LemurianBruiserMonster.Flamebreath.flamethrowerEffectPrefab;
+            if (!flamePrefab)
+            {
+                Debug.Log("Flamebreath effect prefab is not loaded yet; using the vanilla flame");
+                return null;
+            }
 
-            GameObject colorizer = R2API.PrefabAPI.InstantiateClone(flamePrefab, "voidcridFirePurple");
-            Material blarg;
-            blarg = colorizer.GetComponent<Material>();
-            blarg.SetColor("_COLOR", Color.magenta);
-            voidBreath = colorizer;
-            ContentAddition.AddProjectile(voidBreath);
+            // Not networked: the state instantiates this directly onto the muzzle on every client.
+            GameObject colorizer = R2API.PrefabAPI.InstantiateClone(flamePrefab, "VoidcridFlamebreathEffect", false);
+            TintEffect(colorizer, Voidcrid.VoidcridDef.VoidGlow.Value);
+            voidFlameEffectPrefab = colorizer;
 
+            Debug.Log("Created Voidcrid flamebreath effect");
+            return voidFlameEffectPrefab;
+        }
+
+        // Recolors every particle renderer on the effect. The materials are copied first - they are
+        // shared assets, and writing to them in place would recolor the Lemurian's flamebreath too.
+        private static void TintEffect(GameObject effect, Color color)
+        {
+            foreach (ParticleSystemRenderer particleRenderer in effect.GetComponentsInChildren<ParticleSystemRenderer>(true))
+            {
+                Material sharedMaterial = particleRenderer.sharedMaterial;
+                if (!sharedMaterial)
+                {
+                    continue;
+                }
+
+                Material tinted = new Material(sharedMaterial);
+                tinted.name = sharedMaterial.name + "Voidcrid";
+                foreach (string colorProperty in materialColorProperties)
+                {
+                    if (tinted.HasProperty(colorProperty))
+                    {
+                        tinted.SetColor(colorProperty, color);
+                    }
+                }
+
+                particleRenderer.sharedMaterial = tinted;
+            }
         }
 
         internal static void CreateFogProjectile()

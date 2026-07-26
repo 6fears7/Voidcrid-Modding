@@ -74,7 +74,7 @@ namespace Voidcrid.Skills
 
         private BlastAttack obj;
 
-        private Material entropyGlow;
+        private EmissiveGlow entropyGlow;
 
         float emissionIntensity = 4f;
         float minIntensity = 0.3f;
@@ -137,9 +137,7 @@ namespace Voidcrid.Skills
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 
-            CharacterModel characterModel = GetModelTransform().GetComponent<CharacterModel>();
-
-            entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+            entropyGlow = EmissiveGlow.Acquire(GetModelTransform());
 
             voidAttack = (Util.CheckRoll(Voidcrid.VoidcridDef.EntropyOverrideJailChance.Value, base.characterBody.master) ? DamageType.Nullify : DamageType.Generic);
 
@@ -209,21 +207,19 @@ namespace Voidcrid.Skills
 
             float emissionIncrement = minIntensity / (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value);
 
-            if (entropyGlow)
+            if (entropyGlow == null)
             {
-                entropyGlow.EnableKeyword("_EMISSION");
-                entropyGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.VoidGlow.Value * emissionIntensity);
-                emissionIntensity -= emissionIncrement;
+                return;
             }
-
-
 
             if (hasFinishedFiring)
             {
-                entropyGlow.DisableKeyword("_EMISSION");
-                entropyGlow.SetColor("_EmColor", Color.black);
-
+                entropyGlow.Restore();
+                return;
             }
+
+            entropyGlow.SetEmission(Voidcrid.VoidcridDef.VoidGlow.Value * emissionIntensity);
+            emissionIntensity -= emissionIncrement;
 
         }
 
@@ -312,6 +308,13 @@ namespace Voidcrid.Skills
         {
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
+
+            // Also restore here: an interrupted state never reaches the hasFinishedFiring branch,
+            // and the material is shared, so a lit glow would stick for the rest of the session.
+            if (entropyGlow != null)
+            {
+                entropyGlow.Restore();
+            }
 
             EntityState.Destroy(leftFistEffectInstance);
             EntityState.Destroy(rightFistEffectInstance);

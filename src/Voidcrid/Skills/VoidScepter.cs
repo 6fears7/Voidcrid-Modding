@@ -59,7 +59,7 @@ namespace Voidcrid.Skills
         private GameObject leftFistEffectInstance;
 
         private GameObject rightFistEffectInstance;
-        private Material entropyGlow;
+        private EmissiveGlow entropyGlow;
 
         float emissionIntensity = 4f;
         float minIntensity = 0.3f;
@@ -137,7 +137,7 @@ namespace Voidcrid.Skills
         public override void OnEnter()
         {
             base.OnEnter();
-            entropyGlow = GetModelTransform().GetComponent<CharacterModel>().baseRendererInfos[1].defaultMaterial;
+            entropyGlow = EmissiveGlow.Acquire(GetModelTransform());
 
             crocoDamageTypeController = GetComponent<CrocoDamageTypeController>();
 
@@ -290,6 +290,14 @@ namespace Voidcrid.Skills
         {
             this.moveSpeedStat = 0f;
             this.animator.SetBool("attacking", false);
+
+            // Also restore here: an interrupted state never reaches the hasFinishedFiring branch,
+            // and the material is shared, so a lit glow would stick for the rest of the session.
+            if (entropyGlow != null)
+            {
+                entropyGlow.Restore();
+            }
+
             EntityState.Destroy(leftFistEffectInstance);
             EntityState.Destroy(rightFistEffectInstance);
             base.OnExit();
@@ -300,21 +308,19 @@ namespace Voidcrid.Skills
 
             float emissionIncrement = minIntensity / (Voidcrid.VoidcridDef.ScepterEntropyOverrideFireSpeed.Value);
 
-            if (entropyGlow)
+            if (entropyGlow == null)
             {
-                entropyGlow.EnableKeyword("_EMISSION");
-                entropyGlow.SetColor("_EmColor", Voidcrid.VoidcridDef.ScepterGlow.Value * emissionIntensity);
-                emissionIntensity -= emissionIncrement;
+                return;
             }
-
-
 
             if (hasFinishedFiring)
             {
-                entropyGlow.DisableKeyword("_EMISSION");
-                entropyGlow.SetColor("_EmColor", Color.black);
-
+                entropyGlow.Restore();
+                return;
             }
+
+            entropyGlow.SetEmission(Voidcrid.VoidcridDef.ScepterGlow.Value * emissionIntensity);
+            emissionIntensity -= emissionIncrement;
 
         }
 
