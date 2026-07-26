@@ -79,4 +79,23 @@
     </None>
   </ItemGroup>
 
+  <!--
+    Mirror the build output into a single config-independent directory so a mod manager profile can
+    symlink at a stable path. Without this the symlink would have to name a configuration, and a
+    plain `dotnet build` (Debug) would leave the game running the last Release build instead.
+    See docs/DEVELOPMENT.md, "Live-testing through r2modman".
+  -->
+  <PropertyGroup>
+    <LiveDir>$(MSBuildThisFileDirectory)bin\live\</LiveDir>
+  </PropertyGroup>
+
+  <Target Name="StageLiveBuild" AfterTargets="Build">
+    <ItemGroup>
+      <LivePayload Include="$(TargetPath)" />
+      <LivePayload Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+      <LivePayload Include="$(TargetDir)acrid3" />
+    </ItemGroup>
+    <Copy SourceFiles="@(LivePayload)" DestinationFolder="$(LiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

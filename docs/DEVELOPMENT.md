@@ -19,7 +19,9 @@ src/Voidcrid/           The plugin assembly (netstandard2.1 -> Voidcrid.dll)
 
 libs/                   Vendored assemblies for soft-dependency mods only.
                         Everything else (game, BepInEx, R2API, MMHOOK) comes from NuGet.
-assets/acrid3           AssetBundle built by the Unity project; copied next to Voidcrid.dll
+assets/acrid3           AssetBundle built by the Unity project; copied next to Voidcrid.dll.
+                        Committed prebuilt — recovered from the shipped 1.6.0 package, because the
+                        copy previously in the repo was a stale one-asset stub.
 packaging/              Thunderstore package metadata (manifest.json, icon.png)
 unity/                  ThunderKit / Unity project that authors the AssetBundle
 docs/                   This file, plus README images in docs/media/
@@ -37,7 +39,38 @@ Output lands in `src/Voidcrid/bin/Release/netstandard2.1/`, with `acrid3` copied
 `Voidcrid.dll` — that pairing matters, because `SkillSetup.LoadAssetBundle` locates the bundle by
 taking its own assembly path and replacing `Voidcrid.dll` with `acrid3`.
 
-To test in game, copy both files into `Risk of Rain 2/BepInEx/plugins/Voidcrid/`.
+Every build also mirrors `Voidcrid.dll`, its `.pdb` and `acrid3` into `src/Voidcrid/bin/live/`
+(the `StageLiveBuild` target). That directory is configuration-independent, which is what makes the
+symlink setup below survive switching between Debug and Release.
+
+## Live-testing through r2modman
+
+Rather than copying files after every build, point the mod manager's profile at `bin/live/`:
+
+```
+PROFILE=~/.config/r2modmanPlus-local/RiskOfRain2/profiles/Default/BepInEx/plugins/Voidcrid-Voidcrid
+LIVE=$(git rev-parse --show-toplevel)/src/Voidcrid/bin/live
+
+cp -n "$PROFILE/Voidcrid.dll" "$PROFILE/Voidcrid.dll.shipped.bak"
+ln -sfn "$LIVE/Voidcrid.dll" "$PROFILE/Voidcrid.dll"
+ln -sfn "$LIVE/acrid3"       "$PROFILE/acrid3"
+```
+
+`dotnet build` then updates what the game loads; only a game restart is needed, not a reinstall.
+
+Both files are symlinked on purpose. `SkillSetup.LoadAssetBundle` derives the bundle path from
+`Assembly.GetExecutingAssembly().Location`, and whether that comes back as the symlink or as its
+resolved target depends on the runtime — so the bundle has to be correct next to *both* the profile
+copy and the build output. Symlinking the pair makes the question moot.
+
+Two things will silently undo this:
+
+- Reinstalling or updating Voidcrid in r2modman replaces the symlinks with real files. Re-run the
+  `ln` commands afterwards.
+- Toggling the mod off and on renames the files, which can leave a dangling link.
+
+`manifest.json`, `icon.png` and the docs in the profile are still the shipped 1.6.0 copies. They
+only matter to the manager's UI, so they are left alone.
 
 ## Dependency rules
 
