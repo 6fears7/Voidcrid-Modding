@@ -9,10 +9,11 @@ using BepInEx.Configuration;
 namespace Voidcrid
 {
     [BepInDependency("com.bepis.r2api")]
+    // Keep in sync with <Version> in Voidcrid.csproj and version_number in packaging/manifest.json.
     [BepInPlugin(
         "com.sixfears7.Voidcrid",
         "Voidcrid",
-        "1.0.0")]
+        "1.6.0")]
 
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
