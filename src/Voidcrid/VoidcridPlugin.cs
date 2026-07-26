@@ -13,7 +13,7 @@ namespace Voidcrid
     [BepInPlugin(
         "com.sixfears7.Voidcrid",
         "Voidcrid",
-        "1.6.0")]
+        "1.7.0")]
 
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]
@@ -83,7 +83,7 @@ namespace Voidcrid
 
 
         {
-            
+
             FlamebreathOverrideRecharge = Config.Bind<float>(
             "Recharge Interval",
             "Flamebreath Recharge",
@@ -290,23 +290,22 @@ namespace Voidcrid
             true,
             "Emit a devastating bomb on death"
         );
-            
+
 
             // Before anything that can log: Log.LogX dereferences _logSource unconditionally.
             Log.Init(Logger);
 
-            // TEMPORARY (diagnostic): dumps CrocoBody's renderer layout once at startup.
-            // Remove once the correct renderer names are known.
-            ModelDump.Schedule();
+            Sound.RequestBorrowedSoundbanks();
 
             Voidcrid.Language.LanguageSetup.SetLanguage();
             Voidcrid.SkillSetup.LoadAssetBundle();
+            Voidcrid.SkinSetup.Init();
             Voidcrid.SkillSetup.CreateFogProjectile();
             Voidcrid.SkillSetup.SetupSkills(skillLocator);
             // Voidcrid.Modules.VoidcridDeathProjectile.Init();
             //Voidcrid.Effects.EffectProvider.Init();
             Voidcrid.SkillSetup.DeathBehavior();
-             Voidcrid.Hooks.HookSetup.Hook();
+            Voidcrid.Hooks.HookSetup.Hook();
 
         }
         public static bool HasDeeprot(SkillLocator sk)

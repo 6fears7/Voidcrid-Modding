@@ -34,6 +34,11 @@ namespace Voidcrid.Language
             LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_NAME", "...Left alone");
             LanguageAPI.Add("ACHIEVEMENT_VOIDCRIDUNLOCK_DESCRIPTION", "As Acrid, corrupt yourself 7 times to break containment.");
 
+            // Skin names, previously supplied by Voidcrid_Skins.dll's Language.LoadStrings hook.
+            LanguageAPI.Add("SIXFEARS7_SKIN_VOIDCRID_NAME", "Voidcrid");
+            LanguageAPI.Add("SIXFEARS7_SKIN_BLACKRID_NAME", "Blackrid");
+            LanguageAPI.Add("SIXFEARS7_SKIN_RADIOACRID_NAME", "Abominacrid");
+
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH", "Flamebreath");
             LanguageAPI.Add("VOIDCRID_FLAMEBREATH_DESC", $"<style=cDeath>Igniting.</style> <style=cIsDamage>Agile.</style> Release a sustained gout of <style=cIsDamage>flame</style>, <style=cDeath>burning</style> enemies for <style=cIsDamage>670% damage per second</style>.");
 

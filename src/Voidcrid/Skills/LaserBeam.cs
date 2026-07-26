@@ -58,6 +58,14 @@ namespace Voidcrid.Skills
 
         private EmissiveGlow backGlow;
 
+        // Wwise event names from char_VoidSurvivor.bnk, used as literals on purpose: the matching
+        // VoidSurvivor states hold their sound strings in instance [SerializeField] fields, which
+        // are only filled in by EntityStateCatalog for the state it actually configured. Reading
+        // them off a hand-constructed instance yields null and plays nothing.
+        private const string enterSoundString = "Play_voidman_m1_corrupted_start";
+
+        private const string exitSoundString = "Play_voidman_m1_corrupted_end";
+
 
         private float maxIntensity = 4.0f;
 
@@ -79,7 +87,8 @@ namespace Voidcrid.Skills
                 base.characterBody.AddBuff(RoR2Content.Buffs.Slow50);
                 base.characterBody.AddBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
-            PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", duration);     // Util.PlaySound(FireGravityBump.enterSoundString, base.gameObject);
+            PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", duration);
+            Sound.Play(enterSoundString, base.gameObject);
             backGlow = EmissiveGlow.Acquire(GetModelTransform());
 
 
@@ -122,6 +131,7 @@ namespace Voidcrid.Skills
                 base.characterBody.RemoveBuff(RoR2Content.Buffs.SmallArmorBoost);
             }
             base.OnExit();
+            Sound.Play(exitSoundString, base.gameObject);
             if (backGlow != null)
             {
                 backGlow.Restore();

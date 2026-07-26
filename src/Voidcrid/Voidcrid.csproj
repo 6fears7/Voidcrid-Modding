@@ -7,7 +7,7 @@
     <AssemblyName>Voidcrid</AssemblyName>
     <RootNamespace>Voidcrid</RootNamespace>
     <!-- Keep in sync with packaging/manifest.json and the [BepInPlugin] version. -->
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -37,6 +37,7 @@
     <PackageReference Include="R2API.Loadout" Version="1.0.2" />
     <PackageReference Include="R2API.Prefab" Version="1.1.1" />
     <PackageReference Include="R2API.DamageType" Version="1.1.7" />
+    <PackageReference Include="R2API.Skins" Version="1.4.7" />
   </ItemGroup>
 
   <!--
@@ -77,6 +78,15 @@
       <Link>acrid3</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!--
+      Skin art, recovered from the embedded resource of the prebuilt Voidcrid_Skins.dll. Like
+      acrid3 it is a build output with no source in the repo, and SkinSetup resolves it as a
+      sibling of Voidcrid.dll.
+    -->
+    <None Include="$(AssetsDir)voidcrid_skins">
+      <Link>voidcrid_skins</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <!--
@@ -94,6 +104,7 @@
       <LivePayload Include="$(TargetPath)" />
       <LivePayload Include="$(TargetDir)$(TargetName).pdb" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
       <LivePayload Include="$(TargetDir)acrid3" />
+      <LivePayload Include="$(TargetDir)voidcrid_skins" />
     </ItemGroup>
     <Copy SourceFiles="@(LivePayload)" DestinationFolder="$(LiveDir)" SkipUnchangedFiles="true" />
   </Target>

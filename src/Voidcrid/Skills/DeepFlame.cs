@@ -94,7 +94,14 @@ namespace Voidcrid.Skills
             }
             tickProcCoefficient = procPerSecond / tickRate;
 
-            PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", flamethrowerDuration);
+            // PlayAnimation stretches Acrid's own FireSpit clip (a single one-shot open/spit/close,
+            // not a loop) to fill the given duration via playbackRate, then just holds on its closed
+            // final pose once that duration elapses. Passing flamethrowerDuration alone left the
+            // mouth animation finishing -- and holding shut -- a full entryDuration before the flame
+            // itself actually stops (FixedUpdate doesn't start the stream until stopwatch reaches
+            // entryDuration and keeps it going through entryDuration + flamethrowerDuration). Cover
+            // that whole active window instead so the mouth stays open until the flame does.
+            PlayAnimation("Gesture, Mouth", "FireSpit", "FireSpit.playbackRate", entryDuration + flamethrowerDuration);
         }
 
         public override void OnExit()
