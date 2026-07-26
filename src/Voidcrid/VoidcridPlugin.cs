@@ -53,6 +53,8 @@ namespace Voidcrid
 
         public static ConfigEntry<float> FlamebreathOverrideTickFreq { get; set; }
 
+        public static ConfigEntry<bool> FlamebreathOverrideProcScaling { get; set; }
+
         public static ConfigEntry<float> NullBeamOverrideRecharge { get; set; }
         public static ConfigEntry<float> EtherealDriftOverrideRecharge { get; set; }
         public static ConfigEntry<float> EntropyOverrideRecharge { get; set; }
@@ -177,16 +179,30 @@ namespace Voidcrid
 
             FlamebreathOverrideDuration = Config.Bind<float>(
                 "Flamebreath",
-                "Duration",
-                2f,
-                "Flamebreath's duration, measured in seconds. Total duration: (Flamebreath duration + Attack Speed stat)"
+                "Breath Duration",
+                1.5f,
+                "How long the flame is sustained, measured in seconds. Fixed: attack speed buys extra ticks inside this window rather than changing its length."
             );
 
             FlamebreathOverrideDamage = Config.Bind<float>(
                 "Flamebreath",
-                "Damage",
-                10f,
-                "Flamebreath's totalDamageCoefficient, is divided over Flamebreath duration * tickFrequency: (totalDamageCoef / [Flamebreath duration * tickFrequency])"
+                "Damage Per Second",
+                6.67f,
+                "Damage coefficient dealt per second of breath at 1x attack speed; attack speed multiplies it, then it is split across however many ticks the breath produces. At 1x this works out to the old 1000% total over a 1.5s breath."
+            );
+
+            FlamebreathOverrideTickFreq = Config.Bind<float>(
+                "Flamebreath",
+                "Tick Rate",
+                0f,
+                "Flame ticks per second at 1x attack speed; attack speed multiplies it. 0 uses the vanilla Lemurian rate. The effective rate is capped at the physics tick rate, beyond which per-tick damage grows instead."
+            );
+
+            FlamebreathOverrideProcScaling = Config.Bind<bool>(
+                "Flamebreath",
+                "Scale Procs With Attack Speed",
+                false,
+                "False keeps on-hit items firing at a constant rate per second no matter how fast the flame ticks. True lets proc rate scale with attack speed alongside the damage."
             );
 
             EtherealDriftOverrideDamage = Config.Bind<float>(
@@ -275,6 +291,13 @@ namespace Voidcrid
             "Emit a devastating bomb on death"
         );
             
+
+            // Before anything that can log: Log.LogX dereferences _logSource unconditionally.
+            Log.Init(Logger);
+
+            // TEMPORARY (diagnostic): dumps CrocoBody's renderer layout once at startup.
+            // Remove once the correct renderer names are known.
+            ModelDump.Schedule();
 
             Voidcrid.Language.LanguageSetup.SetLanguage();
             Voidcrid.SkillSetup.LoadAssetBundle();
