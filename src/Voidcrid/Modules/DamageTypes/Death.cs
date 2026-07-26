@@ -28,17 +28,34 @@ namespace Voidcrid.Modules
 
             VoidcridPoison = PrefabAPI.InstantiateClone(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Croco/CrocoLeapAcid.prefab").WaitForCompletion(), "VoidcridPoisonPool");
 
-            ModdedDamageTypeHolderComponent holder = VoidcridDeath.AddComponent<ModdedDamageTypeHolderComponent>();
-            holder.Add(DamageTypes.voidcridDeath);
-            ModdedDamageTypeHolderComponent holder2 = VoidcridDeath.AddComponent<ModdedDamageTypeHolderComponent>();
-            holder2.Add(DamageTypes.voidcridDeath2);
-            ModdedDamageTypeHolderComponent poisoner = VoidcridPoison.AddComponent<ModdedDamageTypeHolderComponent>();
-            poisoner.Add(DamageTypes.voidcridPoison);
+            TagProjectile(VoidcridDeath, DamageTypes.voidcridDeath);
+            TagProjectile(VoidcridDeath2, DamageTypes.voidcridDeath2);
+            TagProjectile(VoidcridPoison, DamageTypes.voidcridPoison);
             ContentAddition.AddProjectile(VoidcridDeath);
             ContentAddition.AddProjectile(VoidcridDeath2);
             ContentAddition.AddProjectile(VoidcridPoison);
 
 
+        }
+
+        /// <summary>
+        /// Marks a projectile prefab with a ModdedDamageType.
+        /// </summary>
+        /// <remarks>
+        /// Replaces the obsolete ModdedDamageTypeHolderComponent, which R2API now implements as a
+        /// shim over this same field. Unlike the old component, this needs a ProjectileDamage to
+        /// write into, so a prefab without one is reported rather than throwing.
+        /// </remarks>
+        private static void TagProjectile(GameObject projectilePrefab, ModdedDamageType damageType)
+        {
+            if (!projectilePrefab.TryGetComponent(out ProjectileDamage projectileDamage))
+            {
+                Log.LogError($"{projectilePrefab.name} has no ProjectileDamage component; " +
+                             "its modded damage type will not be applied.");
+                return;
+            }
+
+            projectileDamage.damageType.AddModdedDamageType(damageType);
         }
     }
 }

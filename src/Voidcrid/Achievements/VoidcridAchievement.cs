@@ -28,7 +28,8 @@ namespace Voidcrid.Achievements
 
                 if (self && self.teamIndex == TeamIndex.Player && self.inventory)
                 {
-                    int count = getVoidItemCount(self.inventory);
+                    // Permanent only: a temporarily-held item should not grant the unlock.
+                    int count = VoidItems.CountPermanent(self.inventory);
 
                     if (count >= 7)
                     {
@@ -36,26 +37,6 @@ namespace Voidcrid.Achievements
                         base.Grant();
                     }
                 }
-            }
-
-            private int getVoidItemCount(Inventory inventory)
-            {
-                int output = 0;
-                output += inventory.GetItemCount(DLC1Content.Items.CritGlassesVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.ElementalRingVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.ExplodeOnDeathVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.ChainLightningVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.TreasureCacheVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.MushroomVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.BearVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.SlowOnHitVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.MissileVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.ExtraLifeVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.BleedOnHitVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.CloverVoid);
-                output += inventory.GetItemCount(DLC1Content.Items.VoidMegaCrabItem);
-                return output;
             }
 
         }

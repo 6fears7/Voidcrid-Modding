@@ -81,7 +81,6 @@ namespace Voidcrid.Skills
 
         // private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
 
-        private GameObject instance;
         private void FireSmash()
         {
 
