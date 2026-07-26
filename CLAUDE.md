@@ -23,12 +23,28 @@ dotnet build Voidcrid.sln -c Release
 `acrid3` is copied next to `Voidcrid.dll` in the output; the runtime loader finds the bundle by
 string-replacing `Voidcrid.dll` in its own assembly path, so they must stay siblings.
 
-## Known state (2026-07)
+## Target versions (verified 2026-07-26)
 
-The repo structure is current, but the code is not. Pinned versions predate several game updates
-and are the starting point for the fix pass:
+Pinned against the shipping game: **RoR2 1.4.1 on Unity 2021.3.33f1**, confirmed by reading
+`globalgamemanagers` from a local Steam install. `RiskOfRain2.GameLibs 1.4.1-r.0` matches it
+exactly, and `UnityEngine.Modules` must stay on 2021.3.33 — do not bump it to 2022.x just because
+newer packages exist; it has to track the engine the game actually ships.
 
-- `RiskOfRain2.GameLibs` 1.3.2-r.1 and `MMHOOK.RoR2` 2024.9.5 in `src/Voidcrid/Voidcrid.csproj`
-- `unity/` targets Unity 2019.4.26f1 while the plugin builds against `UnityEngine.Modules` 2021.3.33
-- `packaging/manifest.json` omits R2API_Unlockable and R2API_Loadout, both of which the plugin
-  references
+`packaging/manifest.json` and the csproj `PackageReference`s are in sync and both current.
+
+## Known state
+
+The project compiles cleanly against current packages (0 errors). What remains is three
+deprecations, all of which are behavior changes rather than renames:
+
+- **`Inventory.GetItemCount(ItemDef)`** → `GetItemCountEffective` / `GetItemCountPermanent`.
+  28 call sites in `Skills/Death/VoidDeath.cs` and `Achievements/VoidcridAchievement.cs`. The
+  split exists because items can now be temporary; picking the wrong one silently changes
+  gameplay, so each call site needs a deliberate choice rather than a blanket replace.
+- **`DamageAPI.ModdedDamageTypeHolderComponent`** → set `ProjectileDamage.damageType` directly.
+  `Modules/DamageTypes/Death.cs`.
+- `Entropy.instance` is an unused field (`Skills/Entropy.cs`), pre-existing.
+
+Separately, `unity/` still targets Unity 2019.4.26f1 — three minor versions behind the engine the
+game runs. That only blocks AssetBundle work, not plugin builds, since `assets/acrid3` is
+committed prebuilt.

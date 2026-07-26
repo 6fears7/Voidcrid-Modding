@@ -55,6 +55,22 @@ Adding a hard dependency means updating three places in step: the `PackageRefere
 `src/Voidcrid/Voidcrid.csproj`, the `dependencies` array in `packaging/manifest.json`, and the
 `[BepInDependency]` attribute on `VoidcridDef`.
 
+### Version targets
+
+`RiskOfRain2.GameLibs` and `UnityEngine.Modules` are not "keep on latest" packages — they must
+track the game as shipped. To check what that is:
+
+```
+strings -n 5 "<steam>/Risk of Rain 2/Risk of Rain 2_Data/globalgamemanagers" | head
+```
+
+The first lines give the Unity version (`2021.3.33f1`) and the game version (`1.4.1`). Pick the
+`GameLibs` release matching the latter and the `UnityEngine.Modules` release matching the former.
+Bumping Unity ahead of the engine the game runs will compile and then fail at runtime.
+
+R2API modules are published to nuget.org and Thunderstore in lockstep, so the `PackageReference`
+version and the `RiskofThunder-R2API_*` manifest entry should always be the same number.
+
 ## The Unity project
 
 `unity/` is a ThunderKit project that produces the `acrid3` AssetBundle (skill icons, skin
