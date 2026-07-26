@@ -21,7 +21,9 @@ dotnet build Voidcrid.sln -c Release
 ```
 
 `acrid3` is copied next to `Voidcrid.dll` in the output; the runtime loader finds the bundle by
-string-replacing `Voidcrid.dll` in its own assembly path, so they must stay siblings.
+string-replacing `Voidcrid.dll` in its own assembly path, so they must stay siblings. Every build
+also mirrors both into `src/Voidcrid/bin/live/`, which an r2modman profile symlinks to for
+in-game testing — see docs/DEVELOPMENT.md.
 
 ## Target versions (verified 2026-07-26)
 
@@ -48,3 +50,9 @@ deprecations, all of which are behavior changes rather than renames:
 Separately, `unity/` still targets Unity 2019.4.26f1 — three minor versions behind the engine the
 game runs. That only blocks AssetBundle work, not plugin builds, since `assets/acrid3` is
 committed prebuilt.
+
+`assets/acrid3` was a 9 KB stub containing a single unused texture (`laserVoid.png`) while the code
+loads six sprites from it; the real 930 KB bundle survived only inside the installed Thunderstore
+package and has been restored. The root-level copy was lost in `1ce03e1 "Removed old stuff"`. The
+bundle is a build output with no source of truth in the repo until `unity/` can build it again, so
+treat it as irreplaceable.
