@@ -79,6 +79,8 @@ namespace Voidcrid.Skills
         float emissionIntensity = 4f;
         float minIntensity = 0.3f;
 
+        private const string enterSoundString = "Play_voidman_R_activate";
+
         // private BuffDef fogNotify = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdVoidFogMild.asset").WaitForCompletion();
 
         private void FireSmash()
@@ -167,6 +169,8 @@ namespace Voidcrid.Skills
             PlayCrossfade("Gesture, Additive", setAnimState, "Slash.playbackRate", num, 0.05f);
             PlayCrossfade("Gesture, Override", setAnimState, "Slash.playbackRate", num, 0.05f);
 
+            Sound.Play(enterSoundString, base.gameObject);
+
 
             float dmg = Entropy.damageCoefficient;
 
@@ -249,10 +253,13 @@ namespace Voidcrid.Skills
             if (this.stopwatch >= this.duration * Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value && this.hasFired1 == false && this.hasFired2 == false && this.hasFinishedFiring == false)
             // && this.stopwatch <= this.duration * .6f
             {
+                // The has-fired flags are set on every client, not just the authority: they gate
+                // the glow step, which is client-side. Setting them only on the authority left
+                // remote clients re-entering this branch every frame.
+                this.hasFired1 = true;
                 if (base.isAuthority)
                 {
                     this.FireSmash();
-                    this.hasFired1 = true;
                 }
                 ManageEntroypGlow();
 
@@ -262,10 +269,10 @@ namespace Voidcrid.Skills
             if (this.stopwatch >= this.duration * (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value * 2) && this.hasFired1 == true && this.hasFired2 == false && this.hasFinishedFiring == false)
 
             {
+                this.hasFired2 = true;
                 if (base.isAuthority)
                 {
                     this.FireSmash();
-                    this.hasFired2 = true;
                 }
                 ManageEntroypGlow();
 
@@ -275,10 +282,10 @@ namespace Voidcrid.Skills
             if (this.stopwatch >= this.duration * (Voidcrid.VoidcridDef.EntropyOverrideFireSpeed.Value * 3) && this.hasFired1 == true && this.hasFired2 == true && this.hasFinishedFiring == false)
 
             {
+                this.hasFinishedFiring = true;
                 if (base.isAuthority)
                 {
                     this.FireSmash();
-                    this.hasFinishedFiring = true;
                 }
                 ManageEntroypGlow();
 

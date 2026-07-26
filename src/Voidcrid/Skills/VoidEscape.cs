@@ -5,7 +5,6 @@ using UnityEngine.Networking;
 using R2API.Networking;
 using EntityStates.Bandit2;
 using UnityEngine.AddressableAssets;
-using EntityStates.VoidRaidCrab.Weapon;
 
 using Voidcrid;
 
@@ -28,7 +27,13 @@ namespace Voidcrid.Skills
         [SerializeField]
         private GameObject explosionPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/VoidMegaCrab/VoidMegaCrabDeathBombExplosion.prefab").WaitForCompletion();
 
-        private FireGravityBump FGBSound = new FireGravityBump();
+        // Wwise event names from char_VoidSurvivor.bnk. This used to read
+        // `new FireGravityBump().enterSoundString`, which is always null: that field is an instance
+        // [SerializeField], and EntityStateCatalog only populates it on the state instance the game
+        // itself constructs, so both calls below were silently playing nothing.
+        private const string enterSoundString = "Play_voidman_shift_start";
+
+        private const string exitSoundString = "Play_voidman_shift_end";
 
         public GameObject voidFogInstance = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VoidFogMildEffect.prefab").WaitForCompletion();
         public float voidJailChance = 3f;
@@ -81,7 +86,7 @@ namespace Voidcrid.Skills
                 FireSmokebomb();
             }
 
-            Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
+            Sound.Play(enterSoundString, base.gameObject);
 
             // Hack to pull the visual state without actually updating the effect
             base.characterBody.UpdateSingleTemporaryVisualEffect(ref voidFog, "Prefabs/TemporaryVisualEffects/voidFogMildEffect", characterBody.radius, true);
@@ -109,7 +114,7 @@ namespace Voidcrid.Skills
             }
 
 
-            Util.PlaySound(FGBSound.enterSoundString, base.gameObject);
+            Sound.Play(exitSoundString, base.gameObject);
 
             if (base.characterBody)
             {

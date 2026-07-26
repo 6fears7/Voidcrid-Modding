@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Voidcrid.Achievements
 {
-    [RegisterAchievement("GrandfatherParadox", "Skins.Croco.Voidcrid", null, 0, typeof(VoidcridServerUnlock))]
+    [RegisterAchievement("GrandfatherParadox", "Skins.Croco.Blackrid", null, 0, typeof(VoidcridServerUnlock))]
     public class ParadoxUnlockAchievement : VoidcridAchievements
     {
 

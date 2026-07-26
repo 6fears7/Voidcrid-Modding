@@ -1,6 +1,6 @@
 {
 	"name": "Voidcrid",
-	"version_number": "1.6.0",
+	"version_number": "1.7.0",
 	"website_url": "https://github.com/6fears7/Voidcrid-Modding",
 	"description": "While held and tortured in captivity, Acrid is reborn.",
 	"dependencies": [
@@ -13,6 +13,7 @@
 		"RiskofThunder-R2API_Unlockable-1.0.2",
 		"RiskofThunder-R2API_Loadout-1.0.2",
 		"RiskofThunder-R2API_Prefab-1.1.1",
-		"RiskofThunder-R2API_DamageType-1.1.7"
+		"RiskofThunder-R2API_DamageType-1.1.7",
+		"RiskofThunder-R2API_Skins-1.4.7"
 	]
 }
