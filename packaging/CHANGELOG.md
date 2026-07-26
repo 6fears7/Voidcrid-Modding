@@ -5,6 +5,7 @@
 - Updated Flamebreath coloring to match Voidcrid Glow config setting; Now won't break when attack rate scales
 - Fixed skins not appearing after SotS
 - Some Skin unlocks are now linked to the skill achievments, which was intended from the beginning
+- Fixed void sound effects
 
 
 1.6.0 - Not Dead Yet
