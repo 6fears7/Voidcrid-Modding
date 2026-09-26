@@ -56,3 +56,6 @@ crashlytics-build.properties
 *.tmp
 .DS_Store
 Thumbs.db
+
+# Local assistant notes
+CLAUDE.md
