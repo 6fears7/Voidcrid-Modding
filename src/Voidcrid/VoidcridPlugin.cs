@@ -13,7 +13,7 @@ namespace Voidcrid
     [BepInPlugin(
         "com.sixfears7.Voidcrid",
         "Voidcrid",
-        "1.7.0")]
+        "1.7.1")]
 
     [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.groovesalad.GrooveSaladSpikestripContent", BepInDependency.DependencyFlags.SoftDependency)]

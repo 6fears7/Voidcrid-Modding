@@ -116,6 +116,7 @@ namespace Voidcrid.Skills
             {
                 R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
             }
+            obj.damageType.damageSource = DamageSource.Special;
 
             obj.Fire();
 
@@ -337,11 +338,13 @@ namespace Voidcrid.Skills
         {
 
             float damage = 1f;
+            DamageTypeCombo bombardmentDamageType = crocoDamageTypeController.GetDamageType();
+            bombardmentDamageType.damageSource = DamageSource.Special;
 
             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
             {
                 damage = damage,
-                damageTypeOverride = crocoDamageTypeController.GetDamageType(),
+                damageTypeOverride = bombardmentDamageType,
                 crit = RollCrit(),
                 damageColorIndex = DamageColorIndex.Void,
                 position = base.characterBody.footPosition,

@@ -170,6 +170,7 @@ namespace Voidcrid.Skills
                 {
                     R2API.DamageAPI.AddModdedDamageType(obj, Voidcrid.Modules.DamageTypes.entropyJail);
                 }
+                obj.damageType.damageSource = DamageSource.Utility;
 
                 obj.Fire();
 

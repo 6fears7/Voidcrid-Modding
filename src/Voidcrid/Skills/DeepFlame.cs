@@ -211,6 +211,7 @@ namespace Voidcrid.Skills
             bulletAttack.tracerEffectPrefab = Flamebreath.tracerEffectPrefab;
             bulletAttack.smartCollision = true;
             bulletAttack.damageType = (Util.CheckRoll(Flamebreath.ignitePercentChance, base.characterBody.master) ? DamageType.IgniteOnHit : DamageType.Generic);
+            bulletAttack.damageType.damageSource = DamageSource.Primary;
             bulletAttack.Fire();
         }
 

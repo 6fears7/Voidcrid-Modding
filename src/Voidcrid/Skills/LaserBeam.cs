@@ -193,6 +193,7 @@ namespace Voidcrid.Skills
                 bulletAttack.hitEffectPrefab = hitEffectPrefab;
                 bulletAttack.tracerEffectPrefab = tracerEffectPrefab;
                 bulletAttack.damageType = (Util.CheckRoll(switchAttacks, base.characterBody.master) ? deeprotDamage : voidcridLaserAttack);
+                bulletAttack.damageType.damageSource = DamageSource.Secondary;
                 if (voidcridLaserAttack == DamageType.Nullify)
                 {
                     R2API.DamageAPI.AddModdedDamageType(bulletAttack, Voidcrid.Modules.DamageTypes.nullBeamJail);

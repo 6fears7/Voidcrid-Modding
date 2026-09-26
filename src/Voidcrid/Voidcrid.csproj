@@ -7,7 +7,7 @@
     <AssemblyName>Voidcrid</AssemblyName>
     <RootNamespace>Voidcrid</RootNamespace>
     <!-- Keep in sync with packaging/manifest.json and the [BepInPlugin] version. -->
-    <Version>1.7.0</Version>
+    <Version>1.7.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -97,6 +97,7 @@
   -->
   <PropertyGroup>
     <LiveDir>$(MSBuildThisFileDirectory)bin\live\</LiveDir>
+    <R2ModmanPluginDir Condition="'$(R2ModmanPluginDir)' == ''">$(HOME)/.config/r2modmanPlus-local/RiskOfRain2/profiles/Default/BepInEx/plugins/Voidcrid-Voidcrid/</R2ModmanPluginDir>
   </PropertyGroup>
 
   <Target Name="StageLiveBuild" AfterTargets="Build">
@@ -107,6 +108,7 @@
       <LivePayload Include="$(TargetDir)voidcrid_skins" />
     </ItemGroup>
     <Copy SourceFiles="@(LivePayload)" DestinationFolder="$(LiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(LivePayload)" DestinationFolder="$(R2ModmanPluginDir)" SkipUnchangedFiles="true" Condition="Exists('$(R2ModmanPluginDir)')" />
   </Target>
 
 </Project>
