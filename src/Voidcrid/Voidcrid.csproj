@@ -111,4 +111,30 @@
     <Copy SourceFiles="@(LivePayload)" DestinationFolder="$(R2ModmanPluginDir)" SkipUnchangedFiles="true" Condition="Exists('$(R2ModmanPluginDir)')" />
   </Target>
 
+  <!--
+    Release builds also produce the Thunderstore upload at dist\Voidcrid-<Version>.zip, with every
+    file at the archive root. The build fails if packaging\manifest.json disagrees with <Version>.
+  -->
+  <PropertyGroup>
+    <PackagingDir>$(RepoRoot)packaging\</PackagingDir>
+    <DistDir>$(RepoRoot)dist\</DistDir>
+    <ThunderstoreStageDir>$(MSBuildThisFileDirectory)$(BaseIntermediateOutputPath)thunderstore\</ThunderstoreStageDir>
+  </PropertyGroup>
+
+  <Target Name="PackThunderstore" AfterTargets="StageLiveBuild" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <ManifestText>$([System.IO.File]::ReadAllText('$(PackagingDir)manifest.json'))</ManifestText>
+      <ManifestVersion>$([System.Text.RegularExpressions.Regex]::Match($(ManifestText), '"version_number"\s*:\s*"([^"]+)"').Groups[1].Value)</ManifestVersion>
+    </PropertyGroup>
+    <Error Condition="'$(ManifestVersion)' != '$(Version)'" Text="packaging/manifest.json version_number is '$(ManifestVersion)' but the csproj Version is '$(Version)'." />
+    <ItemGroup>
+      <ThunderstorePayload Include="@(LivePayload)" />
+      <ThunderstorePayload Include="$(PackagingDir)manifest.json;$(PackagingDir)icon.png;$(PackagingDir)README.md;$(PackagingDir)CHANGELOG.md" />
+    </ItemGroup>
+    <RemoveDir Directories="$(ThunderstoreStageDir)" />
+    <Copy SourceFiles="@(ThunderstorePayload)" DestinationFolder="$(ThunderstoreStageDir)" />
+    <MakeDir Directories="$(DistDir)" />
+    <ZipDirectory SourceDirectory="$(ThunderstoreStageDir)" DestinationFile="$(DistDir)Voidcrid-$(Version).zip" Overwrite="true" />
+  </Target>
+
 </Project>

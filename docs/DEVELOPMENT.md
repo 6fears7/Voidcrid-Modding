@@ -32,7 +32,7 @@ attic/                  Fully commented-out experiments kept for reference. Not 
 
 ```
 dotnet restore
-dotnet build -c Release
+dotnet build Voidcrid.sln -c Release # generaqtes the zip bundle too in dist/
 ```
 
 ## Version bumps
