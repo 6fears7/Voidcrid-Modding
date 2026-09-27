@@ -37,6 +37,16 @@ dotnet build Voidcrid.sln -c Release # generaqtes the zip bundle too in dist/
 
 ## Version bumps
 
-1. `<Version>` in `src/Voidcrid/Voidcrid.csproj`
-2. `version_number` in `packaging/manifest.json`
-3. the third argument to `[BepInPlugin]` in `src/Voidcrid/VoidcridPlugin.cs`
+```
+dotnet build Voidcrid.sln -c Release -p:Bump=patch|minor|major
+```
+
+`packaging/manifest.json`'s `version_number` is the single source of truth for the mod version.
+The csproj's `<Version>` is read from it at evaluation time, so the flag rewrites only that one
+file, then builds and packages the new version in the same invocation. The `[BepInPlugin]`
+version and `obj/**/PluginVersion.g.cs` are both generated from `<Version>`, so neither needs
+hand-editing, and nothing in the csproj itself ever changes.
+
+The flag rewrites that one tracked file on disk; review the diff and commit it after a bump.
+A plain `dotnet build` (no `-p:Bump`) never touches the version. The solution has a single
+project, so the bump runs exactly once per build.

@@ -1,3 +1,7 @@
+1.7.2 - Hotfixes
+- Fixed Right To Jail not unlocking Ethereal Drift and Grandfather Paradox not unlocking Entropy
+- Fixed Right To Jail unlocking when jailing any enemy instead of a Void Jailer
+
 1.7.0 - All Ends...
 - Rebuilt against Risk of Rain 2 1.4.1
 - Updated BepInEx, HookGenPatcher and R2API dependencies to current versions
@@ -6,7 +10,6 @@
 - Fixed skins not appearing after SotS
 - Some Skin unlocks are now linked to the skill achievments, which was intended from the beginning
 - Fixed void sound effects
-- Fixed Right To Jail not unlocking Ethereal Drift and Grandfather Paradox not unlocking Entropy
 
 
 1.6.0 - Not Dead Yet

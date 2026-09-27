@@ -6,8 +6,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Voidcrid</AssemblyName>
     <RootNamespace>Voidcrid</RootNamespace>
-    <!-- Keep in sync with packaging/manifest.json and the [BepInPlugin] version. -->
-    <Version>1.7.1</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -15,6 +13,78 @@
     <ModLibsDir>$(RepoRoot)libs\</ModLibsDir>
     <AssetsDir>$(RepoRoot)assets\</AssetsDir>
   </PropertyGroup>
+
+  <!--
+    packaging/manifest.json is the single source of truth for the mod version. <Version> is read
+    from it here at evaluation time, so nothing needs hand-syncing.
+  -->
+  <PropertyGroup>
+    <VersionManifestPath>$(RepoRoot)packaging\manifest.json</VersionManifestPath>
+    <Version>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(VersionManifestPath)')), '"version_number"\s*:\s*"([^"]+)"').Groups[1].Value)</Version>
+  </PropertyGroup>
+
+  <Target Name="CheckVersionManifest" BeforeTargets="BeforeBuild;GenerateVersionConstant;GetAssemblyVersion">
+    <Error Condition="'$(Version)' == ''" Text="Could not read version_number from $(VersionManifestPath)." />
+  </Target>
+
+  <!--
+    Exposes <Version> to VoidcridPlugin.cs as a compiled constant so the [BepInPlugin] version
+    attribute never needs hand-editing.
+  -->
+  <Target Name="GenerateVersionConstant" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <VersionConstantFile>$(IntermediateOutputPath)PluginVersion.g.cs</VersionConstantFile>
+      <VersionConstantContent>namespace Voidcrid { internal static class PluginVersion { public const string Value = "$(Version)"; } }</VersionConstantContent>
+    </PropertyGroup>
+    <MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')" />
+    <WriteLinesToFile File="$(VersionConstantFile)" Lines="$([MSBuild]::Escape($(VersionConstantContent)))" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(VersionConstantFile)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    -p:Bump=patch|minor|major bumps packaging/manifest.json's version_number and feeds the new
+    version into the rest of this build. A plain build (no Bump) is a no-op. The manifest is the
+    only file rewritten: it has no backslashes or semicolons, so WriteLinesToFile is safe on it.
+  -->
+  <Target Name="BumpVersion" BeforeTargets="GenerateVersionConstant;GetAssemblyVersion" Condition="'$(Bump)' != ''">
+    <Error Condition="'$(Bump)' != 'patch' and '$(Bump)' != 'minor' and '$(Bump)' != 'major'"
+           Text="Invalid -p:Bump value '$(Bump)'. Use patch, minor or major." />
+
+    <PropertyGroup>
+      <OldVersion>$(Version)</OldVersion>
+      <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
+      <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
+      <VersionPatch>$(Version.Split('.')[2])</VersionPatch>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Bump)' == 'major'">
+      <NewVersion>$([MSBuild]::Add($(VersionMajor), 1)).0.0</NewVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Bump)' == 'minor'">
+      <NewVersion>$(VersionMajor).$([MSBuild]::Add($(VersionMinor), 1)).0</NewVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Bump)' == 'patch'">
+      <NewVersion>$(VersionMajor).$(VersionMinor).$([MSBuild]::Add($(VersionPatch), 1))</NewVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <ManifestBumpText>$([System.IO.File]::ReadAllText('$(VersionManifestPath)'))</ManifestBumpText>
+      <ManifestBumpText>$([System.Text.RegularExpressions.Regex]::Replace($(ManifestBumpText), '"version_number"\s*:\s*"[^"]+"', '"version_number": "$(NewVersion)"'))</ManifestBumpText>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(VersionManifestPath)" Lines="$(ManifestBumpText.TrimEnd())" Overwrite="true" />
+
+    <PropertyGroup>
+      <Version>$(NewVersion)</Version>
+      <AssemblyVersion>$(NewVersion)</AssemblyVersion>
+      <FileVersion>$(NewVersion)</FileVersion>
+      <InformationalVersion>$(NewVersion)</InformationalVersion>
+      <PackageVersion>$(NewVersion)</PackageVersion>
+    </PropertyGroup>
+
+    <Message Importance="high" Text="Voidcrid version $(OldVersion) -&gt; $(NewVersion)" />
+  </Target>
 
   <!-- Game, BepInEx and R2API assemblies all come from NuGet. Do not vendor these into libs\. -->
   <ItemGroup>
@@ -113,7 +183,8 @@
 
   <!--
     Release builds also produce the Thunderstore upload at dist\Voidcrid-<Version>.zip, with every
-    file at the archive root. The build fails if packaging\manifest.json disagrees with <Version>.
+    file at the archive root. <Version> is read from packaging\manifest.json itself, so the two
+    can never disagree.
   -->
   <PropertyGroup>
     <PackagingDir>$(RepoRoot)packaging\</PackagingDir>
@@ -122,11 +193,6 @@
   </PropertyGroup>
 
   <Target Name="PackThunderstore" AfterTargets="StageLiveBuild" Condition="'$(Configuration)' == 'Release'">
-    <PropertyGroup>
-      <ManifestText>$([System.IO.File]::ReadAllText('$(PackagingDir)manifest.json'))</ManifestText>
-      <ManifestVersion>$([System.Text.RegularExpressions.Regex]::Match($(ManifestText), '"version_number"\s*:\s*"([^"]+)"').Groups[1].Value)</ManifestVersion>
-    </PropertyGroup>
-    <Error Condition="'$(ManifestVersion)' != '$(Version)'" Text="packaging/manifest.json version_number is '$(ManifestVersion)' but the csproj Version is '$(Version)'." />
     <ItemGroup>
       <ThunderstorePayload Include="@(LivePayload)" />
       <ThunderstorePayload Include="$(PackagingDir)manifest.json;$(PackagingDir)icon.png;$(PackagingDir)README.md;$(PackagingDir)CHANGELOG.md" />
