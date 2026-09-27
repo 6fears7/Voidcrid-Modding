@@ -91,7 +91,7 @@ namespace Voidcrid
                 // "Skins.Croco.Voidcrid" because ParadoxAchievement registered it before the
                 // skins were assigned to achievements; the name is a save-file key, so renaming
                 // it to match would drop the unlock for everyone who already has it.
-                "Skins.Croco.Blackrid"),
+                "Skins.Croco.Voidcrid"),
         };
 
         internal static void Init()

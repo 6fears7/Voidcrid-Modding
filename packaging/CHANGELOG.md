@@ -6,6 +6,7 @@
 - Fixed skins not appearing after SotS
 - Some Skin unlocks are now linked to the skill achievments, which was intended from the beginning
 - Fixed void sound effects
+- Fixed Right To Jail not unlocking Ethereal Drift and Grandfather Paradox not unlocking Entropy
 
 
 1.6.0 - Not Dead Yet

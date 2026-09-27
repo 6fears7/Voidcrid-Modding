@@ -5,7 +5,7 @@ using Voidcrid.Modules;
 
 namespace Voidcrid.Achievements
 {
-    [RegisterAchievement("RightToJail", null, null, 0, typeof(VoidcridJailUnlock))]
+    [RegisterAchievement("RightToJail", "Skins.Croco.Blackrid", null, 0, typeof(VoidcridJailUnlock))]
     public class DeepVoidcridAcievement : VoidcridAchievements
     {
         private class VoidcridJailUnlock : BaseServerAchievement
@@ -30,7 +30,7 @@ namespace Voidcrid.Achievements
             private void onJailDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo info)
             {
 
-                bool jailerBody = self.body.bodyIndex == jailBodyIndex && info.HasModdedDamageType(DamageTypes.nullBeamJail) || info.HasModdedDamageType(DamageTypes.ethJail) || info.HasModdedDamageType(DamageTypes.entropyJail);
+                bool jailerBody = self.body && self.body.bodyIndex == jailBodyIndex && (info.HasModdedDamageType(DamageTypes.nullBeamJail) || info.HasModdedDamageType(DamageTypes.ethJail) || info.HasModdedDamageType(DamageTypes.entropyJail));
 
 
                 if (jailerBody)
